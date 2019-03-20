@@ -1,0 +1,5 @@
+php_value display_errors 1
+
+RewriteEngine On
+RewriteRule ^$ /html/Report.html [L]
+RewriteRule ^Report$ /html/Report.html [R=301,L]
