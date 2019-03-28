@@ -4,6 +4,15 @@ import re
 import importlib
 
 
+def get_client_ip(request):
+    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for:
+        ip = x_forwarded_for.split(',')[-1].strip()
+    else:
+        ip = request.META.get('REMOTE_ADDR')
+    return ip
+
+
 #
 # Enables a class to be configured via bracket notation.
 #
@@ -36,8 +45,8 @@ class Configurable:
 
 class Executable(Configurable):
     def __init__(self, executable, configurable=None):
-        self.c = configurable if configurable is not None else {}
-        super().__init__(self.c)
+        self.config = configurable if configurable is not None else {}
+        super().__init__(self.config)
 
         self.executable = executable
         self.executable_path = ""
