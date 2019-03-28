@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>User Concern Report</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {% load static %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'Presenter/css/bootstrap.min.css' %}">
+
+</head>
+<body>
+
+  {% block content %}
+  <h1>Titel</h1>
+
+
+  {% for s in test %}
+    <p>{{ s }}</p>
+  {% endfor %}
+
+  {% endblock %}
+
+</body>
+</html>
