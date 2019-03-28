@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  {% load static %}
+
+  {% include "header.html" %}
+
+</head>
+<body>
+
+  {% include "nav.html" %}
+
+  <div class="row-12" style="margin: 50px 0 50px 0;">
+
+    <div class="col"></div>
+
+    <div class="col text-center">
+      <h1><i><b>{{ status }}</b></i></h1>
+      <br>
+      <h3>{{ message }}</h3>
+    </div>
+
+    <div class="col"></div>
+
+  </div>
+
+  <div class="row-12">
+
+    <div class="col"></div>
+
+    <div class="col">
+      <img class="mx-auto d-block" src="{% static 'img/status/'|add:status|add:'.gif' %}" height="25%" width="20%"/>
+    </div>
+
+    <div class="col"></div>
+
+  </div>
+
+</body>
+</html>
