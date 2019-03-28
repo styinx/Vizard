@@ -1,0 +1,22 @@
+body
+{
+    background: #f0f0ee;
+}
+
+.main-nav
+{
+    background: #ffffff;
+    border-color: #666666;
+}
+
+.main-nav-el
+{
+    margin: 0 10% 0 10%;
+    width: 80%;
+}
+
+.main-nav-link
+{
+    color: #339933;
+    font-weight: bold;
+}

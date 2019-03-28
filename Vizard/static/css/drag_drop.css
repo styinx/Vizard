@@ -1,0 +1,19 @@
+.dragable
+{
+
+}
+
+.droparea
+{
+    border: 2px dashed #555555;
+    border-radius: 3px;
+    background: center / 25% no-repeat url("../img/upload.svg"), #eeeeee;
+}
+
+.droparea:hover
+{
+    border: 2px dashed #00BB00;
+    border-radius: 3px;
+    background: center / 25% no-repeat url("../img/upload.svg"), #dddddd;
+    filter: opacity(50%);
+}
