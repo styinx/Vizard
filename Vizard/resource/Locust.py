@@ -1,5 +1,5 @@
 from locust import HttpLocust, TaskSet, events
-import time
+from time import time
 
 
 def index(l):
@@ -12,7 +12,7 @@ class DomainTaskSet(TaskSet):
 
 class LocustRun(HttpLocust):
     host = "www.example.com"
-    result_file = "locust_experiment_result.csv"
+    result_file = "Vizard/resource/tests/LC_" + str(time()) + ".csv"
     min_wait = 2000
     max_wait = 5000
     task_set = DomainTaskSet
@@ -35,7 +35,7 @@ class LocustRun(HttpLocust):
         self.save(request_type, name, response_time, 0, 0)
 
     def save(self, request_type, name, response_time, response_length, success):
-        timestamp = int(round(time.time() * 1000))
+        timestamp = int(round(time() * 1000))
         if timestamp != self.last_entry:
             self.data.append([timestamp, name, request_type, success, response_time, response_length])
             self.last_entry = timestamp
