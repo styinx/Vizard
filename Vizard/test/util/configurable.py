@@ -1,6 +1,6 @@
 from unittest import main, TestCase
 
-from source.util import Configurable
+from Vizard.source import Configurable
 
 
 class ConfigurableTest(TestCase):

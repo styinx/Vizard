@@ -1,5 +1,5 @@
 from unittest import main, TestCase
-from source.data import Series
+from Vizard.source import Series
 
 
 class SeriesTest(TestCase):
