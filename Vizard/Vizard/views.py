@@ -11,6 +11,14 @@ def index(request):
     return render(request, "Index.html")
 
 
+def details(request):
+    return render(request, "Details.html")
+
+
+def documentation(request):
+    return render(request, "Documentation.html")
+
+
 def user(request, _user):
     ip = get_client_ip(request)
     if sha1(ip.encode()).hexdigest()[:8] != _user:
