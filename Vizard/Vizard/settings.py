@@ -3,9 +3,6 @@ import psutil
 import django_heroku
 
 
-# Activate Django-Heroku.
-django_heroku.settings(locals())
-
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
@@ -114,3 +111,6 @@ RESPONSE = {
     "status": 200,
     "message": ""
 }
+
+# Activate Django-Heroku.
+django_heroku.settings(locals())
