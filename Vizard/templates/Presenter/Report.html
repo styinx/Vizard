@@ -1,26 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>User Concern Report</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Report {{ path }}</title>
 
   {% load static %}
 
-  <link rel="stylesheet" type="text/css" href="{% static 'Presenter/css/bootstrap.min.css' %}">
+  {% include "header.html" %}
+
+  <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/highstock.js' %}"></script>
+  <script>
+    $(document).ready(function()
+    {
+      {% for metric, values in metrics.items %}
+          Highcharts.stockChart({{ metric }}, {
+            chart:   {type: "spline"},
+            series: [{data: {{ values.data }} }]
+          });
+      {% endfor %}
+    });
+  </script>
 
 </head>
 <body>
 
-  {% block content %}
-  <h1>Titel</h1>
+  {% include "nav.html" %}
 
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
-  {% for s in test %}
-    <p>{{ s }}</p>
-  {% endfor %}
+    <h2><u>Report for {{ hash }}</u></h2>
 
-  {% endblock %}
+    <div class="mx-3 my-3 px-3 py-3">
+      {% for metric, values in metrics.items %}
+        <h4>{{ metric }}</h4>
+        <div class="mx-3 my-3 px-3 py-3" id="{{ metric }}"></div>
+        <p class="mx-3 my-3 px-3 py-3">{{ values.text }}</p>
+      {% endfor %}
+    </div>
+
+  </div>
 
 </body>
 </html>

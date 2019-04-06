@@ -12,7 +12,7 @@ class DomainTaskSet(TaskSet):
 
 class LocustRun(HttpLocust):
     host = "www.example.com"
-    result_file = "Vizard/resource/tests/LC_" + str(time()) + ".csv"
+    result_file = "lc_cache.csv"
     min_wait = 2000
     max_wait = 5000
     task_set = DomainTaskSet
@@ -44,5 +44,5 @@ class LocustRun(HttpLocust):
         with open(self.result_file, 'wb') as csv_file:
             csv_file.write(bytes(','.join(self.header) + "\n", "utf-8"))
             for value in self.data:
-                csv_file.write(bytes(','.join(str(x) for x in value) + "\n"))
-            csv_file.write(bytes(','.join(self.footer) + "\n"))
+                csv_file.write(bytes(','.join(str(x) for x in value) + "\n", "utf-8"))
+            csv_file.write(bytes(','.join(self.footer) + "\n", "utf-8"))

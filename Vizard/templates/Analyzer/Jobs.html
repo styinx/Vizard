@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Jobs</title>
+
+  {% load static %}
+
+  {% include "header.html" %}
+
+</head>
+<body>
+
+  {% include "nav.html" %}
+
+    <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
+
+     <h2><u>Jobs</u></h2>
+     <br>
+
+     <table style="width: 100%">
+       <tr>
+         <th>Job-ID</th>
+         <th>Status</th>
+       </tr>
+       {% for hash, status in jobs.items %}
+         <tr>
+           <td><pre>{{ hash }}</pre></td>
+           <td>{{ status }}</td>
+         </tr>
+       {% endfor %}
+     </table>
+
+    </div>
+
+</body>
+</html>

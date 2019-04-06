@@ -5,33 +5,113 @@
 
   {% include "header.html" %}
 
+  <style>
+    .switch
+    {
+      position: relative;
+      display: inline-block;
+      width: 35px;
+      height: 20px;
+    }
+
+    .switch input
+    {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider
+    {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    .slider:before
+    {
+      position: absolute;
+      content: "";
+      height: 14px;
+      width: 14px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    input:checked + .slider
+    {
+      background-color: #2196F3;
+    }
+
+    input:focus + .slider
+    {
+      box-shadow: 0 0 1px #2196F3;
+    }
+
+    input:checked + .slider:before
+    {
+      transform: translateX(15px);
+    }
+
+    /* Rounded sliders */
+    .slider.round
+    {
+      border-radius: 20px;
+    }
+
+    .slider.round:before
+    {
+      border-radius: 50%;
+    }
+  </style>
+
 </head>
 <body>
 
   {% include "nav.html" %}
 
-  <h2>Task: {{ hash }}</h2>
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
-  <p class="text">
-    Your task will be available <a href="{{ HTTP_HOST }}/present/data/{{ hash }}">here</a>
-    once it is finished.
-    If you would like to get notified upon completeness of the task then
+    <h2><u>Task-ID: {{ hash }}</u></h2>
 
-    {% if email != "" %}
-      please tick this box: <input type="checkbox"/>
-    {% else %}
-      please enter your email here: <input type="email"/>
-    {% endif %}
-  </p>
+    <p class="text">
+      The results of your task will be available
+      <a href="{{ HTTP_HOST }}/present/data/{{ hash }}">here</a> once it is finished.
+      <br>
+      If you would like to get notified upon completeness of the task then
 
-  <p>
-    Here you can see the configuration of the running task.
-  </p>
+      {% if email != "" %}
+        please tick this box:
 
-  <ul>
-    <li>Tool: {{ tool }}</li>
-    <li>Tool Configuration: <pre>{{config}}</pre></li>
-  </ul>
+        <label class="switch">
+          <input type="checkbox">
+          <span class="slider round"></span>
+        </label>
+      {% else %}
+        please enter your email here: <input type="email" placeholder="you@example.com"/>
+      {% endif %}
+    </p>
+
+    <p>
+      Here you can see the configuration of the running task:
+    </p>
+
+    <ul>
+      <li>Tool: {{ tool }}</li>
+      <li>Tool Configuration: <pre>{{config}}</pre></li>
+      <li>Analysis Configuration:</li>
+    </ul>
+
+  </div>
 
 </body>
 </html>
