@@ -44,7 +44,7 @@ ROOT_URLCONF = 'Vizard.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': ["templates"],
+        'DIRS': ["templates", "Vizard/templates"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

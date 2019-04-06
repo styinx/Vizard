@@ -1,1 +1,1 @@
-web: python Vizard/Vizard/manage.py runserver 0.0.0.0:$PORT
+web: python Vizard/manage.py runserver 0.0.0.0:$PORT
