@@ -2,6 +2,7 @@ import os
 import sys
 import re
 import importlib
+import hashlib
 
 
 def get_client_ip(request):
@@ -11,6 +12,10 @@ def get_client_ip(request):
     else:
         ip = request.META.get('REMOTE_ADDR')
     return ip
+
+
+def hash(what, severity=8):
+    return hashlib.sha1(str(what).encode()).hexdigest()[:severity]
 
 
 #

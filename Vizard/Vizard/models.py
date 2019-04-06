@@ -1,6 +1,6 @@
 import os
-import json
-from hashlib import sha1
+import pickle
+from source.util import hash
 
 
 class User:
@@ -8,28 +8,26 @@ class User:
         self.ip = ip
         self.mail = "asd"
         self.config = {"email": "", "pro": False, "tasks": [{"id": 0, "started": 0, "completed": 0}]}
-        self.hash = self.hash()
+        self.hash = hash(ip)
 
         self.load()
 
-    def hash(self):
-        return sha1(self.ip.encode()).hexdigest()[:8]
+    def __del__(self):
+        self.save()
 
     def create(self):
         if not os.path.exists(self.hash):
             os.mkdir(self.hash)
 
-        open(self.hash + "/config.json", "w+").close()
+        if not os.path.exists(self.hash + "/config.dat"):
+            pickle.dump(self.config, open(self.hash + "/config.dat", "wb"))
 
     def save(self):
         self.create()
 
-        f = open(self.hash + "/config.json", "w")
-        f.write(json.dumps(self.config))
+        pickle.dump(self.config, open(self.hash + "/config.dat", "wb"))
 
     def load(self):
         self.create()
 
-        buffer = open(self.hash + "/config.json", "r").read()
-        if buffer:
-            self.config = json.loads(buffer)
+        self.config = pickle.load(open(self.hash + "/config.dat", "rb"))

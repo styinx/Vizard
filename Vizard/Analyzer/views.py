@@ -1,25 +1,39 @@
-from time import time
+from threading import Thread
 import json
+import os
+import pickle
 
 from django.http import HttpResponse
 from django.shortcuts import render
 
 from Vizard.models import User
+from Vizard.settings import ANALYSIS_PATH, RESPONSE
+
 from source.analyze import JMeter, Locust
 from source.scheduler import Task, TaskScheduler
 from source.util import get_client_ip
 
 
-ANALYSIS_PATH = "Vizard/resource/"
-ANALYSIS_TESTS_PATH = "Vizard/resource/tests"
-RESPONSE = {
-    "status": 200,
-    "message": ""
-}
+scheduler = TaskScheduler()
+scheduler_thread = Thread(target=scheduler.run)
+scheduler_thread.daemon = True
+scheduler_thread.start()
 
 
 def index(request):
     return render(request, "Analyzer/Index.html")
+
+
+def jobs(request):
+    response = RESPONSE
+    jobs = {}
+
+    if os.path.exists("tasks.dat"):
+        jobs = pickle.load(open("tasks.dat", "rb"))
+
+    response["jobs"] = jobs
+
+    return render(request, "Analyzer/Jobs.html", response)
 
 
 def loadtest(request):
@@ -27,37 +41,43 @@ def loadtest(request):
 
 
 def loadtest_jmeter(request):
-
     user = User(get_client_ip(request))
+    task = Task(0)
 
     jm = JMeter({
         "-n": "",
         "-t": ANALYSIS_PATH + "JMeter.jmx",
-        "-l": user.hash + "/JM_" + str(time()) + ".csv",
+        "-l": user.hash + "/JM_" + task.hash + ".csv",
         "-L": "jmeter.util=WARN"
     })
     jm.arg_separator = " "
 
-    task = Task(jm.execute, 0, ("path",), ("/home/chris/Programme/apache-jmeter-4.0/bin/",))
-    scheduler = TaskScheduler()
+    task.set(jm.execute, {"path": "/home/chris/Programme/apache-jmeter-4.0/bin/"})
     scheduler.add(task)
+
+    conf = dict(jm.config)
+    del conf["-t"]
+    del conf["-l"]
 
     response = RESPONSE
     response["mail"] = user.mail
     response["tool"] = jm.name
-    response["config"] = json.dumps(jm.config, indent=2)
+    response["config"] = json.dumps(conf, indent=2)
     response["hash"] = task.hash
 
     return render(request, "Analyzer/Analysis.html", response)
 
 
 def loadtest_locust(request):
+    user = User(get_client_ip(request))
+    task = Task(0)
+
     lc = Locust({
         "-f":             ANALYSIS_PATH + "Locust.py",
-        "--csv":          ANALYSIS_TESTS_PATH + get_client_ip(request) + "/JM_" + str(time()),
+        "--csv":          user.hash + "/LC_" + task.hash,
         "--no-web":       "",
         "--only-summary": "",
-        "-H":             "www.example.com",
+        "-H":             "http://www.example.com",
         "-P":             "80",
         "-L":             "CRITICAL",
         "-c":             "10",
@@ -66,11 +86,20 @@ def loadtest_locust(request):
     })
     lc.arg_separator = " "
 
-    task = Task(lc.execute, 0)
-    scheduler = TaskScheduler()
+    task.set(lc.execute)
     scheduler.add(task)
 
-    return HttpResponse("loadtest (" + task.hash + ") with Locust is running")
+    conf = dict(lc.config)
+    del conf["--csv"]
+    del conf["-f"]
+
+    response = RESPONSE
+    response["mail"] = user.mail
+    response["tool"] = lc.name
+    response["config"] = json.dumps(conf, indent=2)
+    response["hash"] = task.hash
+
+    return render(request, "Analyzer/Analysis.html", response)
 
 
 def stresstest(request):

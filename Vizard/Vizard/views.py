@@ -22,7 +22,7 @@ def documentation(request):
 def user(request, _user):
     ip = get_client_ip(request)
     if sha1(ip.encode()).hexdigest()[:8] != _user:
-        return render(request, "User.html", {"user": "no access"})
+        return render(request, "Index.html")
 
     else:
         user_obj = User(ip)

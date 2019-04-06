@@ -1,21 +1,46 @@
 from time import sleep, time
 from threading import Lock, Thread
-from hashlib import sha1
+import pickle
+import os
+
+from source.util import hash
 
 
 class Task:
-    def __init__(self, callback, delay, *args, **kwargs):
+    def __init__(self, delay=0, callback=None, kwargs=None):
         self.callback = callback
         self.time = time() + delay
-        self.hash = self.hash()
-        self.args = args
+        self.hash = hash(self.time)
         self.kwargs = kwargs
 
-    def hash(self):
-        return sha1(str(self.time).encode()).hexdigest()[:8]
+        self.log("pending")
+
+    def log(self, status):
+        tasks = {}
+        if not os.path.exists("tasks.dat"):
+            pickle.dump({}, open("tasks.dat", "wb"))
+
+        else:
+            tasks = pickle.load(open("tasks.dat", "rb"))
+
+        tasks[self.hash] = status
+
+        pickle.dump(tasks, open("tasks.dat", "wb"))
+
+    def set(self, callback, kwargs=None):
+        self.callback = callback
+        self.hash = hash(self.time)
+        self.kwargs = kwargs
+
+        self.log("pending")
 
     def __call__(self):
-        self.callback(*self.args, **self.kwargs)
+        if self.callback is not None:
+            self.log("running")
+            if self.kwargs is not None:
+                self.callback(**self.kwargs)
+            else:
+                self.callback()
 
 
 class TaskScheduler:
@@ -36,8 +61,10 @@ class TaskScheduler:
                 task = self.queue.pop(0)
                 self.lock.release()
                 thread = Thread(target=task)
-                thread.daemon = True
                 thread.start()
+                thread.join()
+
+                task.log("done")
 
             else:
                 sleep(self.poll_interval)
