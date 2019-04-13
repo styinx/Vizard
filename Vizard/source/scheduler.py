@@ -1,9 +1,12 @@
-from time import sleep, time
-from threading import Lock, Thread
 import pickle
 import os
+from time import sleep, time
+from threading import Lock, Thread
 
 from source.util import hash
+
+
+task_lock = Lock()
 
 
 class Task:
@@ -13,30 +16,13 @@ class Task:
         self.hash = hash(self.time)
         self.kwargs = kwargs
 
-        self.log("pending")
-
-    def log(self, status):
-        tasks = {}
-        if not os.path.exists("tasks.dat"):
-            pickle.dump({}, open("tasks.dat", "wb"))
-
-        else:
-            tasks = pickle.load(open("tasks.dat", "rb"))
-
-        tasks[self.hash] = status
-
-        pickle.dump(tasks, open("tasks.dat", "wb"))
-
-    def set(self, callback, kwargs=None):
+    def setCallback(self, callback, kwargs=None):
         self.callback = callback
         self.hash = hash(self.time)
         self.kwargs = kwargs
 
-        self.log("pending")
-
     def __call__(self):
         if self.callback is not None:
-            self.log("running")
             if self.kwargs is not None:
                 self.callback(**self.kwargs)
             else:
@@ -49,22 +35,27 @@ class TaskScheduler:
         self.queue = []
         self.poll_interval = 5
 
-    def add(self, task):
+    def addTask(self, task, user):
         self.lock.acquire()
-        self.queue.append(task)
+        self.queue.append({user: task})
+        user.setTask(task, status="pending")
         self.lock.release()
 
     def run(self):
         while True:
             if len(self.queue) > 0:
                 self.lock.acquire()
-                task = self.queue.pop(0)
+                (user, task), = self.queue.pop(0).items()
                 self.lock.release()
                 thread = Thread(target=task)
                 thread.start()
+
+                user.setTask(task, status="running", started=time())
+
                 thread.join()
 
-                task.log("done")
+                user.setTask(task, status="complete", completed=time())
+                user.save()
 
             else:
                 sleep(self.poll_interval)
