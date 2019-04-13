@@ -87,7 +87,7 @@
       The results of your task will be available
       <a href="{{ HTTP_HOST }}/present/data/{{ hash }}">here</a> once it is finished.
       <br>
-      If you would like to get notified upon completeness of the task then
+      <s>If you would like to get notified upon completeness of the task then
 
       {% if email != "" %}
         please tick this box:
@@ -99,6 +99,7 @@
       {% else %}
         please enter your email here: <input type="email" placeholder="you@example.com"/>
       {% endif %}
+      </s>
     </p>
 
     <p>

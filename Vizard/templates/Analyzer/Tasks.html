@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Jobs</title>
+  <title>Tasks</title>
 
   {% load static %}
 
@@ -14,7 +14,7 @@
 
     <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
-     <h2><u>Jobs</u></h2>
+     <h2><u>Tasks</u></h2>
      <br>
 
      <table style="width: 100%">
@@ -22,7 +22,7 @@
          <th>Job-ID</th>
          <th>Status</th>
        </tr>
-       {% for hash, status in jobs.items %}
+       {% for hash, status in tasks.items %}
          <tr>
            <td><pre>{{ hash }}</pre></td>
            <td>{{ status }}</td>

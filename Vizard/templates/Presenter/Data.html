@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  {% if task %}
+
+    <title>Data {{ task }}</title>
+
+  {% else %}
+
+    <title>Analysis data</title>
+
+  {% endif %}
+
+
+  {% load static %}
+
+  {% include "header.html" %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/drag_drop.css' %}">
+
+  <script type="text/javascript" src="{% static 'js/drag_drop.js' %}"></script>
+
+</head>
+<body>
+
+  {% include "nav.html" %}
+
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
+
+    {% if task %}
+
+    <h2><u>Data for task {{ task }}</u></h2>
+
+    <div class="mx-3 my-3 px-3 py-3">
+      <pre>{{ task }}</pre>
+    </div>
+
+    {% else %}
+
+    <h2><u>Your analyzed tasks:</u></h2>
+
+    <table style="width: 100%; min-width: 500px">
+      <tr>
+        <th>Analysis ID</th>
+        <th>Started</th>
+        <th>Completed</th>
+        <th>View Analysis Data</th>
+        <th>Show Report</th>
+      </tr>
+
+      {% for experiment, values in experiments.items %}
+
+        <tr>
+          <td>{{ experiment }}</td>
+          <td>{{ values.started }}</td>
+          <td>{{ values.completed }}</td>
+          <td><a href="../data/{{ experiment }}">Show</a></td>
+          <td><a href="../report/{{ experiment }}">Create</a></td>
+        </tr>
+
+      {% endfor %}
+
+    </table>
+
+    {% endif %}
+
+  </div>
+
+  {% if not task %}
+
+  <div class="container" style="width: 300px; height: 300px;">
+
+    <div class="droparea" ondrop="drop(event, null)" ondragover="allowDrop(event, null)" style="width: 300px; height: 300px;">
+
+    </div>
+
+  </div>
+
+  {% endif %}
+
+</body>
+</html>

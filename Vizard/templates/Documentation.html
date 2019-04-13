@@ -10,5 +10,58 @@
 
   {% include "nav.html" %}
 
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
+
+    <table width="100%">
+
+      <tr>
+        <th style="width: 50%; height: 80px;"><u>Description</u></th>
+        <th style="width: 50%; height: 80px;"><u>URL</u></th>
+      </tr>
+
+      <tr>
+        <td><b>Perform an analysis:</b></td>
+        <td><pre style="display: inline">/loadtest</pre></td>
+      </tr>
+
+      <tr>
+        <td>
+          <ul>
+            <li><b>JMeter</b></li>
+            <li><b>Locust</b></li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li><pre style="display: inline">/loadtest/jmeter</pre></li>
+            <li><pre style="display: inline">/loadtest/locust</pre></li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr>
+        <td><b>Inspect analysis data:</b></td>
+        <td><pre style="display: inline">/present</pre></td>
+      </tr>
+
+      <tr>
+        <td>
+          <ul>
+            <li><b>Plain data</b></li>
+            <li><b>Report</b></li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li><pre style="display: inline">/present/data</pre></li>
+            <li><pre style="display: inline">/present/report</pre></li>
+          </ul>
+        </td>
+      </tr>
+
+    </table>
+
+  </div>
+
 </body>
 </html>
