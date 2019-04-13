@@ -1,56 +1,47 @@
-from os import listdir
-from random import random, randint
+from random import randint
+from time import strftime, gmtime
 
+from django.http import HttpResponse
 from django.shortcuts import render
 
+from Vizard.settings import RESPONSE
 from Vizard.models import User
 from source.util import get_client_ip
-
-from Vizard.settings import BASE_DIR, RESPONSE
 
 
 def index(request):
     return render(request, "Presenter/Index.html")
 
 
-def data(request):
+def data(request, api="", _id=""):
     response = RESPONSE
-
     user = User(get_client_ip(request))
 
-    response["user"] = user.hash
-    response["experiments"] = []
+    if api:
+        if _id:
+            return HttpResponse("<body>{" + api + ": \"here will be some data from id\"}</body>")
 
-    for analysis in listdir(BASE_DIR + "/" + user.hash):
-        response["experiments"].append(analysis)
+        return HttpResponse("<body>{" + api + ": \"here will be some data from all jobs\"}</body>")
 
-    return render(request, "Presenter/Report_List.html", response)
+    if _id:
+        if user.valid(_id):
+            response["task"] = _id
+            return render(request, "Presenter/Data.html", response)
 
-
-def data_id(request, _id):
-    response = {
-        "status":  "",
-        "message": "",
-        "id":      _id
-    }
-
-    if 1:
         response["status"] = "404"
         response["message"] = "Sorry, the requested job id (" + str(_id) + ") seems not to exists."
 
-    return render(request, "error.html", response)
+        return render(request, "error.html", response)
 
+    response["experiments"] = {}
 
-def report(request):
-    response = {
-        "status":  "",
-        "message": ""
-    }
+    tasks = user.config["tasks"]
+    for experiment in tasks:
+        started = strftime("%H:%M:%S %d/%m/%Y", gmtime(tasks[experiment]["started"]))
+        completed = strftime("%H:%M:%S %d/%m/%Y", gmtime(tasks[experiment]["completed"]))
+        response["experiments"][experiment] = {"started": started, "completed": completed}
 
-    if 1:
-        response["status"] = "404"
-
-    return render(request, "Presenter/Report.html", response)
+    return render(request, "Presenter/Data.html", response)
 
 
 def report_id(request, _id):
@@ -59,7 +50,7 @@ def report_id(request, _id):
     response["hash"] = _id
     response["metrics"] = {
         "resp": {
-            "data" : list(range(100000)),
+            "data": list(range(100000)),
             "text": "some metric text"
         },
         "asd": {
