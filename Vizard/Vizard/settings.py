@@ -104,8 +104,8 @@ STATICFILES_DIRS = [
 
 MAX_THREADS = psutil.cpu_count()
 
-ANALYSIS_PATH = BASE_DIR + "/resource/"
-ANALYSIS_TESTS_PATH = BASE_DIR + "/resource/tests"
+RESOURCE_PATH = BASE_DIR + "/resource"
+TASK_PATH = RESOURCE_PATH + "/tasks"
 
 RESPONSE = {
     "status": 200,

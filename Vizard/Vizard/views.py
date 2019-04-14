@@ -1,13 +1,10 @@
-import json
-
 from django.shortcuts import render
 
-from Vizard.models import User
-from source.util import get_client_ip, hash
+from Vizard.settings import RESPONSE
 
 
-def index(request):
-    return render(request, "Index.html")
+def home(request):
+    return render(request, "Home.html")
 
 
 def details(request):
@@ -18,30 +15,13 @@ def documentation(request):
     return render(request, "Documentation.html")
 
 
-def user(request):
-    user_obj = User(get_client_ip(request))
+def my(request, what=""):
+    response = RESPONSE
 
-    for key in request.GET:
-        if key in user_obj.config:
-            user_obj.config[key] = request.GET[key]
+    if what == "tasks":
+        response["tasks"] = "blabla tasks"
 
-    user_obj.save()
+    elif what == "reports":
+        response["reports"] = "bla bla reports"
 
-    return render(request, "User.html", {"user": json.dumps(user_obj.config, indent=2)})
-
-
-def user_data(request, _user):
-    ip = get_client_ip(request)
-    if hash(ip) != _user:
-        return render(request, "Index.html")
-
-    else:
-        user_obj = User(ip)
-
-        for key in request.GET:
-            if key in user_obj.config:
-                user_obj.config[key] = request.GET[key]
-
-        user_obj.save()
-
-        return render(request, "User.html", {"user": json.dumps(user_obj.config, indent=2)})
+    return render(request, "My.html", response)

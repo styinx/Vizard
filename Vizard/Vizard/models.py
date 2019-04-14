@@ -1,7 +1,10 @@
-import os
 import pickle
-from threading import Lock
+import os
+from time import sleep, time
+from threading import Lock, Thread
+from shutil import rmtree
 
+from Vizard.settings import TASK_PATH
 from source.util import hash
 
 
@@ -61,3 +64,69 @@ class User:
         if task in self.config["tasks"]:
             return True
         return False
+
+
+class Task:
+    def __init__(self, delay=0, callback=None, kwargs=None):
+        self.execution_callback = callback
+        self.processing_callback = None
+        self.analyzer = None
+        self.time = time() + delay
+        self.hash = hash(self.time)
+        self.kwargs = kwargs
+
+        self.path = TASK_PATH + "/" + self.hash + "/"
+        if os.path.exists(self.path):
+            rmtree(self.path)
+
+        os.makedirs(self.path)
+
+    def setExecutionCallback(self, callback, kwargs=None):
+        self.execution_callback = callback
+        self.hash = hash(self.time)
+        self.kwargs = kwargs
+
+    def setProcessingCallback(self, callback):
+        self.processing_callback = callback
+
+    def __call__(self):
+        if self.execution_callback is not None:
+            if self.kwargs is not None:
+                self.execution_callback(**self.kwargs)
+            else:
+                self.execution_callback()
+
+            if self.processing_callback is not None:
+                self.processing_callback()
+
+
+class TaskScheduler:
+    def __init__(self):
+        self.lock = Lock()
+        self.queue = []
+        self.poll_interval = 5
+
+    def addTask(self, task, user):
+        self.lock.acquire()
+        self.queue.append({user: task})
+        user.setTask(task, status="pending")
+        self.lock.release()
+
+    def run(self):
+        while True:
+            if len(self.queue) > 0:
+                self.lock.acquire()
+                (user, task), = self.queue.pop(0).items()
+                self.lock.release()
+                thread = Thread(target=task)
+                thread.start()
+
+                user.setTask(task, status="running", started=time())
+
+                thread.join()
+
+                user.setTask(task, status="complete", completed=time())
+                user.save()
+
+            else:
+                sleep(self.poll_interval)

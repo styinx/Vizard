@@ -1,16 +1,12 @@
-from threading import Thread
 import json
-import os
-import pickle
+from threading import Thread
 
 from django.http import HttpResponse
 from django.shortcuts import render
 
-from Vizard.models import User
-from Vizard.settings import ANALYSIS_PATH, RESPONSE
-
-from source.analyze import JMeter, Locust
-from source.scheduler import Task, TaskScheduler
+from Vizard.models import User, Task, TaskScheduler
+from Vizard.settings import RESOURCE_PATH, RESPONSE
+from Analyzer.models import Testplan, JMeter, Locust
 from source.util import get_client_ip
 
 
@@ -24,16 +20,16 @@ def index(request):
     return render(request, "Analyzer/Index.html")
 
 
-def jobs(request):
+def tasks(request):
     response = RESPONSE
-    jobs = {}
+    response["tasks"] = {}
+    user = User(get_client_ip(request))
 
-    if os.path.exists("tasks.dat"):
-        jobs = pickle.load(open("tasks.dat", "rb"))
+    for task in user.config["tasks"]:
+        if user.valid(task):
+            response["tasks"][task] = user.config["tasks"][task]["status"]
 
-    response["jobs"] = jobs
-
-    return render(request, "Analyzer/Jobs.html", response)
+    return render(request, "Analyzer/Tasks.html", response)
 
 
 def loadtest(request):
@@ -44,20 +40,31 @@ def loadtest_jmeter(request):
     user = User(get_client_ip(request))
     task = Task(0)
 
+    user.setTask(task)
+
+    template = RESOURCE_PATH + "/JMeter_template.jmx"
+    experiment = task.path + "/experiment.jmx"
+    arguments = {
+        "$DOMAIN": "www.example.com",
+        "$THREADS": "10",
+        "$DURATION": "2",
+        "$RESULT_FILE": task.path + "/result.csv"}
+
+    testplan = Testplan(template, experiment, arguments)
+
     jm = JMeter({
         "-n": "",
-        "-t": ANALYSIS_PATH + "JMeter.jmx",
-        "-l": user.hash + "/JM_" + task.hash + ".csv",
+        "-t": testplan.target,
         "-L": "jmeter.util=WARN"
     })
     jm.arg_separator = " "
 
-    task.set(jm.execute, {"path": "/home/chris/Programme/apache-jmeter-4.0/bin/"})
-    scheduler.add(task)
+    task.setExecutionCallback(jm.execute, {"path": "/home/chris/Programme/apache-jmeter-4.0/bin/"})
+    task.setProcessingCallback(jm.process)
+    scheduler.addTask(task, user)
 
     conf = dict(jm.config)
     del conf["-t"]
-    del conf["-l"]
 
     response = RESPONSE
     response["mail"] = user.mail
@@ -72,8 +79,10 @@ def loadtest_locust(request):
     user = User(get_client_ip(request))
     task = Task(0)
 
+    user.setTask(task)
+
     lc = Locust({
-        "-f":             ANALYSIS_PATH + "Locust.py",
+        "-f":             RESOURCE_PATH + "Locust.py",
         "--csv":          user.hash + "/LC_" + task.hash,
         "--no-web":       "",
         "--only-summary": "",
@@ -86,8 +95,9 @@ def loadtest_locust(request):
     })
     lc.arg_separator = " "
 
-    task.set(lc.execute)
-    scheduler.add(task)
+    task.setExecutionCallback(lc.execute)
+    task.setProcessingCallback(lc.process)
+    scheduler.addTask(task, user)
 
     conf = dict(lc.config)
     del conf["--csv"]
