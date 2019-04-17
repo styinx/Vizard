@@ -4,20 +4,19 @@ from time import sleep, time
 from threading import Lock, Thread
 from shutil import rmtree
 
-from Vizard.settings import TASK_PATH
-from source.util import hash
-
+from Vizard.settings import TASK_PATH, MAX_THREADS
+from source.util import hash, get_client_ip
 
 user_save_lock = Lock()
 user_task_lock = Lock()
 
 
 class User:
-    def __init__(self, ip):
-        self.ip = ip
+    def __init__(self, request):
+        self.ip = get_client_ip(request)
         self.mail = "asd"
         self.config = {"email": "", "pro": False, "tasks": {}}
-        self.hash = hash(ip)
+        self.hash = hash(self.ip)
 
         self.load()
 
@@ -40,6 +39,9 @@ class User:
 
         user_task_lock.release()
         self.save()
+
+    def getTasks(self):
+        return self.config["tasks"]
 
     def create(self):
         if not os.path.exists(self.hash):
@@ -104,7 +106,8 @@ class TaskScheduler:
     def __init__(self):
         self.lock = Lock()
         self.queue = []
-        self.poll_interval = 5
+        self.active_tasks = 0
+        self.poll_interval = 3
 
     def addTask(self, task, user):
         self.lock.acquire()
@@ -114,10 +117,12 @@ class TaskScheduler:
 
     def run(self):
         while True:
-            if len(self.queue) > 0:
+            if len(self.queue) > 0 and self.active_tasks < MAX_THREADS:
                 self.lock.acquire()
                 (user, task), = self.queue.pop(0).items()
+                self.active_tasks += 1
                 self.lock.release()
+
                 thread = Thread(target=task)
                 thread.start()
 
@@ -127,6 +132,10 @@ class TaskScheduler:
 
                 user.setTask(task, status="complete", completed=time())
                 user.save()
+
+                self.lock.acquire()
+                self.active_tasks -= 1
+                self.lock.release()
 
             else:
                 sleep(self.poll_interval)

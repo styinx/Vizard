@@ -6,7 +6,6 @@ from django.shortcuts import render
 
 from Vizard.settings import RESPONSE
 from Vizard.models import User
-from source.util import get_client_ip
 
 
 def index(request):
@@ -14,8 +13,8 @@ def index(request):
 
 
 def data(request, api="", _id=""):
-    response = RESPONSE
-    user = User(get_client_ip(request))
+    response = RESPONSE.copy()
+    user = User(request)
 
     if api:
         if _id:
@@ -45,7 +44,7 @@ def data(request, api="", _id=""):
 
 
 def report_id(request, _id):
-    response = RESPONSE
+    response = RESPONSE.copy()
 
     response["hash"] = _id
     response["metrics"] = {

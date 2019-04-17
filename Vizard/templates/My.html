@@ -60,15 +60,27 @@
 
   {% include "util/nav.html" %}
 
-  {% if tasks %}
+  {% if tasks or reports%}
 
-    {{ tasks }}
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
-  {% elif reports %}
+    {% if tasks %}
 
-    {{ reports }}
+      <div><b>Your tasks:</b></div>
 
-  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5"></div>
+      {% for task, values in tasks.items %}
+
+      <a href="">{{task}}</a><br>
+
+      {% endfor %}
+
+    {% elif reports %}
+
+      {{ reports }}
+
+    {% endif %}
+
+  </div>
 
   {% else %}
 

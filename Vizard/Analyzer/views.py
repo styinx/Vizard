@@ -7,7 +7,6 @@ from django.shortcuts import render
 from Vizard.models import User, Task, TaskScheduler
 from Vizard.settings import RESOURCE_PATH, RESPONSE
 from Analyzer.models import Testplan, JMeter, Locust
-from source.util import get_client_ip
 
 
 scheduler = TaskScheduler()
@@ -21,9 +20,9 @@ def index(request):
 
 
 def tasks(request):
-    response = RESPONSE
+    user = User(request)
+    response = RESPONSE.copy()
     response["tasks"] = {}
-    user = User(get_client_ip(request))
 
     for task in user.config["tasks"]:
         if user.valid(task):
@@ -37,7 +36,7 @@ def loadtest(request):
 
 
 def loadtest_jmeter(request):
-    user = User(get_client_ip(request))
+    user = User(request)
     task = Task(0)
 
     user.setTask(task)
@@ -66,7 +65,7 @@ def loadtest_jmeter(request):
     conf = dict(jm.config)
     del conf["-t"]
 
-    response = RESPONSE
+    response = RESPONSE.copy()
     response["mail"] = user.mail
     response["tool"] = jm.name
     response["config"] = json.dumps(conf, indent=2)
@@ -76,13 +75,13 @@ def loadtest_jmeter(request):
 
 
 def loadtest_locust(request):
-    user = User(get_client_ip(request))
+    user = User(request)
     task = Task(0)
 
     user.setTask(task)
 
     lc = Locust({
-        "-f":             RESOURCE_PATH + "Locust.py",
+        "-f":             RESOURCE_PATH + "/Locust.py",
         "--csv":          user.hash + "/LC_" + task.hash,
         "--no-web":       "",
         "--only-summary": "",
@@ -103,7 +102,7 @@ def loadtest_locust(request):
     del conf["--csv"]
     del conf["-f"]
 
-    response = RESPONSE
+    response = RESPONSE.copy()
     response["mail"] = user.mail
     response["tool"] = lc.name
     response["config"] = json.dumps(conf, indent=2)

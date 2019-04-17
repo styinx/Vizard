@@ -1,5 +1,6 @@
 from django.shortcuts import render
 
+from Vizard.models import User
 from Vizard.settings import RESPONSE
 
 
@@ -16,12 +17,13 @@ def documentation(request):
 
 
 def my(request, what=""):
-    response = RESPONSE
+    user = User(request)
+    response = RESPONSE.copy()
 
     if what == "tasks":
-        response["tasks"] = "blabla tasks"
+        response["tasks"] = user.getTasks()
 
     elif what == "reports":
-        response["reports"] = "bla bla reports"
+        response["reports"] = "TODO, nothing to see"
 
     return render(request, "My.html", response)
