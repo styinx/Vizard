@@ -90,9 +90,12 @@ def report_id(request, _id, export=None):
 
             open(export_path + "/Report.html", "w").write(html_content)
 
+            if os.path.exists(path + "/" + _id + ".zip"):
+                os.remove(path + "/" + _id + ".zip")
+
             shutil.make_archive(path + "/" + _id, "zip", export_base)
 
-            return render(request, "util/error.html", {"status": 200})
+            return render(request, "util/error.html", {"status": 200, "message": "All good, archive created; download not yet supported"})
 
     else:
         response["status"] = "404"
