@@ -23,10 +23,11 @@ class User:
     def __del__(self):
         self.save()
 
-    def setTask(self, task, status="", started=0, completed=0):
+    def setTask(self, task, status="", started=0, completed=0, path=""):
         user_task_lock.acquire()
+
         if task.hash not in self.config["tasks"]:
-            self.config["tasks"][task.hash] = {"status": "", "started": 0, "completed": 0}
+            self.config["tasks"][task.hash] = {"status": "", "started": 0, "completed": 0, "path": ""}
 
         if status != "":
             self.config["tasks"][task.hash]["status"] = status
@@ -36,6 +37,9 @@ class User:
 
         if completed != 0:
             self.config["tasks"][task.hash]["completed"] = completed
+
+        if path != "":
+            self.config["tasks"][task.hash]["path"] = path
 
         user_task_lock.release()
         self.save()
@@ -75,9 +79,10 @@ class Task:
         self.analyzer = None
         self.time = time() + delay
         self.hash = hash(self.time)
-        self.kwargs = kwargs
+        self.e_kwargs = kwargs
+        self.p_kwargs = kwargs
 
-        self.path = TASK_PATH + "/" + self.hash + "/"
+        self.path = TASK_PATH + "/" + self.hash
         if os.path.exists(self.path):
             rmtree(self.path)
 
@@ -85,21 +90,24 @@ class Task:
 
     def setExecutionCallback(self, callback, kwargs=None):
         self.execution_callback = callback
-        self.hash = hash(self.time)
-        self.kwargs = kwargs
+        self.e_kwargs = kwargs
 
-    def setProcessingCallback(self, callback):
+    def setProcessingCallback(self, callback, kwargs=None):
         self.processing_callback = callback
+        self.p_kwargs = kwargs
 
     def __call__(self):
         if self.execution_callback is not None:
-            if self.kwargs is not None:
-                self.execution_callback(**self.kwargs)
+            if self.e_kwargs is not None:
+                self.execution_callback(**self.e_kwargs)
             else:
                 self.execution_callback()
 
             if self.processing_callback is not None:
-                self.processing_callback()
+                if self.p_kwargs is not None:
+                    self.processing_callback(**self.p_kwargs)
+                else:
+                    self.processing_callback()
 
 
 class TaskScheduler:

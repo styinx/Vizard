@@ -1,10 +1,13 @@
-from random import randint
+import json
+import os
+import shutil
 from time import strftime, gmtime
 
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.template.loader import render_to_string
 
-from Vizard.settings import RESPONSE
+from Vizard.settings import RESPONSE, TASK_PATH, STATIC_URL, BASE_DIR
 from Vizard.models import User
 
 
@@ -30,11 +33,11 @@ def data(request, api="", _id=""):
         response["status"] = "404"
         response["message"] = "Sorry, the requested job id (" + str(_id) + ") seems not to exists."
 
-        return render(request, "error.html", response)
+        return render(request, "util/error.html", response)
 
     response["experiments"] = {}
 
-    tasks = user.config["tasks"]
+    tasks = user.getTasks()
     for experiment in tasks:
         started = strftime("%H:%M:%S %d/%m/%Y", gmtime(tasks[experiment]["started"]))
         completed = strftime("%H:%M:%S %d/%m/%Y", gmtime(tasks[experiment]["completed"]))
@@ -43,18 +46,56 @@ def data(request, api="", _id=""):
     return render(request, "Presenter/Data.html", response)
 
 
-def report_id(request, _id):
+def report_id(request, _id, export=None):
+    user = User(request)
     response = RESPONSE.copy()
 
     response["hash"] = _id
-    response["metrics"] = {
-        "resp": {
-            "data": list(range(100000)),
-            "text": "some metric text"
-        },
-        "asd": {
-            "data": [[x, randint(50, 120)] for x in range(1533861124, 1533881124, 1000)],
-            "text": "some metric text number 2 enhanced"
-        }}
+    response["metrics"] = {}
 
-    return render(request, "Presenter/Report.html", response)
+    if _id in user.getTasks():
+        task = user.getTasks()[_id]
+        path = TASK_PATH + "/" + task["path"]
+        config = open(path + "/vizard.json", "r")
+        data_blob = json.loads(open(path + "/result_processed.json", "r").read())
+
+        values = [[int(ts), data_blob[ts][3]] for ts in data_blob]
+
+        response["metrics"]["asdasdasd"] = {
+            "data": values,
+            "text": "blasdasd as as"
+        }
+
+        if export is None:
+            return render(request, "Presenter/Report.html", response)
+
+        else:
+            export_base = path + "/export"
+            export_path = export_base + "/" + _id
+            static_path = export_path + "/static"
+            static_url = BASE_DIR + "/" + STATIC_URL
+
+            if os.path.exists(export_base):
+                shutil.rmtree(export_base)
+            os.makedirs(static_path)
+            os.mkdir(static_path + "/css")
+            os.mkdir(static_path + "/js")
+
+            shutil.copy(static_url + "css/bootstrap.min.css", static_path + "/css/bootstrap.min.css")
+            shutil.copy(static_url + "js/jquery.min.js", static_path + "/js/jquery.min.js")
+            shutil.copy(static_url + "js/highstock.js", static_path + "/js/highstock.js")
+            shutil.copy(static_url + "js/charts.js", static_path + "/js/charts.js")
+
+            html_content = render_to_string("Presenter/Report.html", response).replace("/static/", "./static/")
+
+            open(export_path + "/Report.html", "w").write(html_content)
+
+            shutil.make_archive(path + "/" + _id, "zip", export_base)
+
+            return render(request, "util/error.html", {"status": 200})
+
+    else:
+        response["status"] = "404"
+        response["message"] = "Sorry, the requested id (" + str(_id) + ") seems not to exists."
+
+        return render(request, "util/error.html", response)
