@@ -9,14 +9,21 @@
 
   <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/highstock.js' %}"></script>
+
+  <script type="text/javascript" src="{% static 'js/charts.js' %}"></script>
+
   <script>
     $(document).ready(function()
     {
+      Highcharts.setOptions(STOCK_STYLE);
+
       {% for metric, values in metrics.items %}
-          Highcharts.stockChart({{ metric }}, {
+
+          Highcharts.stockChart("{{ metric }}", {
             chart:   {type: "spline"},
             series: [{data: {{ values.data }} }]
           });
+
       {% endfor %}
     });
   </script>
@@ -24,18 +31,22 @@
 </head>
 <body>
 
-  {% include "nav.html" %}
+  {% include "util/nav.html" %}
 
   <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
     <h2><u>Report for {{ hash }}</u></h2>
 
     <div class="mx-3 my-3 px-3 py-3">
+
       {% for metric, values in metrics.items %}
+
         <h4>{{ metric }}</h4>
         <div class="mx-3 my-3 px-3 py-3" id="{{ metric }}"></div>
         <p class="mx-3 my-3 px-3 py-3">{{ values.text }}</p>
+
       {% endfor %}
+
     </div>
 
   </div>
