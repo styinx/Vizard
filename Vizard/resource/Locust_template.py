@@ -12,14 +12,12 @@ class DomainTaskSet(TaskSet):
 
 
 class LocustRun(HttpLocust):
-    host = "www.example.com"
-    result_file = "lc_cache.csv"
-    min_wait = 2000
-    max_wait = 5000
+    result_file = "$RESULT_FILE"
+    min_wait = $MIN_WAIT
+    max_wait = $MAX_WAIT
     task_set = DomainTaskSet
     header = ["timeStamp", "service", "type", "success", "responseTime", "bytes"]
-    footer = ["www.example.com"]
-    data = {"Vizard": {}, "data": {}}
+    data = {}
     last_entry = 0
 
     def __init__(self):
@@ -38,7 +36,7 @@ class LocustRun(HttpLocust):
     def save(self, request_type, name, response_time, response_length, success):
         timestamp = int(round(time() * 1000))
         if timestamp != self.last_entry:
-            self.data["data"][timestamp] = [name, request_type, success, response_time, response_length]
+            self.data[timestamp] = [name, request_type, success, response_time, response_length]
             self.last_entry = timestamp
 
     def write(self):

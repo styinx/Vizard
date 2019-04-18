@@ -1,4 +1,11 @@
+import json
+import pickle
 from source.util import Executable
+
+
+class Vizardplan:
+    def __init__(self, target, configuration):
+        open(target, "w").write(json.dumps(configuration))
 
 
 class Testplan:
@@ -26,7 +33,7 @@ class AnalyzeTool(Executable):
 
         self.execute()
 
-    def process(self):
+    def process(self, path=None):
         pass
 
 
@@ -34,10 +41,13 @@ class JMeter(AnalyzeTool):
     def __init__(self, arguments=None):
         super().__init__("JMeter", "jmeter", arguments)
 
-    def process(self):
+    def process(self, path=None):
         result = {}
-        if "-l" in self.config:
-            f = open(self.config["-l"], "r")
+        result_file = "result.json"
+
+        if path is not None:
+            result_file = path
+            f = open(result_file, "r")
 
             headers = {x: i for i, x in enumerate(f.readline()[:-1].split(","))}
 
@@ -56,14 +66,16 @@ class JMeter(AnalyzeTool):
                 else:
                     result[key] = values
                     key += 1
-        return result
+
+        open(result_file[:result_file.rfind(".")] + "_processed.json", "w").write(json.dumps(result))
+        pickle.dump(result, open(result_file[:result_file.rfind(".")] + "_cached.json", "wb"))
 
 
 class Locust(AnalyzeTool):
     def __init__(self, arguments=None):
         super().__init__("Locust", "locust", arguments)
 
-    def process(self):
+    def process(self, path=None):
         pass
 
 
@@ -71,5 +83,5 @@ class Gatling(AnalyzeTool):
     def __init__(self, arguments=None):
         super().__init__("Gatling", "gatling", arguments)
 
-    def process(self):
+    def process(self, path=None):
         pass

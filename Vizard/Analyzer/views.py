@@ -6,8 +6,7 @@ from django.shortcuts import render
 
 from Vizard.models import User, Task, TaskScheduler
 from Vizard.settings import RESOURCE_PATH, RESPONSE
-from Analyzer.models import Testplan, JMeter, Locust
-
+from Analyzer.models import Testplan, JMeter, Locust, Vizardplan
 
 scheduler = TaskScheduler()
 scheduler_thread = Thread(target=scheduler.run)
@@ -24,7 +23,7 @@ def tasks(request):
     response = RESPONSE.copy()
     response["tasks"] = {}
 
-    for task in user.config["tasks"]:
+    for task in user.getTasks():
         if user.valid(task):
             response["tasks"][task] = user.config["tasks"][task]["status"]
 
@@ -38,18 +37,25 @@ def loadtest(request):
 def loadtest_jmeter(request):
     user = User(request)
     task = Task(0)
+    user.setTask(task, path=task.hash)
 
-    user.setTask(task)
-
-    template = RESOURCE_PATH + "/JMeter_template.jmx"
-    experiment = task.path + "/experiment.jmx"
+    result_file = task.path + "/result.csv"
+    experiment_file = task.path + "/experiment.jmx"
     arguments = {
-        "$DOMAIN": "www.example.com",
-        "$THREADS": "10",
-        "$DURATION": "2",
-        "$RESULT_FILE": task.path + "/result.csv"}
+        "$DOMAIN":      "www.example.com",
+        "$THREADS":     "10",
+        "$DURATION":    "2",
+        "$RESULT_FILE": result_file}
 
-    testplan = Testplan(template, experiment, arguments)
+    configuration = {
+        "tool":       "JMeter",
+        "experiment": experiment_file,
+        "task":       task.hash,
+        "arguments":  arguments
+    }
+
+    Vizardplan(task.path + "/vizard.json", configuration)
+    testplan = Testplan(RESOURCE_PATH + "/JMeter_template.jmx", experiment_file, arguments)
 
     jm = JMeter({
         "-n": "",
@@ -58,8 +64,8 @@ def loadtest_jmeter(request):
     })
     jm.arg_separator = " "
 
-    task.setExecutionCallback(jm.execute, {"path": "/home/chris/Programme/apache-jmeter-4.0/bin/"})
-    task.setProcessingCallback(jm.process)
+    task.setExecutionCallback(jm.execute, {"path": "/home/chris/Programme/apache-jmeter-5.1.1/bin/"})
+    task.setProcessingCallback(jm.process, {"path": result_file})
     scheduler.addTask(task, user)
 
     conf = dict(jm.config)
@@ -77,12 +83,27 @@ def loadtest_jmeter(request):
 def loadtest_locust(request):
     user = User(request)
     task = Task(0)
+    user.setTask(task, path=task.hash)
 
-    user.setTask(task)
+    experiment_file = task.path + "/experiment.py"
+    arguments = {
+        "$MIN_WAIT":    "1000",
+        "$MAX_WAIT":    "2000",
+        "$RESULT_FILE": task.path + "/result_processed.json"}
+
+    configuration = {
+        "tool":       "Locust",
+        "experiment": experiment_file,
+        "task":       task.hash,
+        "arguments":  arguments
+    }
+
+    Vizardplan(task.path + "/vizard.json", configuration)
+    testplan = Testplan(RESOURCE_PATH + "/Locust_template.py", experiment_file, arguments)
 
     lc = Locust({
-        "-f":             RESOURCE_PATH + "/Locust.py",
-        "--csv":          user.hash + "/LC_" + task.hash,
+        "-f":             testplan.target,
+        "--csv":          task.path + "/",
         "--no-web":       "",
         "--only-summary": "",
         "-H":             "http://www.example.com",
@@ -95,7 +116,6 @@ def loadtest_locust(request):
     lc.arg_separator = " "
 
     task.setExecutionCallback(lc.execute)
-    task.setProcessingCallback(lc.process)
     scheduler.addTask(task, user)
 
     conf = dict(lc.config)
