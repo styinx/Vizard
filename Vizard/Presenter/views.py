@@ -27,7 +27,10 @@ def data(request, api="", _id=""):
 
     if _id:
         if user.valid(_id):
+            data = json.loads(open(TASK_PATH + "/" + _id + "/result_processed.json").read())
+
             response["task"] = _id
+            response["data"] = json.dumps(data, indent=2)
             return render(request, "Presenter/Data.html", response)
 
         response["status"] = "404"

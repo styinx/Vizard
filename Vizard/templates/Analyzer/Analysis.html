@@ -83,6 +83,12 @@
 
     <h2><u>Task-ID: {{ hash }}</u></h2>
 
+    {% if missing %}
+
+      <p class="text">Missing parameters: {{ missing }}</p>
+
+    {% else %}
+
     <p class="text">
       The results of your task will be available
       <a href="{{ HTTP_HOST }}/present/data/{{ hash }}">here</a> once it is finished.
@@ -111,6 +117,8 @@
       <li>Tool Configuration: <pre>{{config}}</pre></li>
       <li>Analysis Configuration:</li>
     </ul>
+
+    {% endif %}
 
   </div>
 
