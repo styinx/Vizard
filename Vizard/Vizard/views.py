@@ -16,6 +16,10 @@ def documentation(request):
     return render(request, "Documentation.html")
 
 
+def bot(request):
+    return render(request, "Bot.html")
+
+
 def my(request, what=""):
     user = User(request)
     response = RESPONSE.copy()
