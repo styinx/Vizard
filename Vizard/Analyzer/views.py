@@ -108,7 +108,7 @@ def loadtest_jmeter(request):
     })
     jm.arg_separator = " "
 
-    task.setExecutionCallback(jm.execute, {"path": "/resource/" + JMETER_NAME + "/bin/"})
+    task.setExecutionCallback(jm.execute, {"path": RESOURCE_PATH + "/" + JMETER_NAME + "/bin/"})
     task.setProcessingCallback(jm.process, {"path": result_file})
     scheduler.addTask(task, user)
 
