@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from Vizard.models import User, Task, TaskScheduler
-from Vizard.settings import RESOURCE_PATH, RESPONSE, TEMPLATE_PATH
+from Vizard.settings import RESOURCE_PATH, RESPONSE, TEMPLATE_PATH, JMETER_NAME
 from Analyzer.models import Testplan, JMeter, Locust, Vizardplan
 
 scheduler = TaskScheduler()
@@ -108,7 +108,7 @@ def loadtest_jmeter(request):
     })
     jm.arg_separator = " "
 
-    task.setExecutionCallback(jm.execute, {"path": "/home/chris/Programme/apache-jmeter-5.1.1/bin/"})
+    task.setExecutionCallback(jm.execute, {"path": "/resource/" + JMETER_NAME + "/bin/"})
     task.setProcessingCallback(jm.process, {"path": result_file})
     scheduler.addTask(task, user)
 
