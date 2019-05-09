@@ -105,12 +105,15 @@ STATICFILES_DIRS = [
 MAX_THREADS = psutil.cpu_count()
 
 RESOURCE_PATH = BASE_DIR + "/resource"
+TEMPLATE_PATH = RESOURCE_PATH + "/templates"
 TASK_PATH = RESOURCE_PATH + "/tasks"
 
 RESPONSE = {
     "status": 200,
     "message": ""
 }
+
+JMETER_URL = "https://www-eu.apache.org/dist//jmeter/binaries/apache-jmeter-5.1.1.tgz"
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())
