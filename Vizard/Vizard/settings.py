@@ -113,7 +113,8 @@ RESPONSE = {
     "message": ""
 }
 
-JMETER_URL = "https://www-eu.apache.org/dist//jmeter/binaries/apache-jmeter-5.1.1.tgz"
+JMETER_NAME = "apache-jmeter-5.1.1"
+JMETER_URL = "https://www-eu.apache.org/dist//jmeter/binaries/" + JMETER_NAME + ".tgz"
 
 # Activate Django-Heroku.
 django_heroku.settings(locals())

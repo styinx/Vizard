@@ -1,8 +1,7 @@
-let SPARKLINE_STYLE = {
+let STYLE_SPARK_BASE = {
   chart: {
     backgroundColor: null,
     borderWidth: 0,
-    type: 'scatter',
     margin: [2, 0, 2, 0],
     width: 120,
     height: 30,
@@ -27,9 +26,7 @@ let SPARKLINE_STYLE = {
     title: {text: null},
     lineWidth: 0,
     tickPositioner: function () {
-      let step = (this.dataMax - this.dataMin) / 2;
-      return range(this.dataMin, this.dataMax + 1,
-        step);
+      return range(this.dataMin, this.dataMax + 1, (this.dataMax - this.dataMin) / 2);
     }
   },
   legend: {enabled: false},
@@ -37,15 +34,21 @@ let SPARKLINE_STYLE = {
   scrollbar: {enabled: false},
   rangeSelector: {enabled: false},
   tooltip: {
+    backgroundColor: "white",
+    borderWidth: 1,
+    shadow: false,
+    useHTML: true,
     style: {
-      textOverflow: 'ellipsis'
+      padding: 0,
     },
     formatter: function () {
-      return '<div style="color:' + this.series.color + '">●</div> <b>' + this.series.name + "</b>:<br>    " +
-        this.y;
+      return this.points.map(function (point) {
+        return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': ' + point.y;
+      });
     },
     positioner: function (w, h, point) {
-      return {x: point.plotX - w / 2, y: point.plotY - h - 15};
+      return {x: point.plotX + 20, y: 0};
+      //return {x: point.plotX - w / 2, y: point.plotY - h - 15};
     }
   },
   plotOptions: {
@@ -77,12 +80,23 @@ let SPARKLINE_STYLE = {
   }
 };
 
+let STYLE_SPARK_SPLINE = merge(STYLE_SPARK_BASE, {
+  chart: {
+    type: "spline"
+  }
+});
+
+let STYLE_SPARK_SCATTER = Object.assign({
+  chart: {
+    type: "scatter"
+  }
+}, STYLE_SPARK_BASE);
+
 /**
  * Holds general configuration about HighChart charts.
  */
-let STOCK_STYLE = {
+let STYLE_BASE = {
   chart: {
-    type: "spline",
     spacing: 0,
     height: 300
   },
@@ -94,18 +108,7 @@ let STOCK_STYLE = {
     endOnTick: true,
     lineWidth: 1,
     lineColor: "#333",
-    labels: {
-      formatter: function () {
-        let d = new Date(this.value);
-        let D = d.getDate();
-        let M = d.getMonth() + 1;
-        let h = d.getHours();
-        let m = d.getMinutes();
-        let s = d.getSeconds();
-        let ms = Math.round(d.getMilliseconds() / 10);
-        return D + "." + M + "<br>" + h + ":" + m + ":" + s + "." + ms;
-      }
-    }
+    labels: { formatter: function () { return time(this.value); } }
   },
   yAxis: {
     minorTickInterval: 'auto',
@@ -161,7 +164,17 @@ let STOCK_STYLE = {
     trackBorderRadius: 0,
     rifleColor: 'transparent'
   },
-  rangeSelector: {
-    enabled: false
-  }
+  rangeSelector: {enabled: false}
 };
+
+let STYLE_SPLINE = merge(STYLE_BASE, {
+  chart: {
+    type: "spline"
+  }
+});
+
+let STYLE_SCATTER = merge(STYLE_BASE, {
+  chart: {
+    type: "scatter"
+  }
+});

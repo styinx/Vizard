@@ -10,17 +10,17 @@
   <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/highstock.js' %}"></script>
 
+  <script type="text/javascript" src="{% static 'js/util.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/charts.js' %}"></script>
 
   <script>
     $(document).ready(function()
     {
-      Highcharts.setOptions(STOCK_STYLE);
+      Highcharts.setOptions(STYLE_SPLINE);
 
       {% for metric, values in metrics.items %}
 
           Highcharts.stockChart("{{ metric }}", {
-            chart:   {type: "spline"},
             series: [{data: {{ values.data }} }]
           });
 

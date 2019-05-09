@@ -5,7 +5,7 @@ import io
 import tarfile
 import urllib.request
 
-from Vizard.settings import JMETER_URL
+from Vizard.settings import JMETER_URL, JMETER_NAME
 
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Vizard.settings')
@@ -18,8 +18,9 @@ if __name__ == '__main__':
             "forget to activate a virtual environment?"
         ) from exc
 
-    archive = tarfile.open(fileobj=io.BytesIO(urllib.request.urlopen(JMETER_URL).read()))
-    archive.extractall("./resource/")
-    archive.close()
+    if not os.path.exists("./resource/" + JMETER_NAME):
+        archive = tarfile.open(fileobj=io.BytesIO(urllib.request.urlopen(JMETER_URL).read()))
+        archive.extractall("./resource/")
+        archive.close()
 
     execute_from_command_line(sys.argv)
