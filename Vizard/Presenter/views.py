@@ -62,7 +62,7 @@ def report_id(request, _id, export=None):
         config = open(path + "/vizard.json", "r")
         data_blob = json.loads(open(path + "/result_processed.json", "r").read())
 
-        values = [[int(ts), round(data_blob[ts][3], 2)] for ts in data_blob]
+        values = [[int(ts), round(float(data_blob[ts][3]), 2)] for ts in data_blob]
 
         response["metrics"]["asdasdasd"] = {
             "data": values,
