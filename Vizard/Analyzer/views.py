@@ -5,7 +5,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from Vizard.models import User, Task, TaskScheduler
-from Vizard.settings import RESOURCE_PATH, RESPONSE
+from Vizard.settings import RESOURCE_PATH, RESPONSE, TEMPLATE_PATH
 from Analyzer.models import Testplan, JMeter, Locust, Vizardplan
 
 scheduler = TaskScheduler()
@@ -99,7 +99,7 @@ def loadtest_jmeter(request):
     }
 
     Vizardplan(task.path + "/vizard.json", vizard_configuration)
-    testplan = Testplan(RESOURCE_PATH + "/JMeter_template.jmx", experiment_file, loadtest_arguments)
+    testplan = Testplan(TEMPLATE_PATH + "/JMeter_template.jmx", experiment_file, loadtest_arguments)
 
     jm = JMeter({
         "-n": "",
@@ -149,7 +149,7 @@ def loadtest_locust(request):
     }
 
     Vizardplan(task.path + "/vizard.json", vizard_configuration)
-    testplan = Testplan(RESOURCE_PATH + "/Locust_template.py", experiment_file, loadtest_arguments)
+    testplan = Testplan(TEMPLATE_PATH + "/Locust_template.py", experiment_file, loadtest_arguments)
 
     lc = Locust({
         "-f":             testplan.target,
