@@ -1,20 +1,7 @@
-from source.analyze import JMeter, Locust
+from Analyzer.models import JMeter
 from time import time
 
 if __name__ == "__main__":
-    # locust = Locust({
-    #     "-f": "resource/Locust.py",
-    #     "--no-web": "",
-    #     "--only-summary": "",
-    #     "-H": "www.example.com",
-    #     "-P": "80",
-    #     "-L": "CRITICAL",
-    #     "-c": "10",
-    #     "-t": "2s",
-    #     "-r": "2"
-    # })
-    # locust.arg_separator = " "
-    # locust.execute()
 
     jmeter = JMeter({
         "-n": "",
@@ -23,4 +10,4 @@ if __name__ == "__main__":
         "-L": "jmeter.util=WARN"
     })
     jmeter.arg_separator = " "
-    jmeter.execute("/home/chris/Programme/apache-jmeter-4.0/bin/")
+    jmeter.execute("./resource/apache-jmeter-5.1.1/bin/")
