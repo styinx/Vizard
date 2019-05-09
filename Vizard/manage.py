@@ -18,9 +18,11 @@ if __name__ == '__main__':
             "forget to activate a virtual environment?"
         ) from exc
 
+    print("==========\nStart App==========\n")
     if not os.path.exists(RESOURCE_PATH + "/" + JMETER_NAME):
+        print(RESOURCE_PATH)
         archive = tarfile.open(fileobj=io.BytesIO(urllib.request.urlopen(JMETER_URL).read()))
-        archive.extractall("./resource/")
+        archive.extractall(RESOURCE_PATH)
         archive.close()
 
     execute_from_command_line(sys.argv)
