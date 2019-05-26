@@ -3,12 +3,33 @@
 <head>
   <title>Analyzer</title>
 
+  {% load static %}
+
   {% include "util/header.html" %}
+  {% include "util/main.html" %}
 
 </head>
 <body>
 
   {% include "util/nav.html" %}
+
+  <div class="container main-box">
+
+    <div class="row">
+
+      <a href="loadtest" class="col shadow tile-box">
+        <h4 class="font-weight-bolder">Load test</h4>
+        <img src="{% static 'img/loadtest.svg' %}"/>
+      </a>
+
+      <a href="" class="col shadow tile-box">
+        <h4 class="font-weight-bolder">Something else</h4>
+        <img src="{% static 'img/data.svg' %}"/>
+      </a>
+
+    </div>
+
+  </div>
 
 </body>
 </html>

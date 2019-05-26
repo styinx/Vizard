@@ -1,9 +1,88 @@
 import os
-import sys
 import re
-import importlib
+import io
+import sys
+import json
+import pickle
+import shutil
+import zipfile
+import tarfile
 import hashlib
+import importlib
+import urllib.request
 
+
+# General methods
+
+def hash_id(what, severity=8):
+    return hashlib.sha1(str(what).encode()).hexdigest()[:severity]
+
+
+def dump(json_object):
+    return json.dumps(json_object, indent=2)
+
+
+def path(*args):
+    return '/'.join(args)
+
+
+def copy_tree(source, destination):
+    if os.path.exists(destination):
+        shutil.rmtree(destination)
+
+    for item in os.listdir(source):
+        s = os.path.join(source, item)
+        d = os.path.join(destination, item)
+        if os.path.isdir(s):
+            shutil.copytree(s, d)
+        else:
+            shutil.copy2(s, d)
+
+
+def pack_zip(source, filename):
+    if os.path.exists(filename):
+        os.remove(filename)
+
+    shutil.make_archive(filename, source)
+
+
+def unpack_zip(buffer, destination):
+    zip_ref = zipfile.ZipFile(buffer)
+    zip_ref.extractall(destination)
+    zip_ref.close()
+
+
+def unpack_url_zip(url, destination):
+    unpack_url_zip(io.BytesIO(urllib.request.urlopen(url).read()), destination)
+
+
+def unpack_tar(buffer, destination):
+    archive = tarfile.open(fileobj=buffer)
+    archive.extractall(destination)
+    archive.close()
+
+
+def unpack_url_tar(url, destination):
+    unpack_tar(io.BytesIO(urllib.request.urlopen(url).read()), destination)
+
+
+def write(obj, filename):
+    open(filename, "w").write(obj)
+
+
+def read(filename):
+    return open(filename, "r").read()
+
+
+def serialize(obj, filename):
+    pickle.dump(obj, open(filename, "wb"))
+
+
+def unserialize(filename):
+    return pickle.load(open(filename, "rb"))
+
+
+# Django methods
 
 def get_client_ip(request):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -14,8 +93,23 @@ def get_client_ip(request):
     return ip
 
 
-def hash(what, severity=8):
-    return hashlib.sha1(str(what).encode()).hexdigest()[:severity]
+def unpack_request_values(request, d):
+    missing_values = []
+    values = d.copy()
+    possible_values = values.keys()
+
+    for k, v in request.GET.items():
+        if k in possible_values:
+            values[k] = v
+
+    for k, v in values.items():
+        if v is None:
+            missing_values.append(k)
+
+    if missing_values:
+        return missing_values
+
+    return values
 
 
 #
@@ -69,7 +163,6 @@ class Executable(Configurable):
                 args += self.arg_separator + str(self.__getitem__(arg))
             args += " "
 
-        print(self.executable_path + self.executable + " " + args)
         os.system(self.executable_path + self.executable + " " + args)
 
 

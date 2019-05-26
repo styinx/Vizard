@@ -1,12 +1,30 @@
-function time(val) {
+function pad(val)
+{
+  if(Math.log10(val) < 1)
+  {
+    return "0" + val;
+  }
+  return val;
+}
+
+
+function time(val, format) {
   let d = new Date(val);
-  let D = d.getDate();
-  let M = d.getMonth() + 1;
-  let h = d.getHours();
-  let m = d.getMinutes();
-  let s = d.getSeconds();
+  let D = pad(d.getDate());
+  let M = pad(d.getMonth() + 1);
+  let Y = d.getFullYear();
+  let h = pad(d.getHours());
+  let m = pad(d.getMinutes());
+  let s = pad(d.getSeconds());
   let ms = Math.round(d.getMilliseconds() / 10);
-  return D + "." + M + " " + h + ":" + m + ":" + s + "." + ms;
+  return format
+    .replace("%d", D)
+    .replace("%m", M)
+    .replace("%Y", Y)
+    .replace("%H", h)
+    .replace("%M", m)
+    .replace("%S", s)
+    .replace("%f", ms);
 }
 
 function range(start, end, step) {

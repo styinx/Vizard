@@ -6,48 +6,7 @@
   {% load static %}
 
   {% include "util/header.html" %}
-
-  <style>
-    .main-box
-    {
-        margin: calc(20px + 5%) auto 5% auto;
-        width: 80%;
-        height: 80%;
-    }
-
-    .tile-box
-    {
-        margin: calc(5% + 20px) 5% calc(5% + 20px) 5%;
-        padding: 40px 50px 40px 50px;
-
-        background: #f8f8f8;
-        border: 1px solid #cccccc;
-        text-align: center;
-        transition: 250ms;
-    }
-
-    .tile-box:hover
-    {
-        margin: 5%;
-        padding: 60px 50px 60px 50px;
-
-        cursor: pointer;
-        background: #c0ffc0;
-        border: 1px solid #000000;
-    }
-
-    .tile-box:active
-    {
-        cursor: pointer;
-        background: #77ff77;
-    }
-
-    .tile-box img
-    {
-        width: 50px;
-        height: 50px;
-    }
-  </style>
+  {% include "util/main.html" %}
 
 </head>
 <body>
@@ -58,14 +17,14 @@
 
     <div class="row">
 
-      <a href="" class="col shadow tile-box">
+      <a href="analyze" class="col shadow tile-box">
         <h4 class="font-weight-bolder">Perform an analysis</h4>
-        <img src="{% static 'img/analysis_color.svg' %}"/>
+        <img src="{% static 'img/analysis.svg' %}"/>
       </a>
 
       <a href="" class="col shadow tile-box">
         <h4 class="font-weight-bolder">Create reports from existing data</h4>
-        <img src="{% static 'img/data_color.svg' %}"/>
+        <img src="{% static 'img/data.svg' %}"/>
       </a>
 
     </div>
@@ -75,12 +34,12 @@
 
       <a href="" class="col shadow tile-box">
         <h4 class="font-weight-bolder">Perform an analysis and create a report</h4>
-        <img src="{% static 'img/report_color.svg' %}"/>
+        <img src="{% static 'img/report.svg' %}"/>
       </a>
 
       <a href="bot" class="col shadow tile-box">
         <h4 class="font-weight-bolder">Interact with a chatbot to create a report</h4>
-        <img src="{% static 'img/bot_color.svg' %}"/>
+        <img src="{% static 'img/bot.svg' %}"/>
       </a>
 
     </div>

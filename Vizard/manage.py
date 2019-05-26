@@ -1,13 +1,15 @@
 #!/usr/bin/env python
 import os
 import sys
-import io
-import tarfile
-import urllib.request
 
-from Vizard.settings import JMETER_URL, JMETER_NAME, RESOURCE_PATH
+from source.util import unpack_url_tar
+
+from Vizard.settings import RESOURCE_PATH, CONF_JMETER, CONF_GATLING
 
 if __name__ == '__main__':
+
+    print("==========\nStart App\n==========\n")
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Vizard.settings')
     try:
         from django.core.management import execute_from_command_line
@@ -18,11 +20,12 @@ if __name__ == '__main__':
             "forget to activate a virtual environment?"
         ) from exc
 
-    print("==========\nStart App\n==========\n")
-    # if not os.path.exists(RESOURCE_PATH + "/" + JMETER_NAME):
-    print(RESOURCE_PATH)
-    archive = tarfile.open(fileobj=io.BytesIO(urllib.request.urlopen(JMETER_URL).read()))
-    archive.extractall(RESOURCE_PATH)
-    archive.close()
+    if not os.path.exists(CONF_JMETER["executable_path"]):
+        print("...Download JMeter")
+        unpack_url_tar(CONF_JMETER["download_url"], RESOURCE_PATH)
+
+    # if not os.path.exists(CONF_GATLING["executable_path"]):
+    #     print("...Download Gatling")
+    #     unpack_url_zip(CONF_GATLING["download_url"], RESOURCE_PATH)
 
     execute_from_command_line(sys.argv)

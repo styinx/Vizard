@@ -1,11 +1,11 @@
-import pickle
 import os
 from time import sleep, time
 from threading import Lock, Thread
 from shutil import rmtree
 
-from Vizard.settings import TASK_PATH, MAX_THREADS
-from source.util import hash, get_client_ip
+from source.util import hash_id, get_client_ip, serialize, unserialize
+
+from Vizard.settings import TASK_PATH, MAX_THREADS, USER_PATH
 
 user_save_lock = Lock()
 user_task_lock = Lock()
@@ -16,7 +16,7 @@ class User:
         self.ip = get_client_ip(request)
         self.mail = "asd"
         self.config = {"email": "", "pro": False, "tasks": {}}
-        self.hash = hash(self.ip)
+        self.hash = hash_id(self.ip)
 
         self.load()
 
@@ -48,23 +48,26 @@ class User:
         return self.config["tasks"]
 
     def create(self):
-        if not os.path.exists(self.hash):
-            os.mkdir(self.hash)
+        path = USER_PATH + "/" + self.hash
+        file = path + "/config.dat"
 
-        if not os.path.exists(self.hash + "/config.dat"):
-            pickle.dump(self.config, open(self.hash + "/config.dat", "wb"))
+        if not os.path.exists(path):
+            os.makedirs(path)
+
+        if not os.path.exists(file):
+            serialize(self.config, file)
 
     def save(self):
         self.create()
 
         user_save_lock.acquire()
-        pickle.dump(self.config, open(self.hash + "/config.dat", "wb"))
+        serialize(self.config, USER_PATH + "/" + self.hash + "/config.dat")
         user_save_lock.release()
 
     def load(self):
         self.create()
 
-        self.config = pickle.load(open(self.hash + "/config.dat", "rb"))
+        self.config = unserialize(USER_PATH + "/" + self.hash + "/config.dat")
 
     def valid(self, task):
         if task in self.config["tasks"]:
@@ -78,7 +81,7 @@ class Task:
         self.processing_callback = None
         self.analyzer = None
         self.time = time() + delay
-        self.hash = hash(self.time)
+        self.hash = hash_id(self.time)
         self.e_kwargs = kwargs
         self.p_kwargs = kwargs
 

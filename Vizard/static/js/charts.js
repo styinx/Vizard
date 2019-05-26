@@ -86,21 +86,22 @@ let STYLE_SPARK_SPLINE = merge(STYLE_SPARK_BASE, {
   }
 });
 
-let STYLE_SPARK_SCATTER = Object.assign({
+let STYLE_SPARK_SCATTER = merge(STYLE_SPARK_BASE, {
   chart: {
     type: "scatter"
   }
-}, STYLE_SPARK_BASE);
+});
 
 /**
  * Holds general configuration about HighChart charts.
  */
 let STYLE_BASE = {
   chart: {
-    spacing: 0,
-    height: 300
+    spacing: 100,
+    margin: 100,
+    padding: 100
   },
-  title: {text: "asd"},
+  title: {text: ""},
   credits: {text: ""},
   xAxis: {
     minorTickInterval: 'auto',
@@ -108,7 +109,11 @@ let STYLE_BASE = {
     endOnTick: true,
     lineWidth: 1,
     lineColor: "#333",
-    labels: { formatter: function () { return time(this.value); } }
+    labels: {
+      rotation: -45,
+      x: 15,
+      formatter: function () { return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f"); }
+    }
   },
   yAxis: {
     minorTickInterval: 'auto',
@@ -118,8 +123,8 @@ let STYLE_BASE = {
     lineColor: "#333",
     opposite: false
   },
-  legend: {enabled: true},
   navigator: {
+    enabled: true,
     margin: 5,
     height: 35,
     outlineWidth: 0,
@@ -133,16 +138,7 @@ let STYLE_BASE = {
       borderColor: 'black'
     }
   },
-  plotOptions: {
-    pie: {
-      allowPointSelect: true,
-      cursor: 'pointer',
-      dataLabels: {
-        enabled: true,
-        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
-      }
-    }
-  },
+  plotOptions:{series:{marker:{enabled: false}}},
   scrollbar: {
     height: 5,
     margin: 0,
@@ -164,7 +160,11 @@ let STYLE_BASE = {
     trackBorderRadius: 0,
     rifleColor: 'transparent'
   },
-  rangeSelector: {enabled: false}
+  rangeSelector: {enabled: true},
+  legend: {
+    enabled: true,
+    layout: 'horizontal'
+  },
 };
 
 let STYLE_SPLINE = merge(STYLE_BASE, {
@@ -176,5 +176,21 @@ let STYLE_SPLINE = merge(STYLE_BASE, {
 let STYLE_SCATTER = merge(STYLE_BASE, {
   chart: {
     type: "scatter"
+  }
+});
+
+let STYLE_PIE = merge(STYLE_BASE, {
+  chart: {
+    type: "scatter"
+  },
+  plotOptions: {
+    pie: {
+      allowPointSelect: true,
+      cursor: 'pointer',
+      dataLabels: {
+        enabled: true,
+        format: '<b>{point.name}</b>: {point.percentage:.1f} %'
+      }
+    }
   }
 });

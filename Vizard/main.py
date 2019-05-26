@@ -1,4 +1,4 @@
-from Analyzer.models import JMeter
+from Analyzer.tools import JMeter
 from time import time
 
 if __name__ == "__main__":
