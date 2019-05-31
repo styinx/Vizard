@@ -21,6 +21,14 @@
 
   <script type="text/javascript" src="{% static 'js/drag_drop.js' %}"></script>
 
+  <style>
+    a, a:hover, a:active, a:visited
+    {
+      color: #2196F3;
+      text-decoration: underline;
+    }
+  </style>
+
 </head>
 <body>
 
@@ -31,6 +39,10 @@
     {% if task %}
 
     <h2><u>Data for task {{ task }}</u></h2>
+
+    <div class="mx-3 my-3 px-3 py-3">
+      <a href="{{ HTTP_HOST }}/present/report/{{ task }}">Create Report</a>
+    </div>
 
     <div class="mx-3 my-3 px-3 py-3">
       <pre>{{ data }}</pre>

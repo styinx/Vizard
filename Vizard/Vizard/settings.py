@@ -97,7 +97,7 @@ STATICFILES_DIRS = [
 ]
 
 RESOURCE_PATH = BASE_DIR + "/resource"
-TOOL_PATH = RESOURCE_PATH + "/tool"
+TOOL_PATH = RESOURCE_PATH + "/tools"
 TEMPLATE_PATH = RESOURCE_PATH + "/templates"
 USER_PATH = RESOURCE_PATH + "/users"
 TASK_PATH = RESOURCE_PATH + "/tasks"
@@ -118,20 +118,21 @@ ERROR = {
 
 JMETER_VERSION = "apache-jmeter-5.1.1"
 CONF_JMETER = {
-    "path":            RESOURCE_PATH + "/" + JMETER_VERSION,
-    "executable_path": RESOURCE_PATH + "/" + JMETER_VERSION + "/bin/",
+    "path":            TOOL_PATH + "/" + JMETER_VERSION,
+    "executable_path": TOOL_PATH + "/" + JMETER_VERSION + "/bin/",
     "template":        TEMPLATE_PATH + "/JMeter_template.jmx",
     "download_url":    "https://www-eu.apache.org/dist/jmeter/binaries/" + JMETER_VERSION + ".tgz"
 }
 
 CONF_LOCUST = {
+    # executable is installed via pip
     "template": TEMPLATE_PATH + "/Locust_template.py",
 }
 
 GATLING_VERSION = "gatling-charts-highcharts-bundle-3.1.2"
 CONF_GATLING = {
-    "path":            RESOURCE_PATH + "/" + GATLING_VERSION,
-    "executable_path": RESOURCE_PATH + "/" + GATLING_VERSION + "/bin/",
+    "path":            TOOL_PATH + "/" + GATLING_VERSION,
+    "executable_path": TOOL_PATH + "/" + GATLING_VERSION + "/bin/",
     "template":        TEMPLATE_PATH + "/Gatling_template.py",
     "download_url":    "https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/3.1.2/gatling-charts-highcharts-bundle-3.1.2-bundle.zip"
 }

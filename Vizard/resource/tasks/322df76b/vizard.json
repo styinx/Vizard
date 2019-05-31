@@ -1,0 +1,10 @@
+{
+  "tool": "JMeter",
+  "task": "322df76b",
+  "arguments": {
+    "$DOMAIN": "www.example.com",
+    "$THREADS": "10",
+    "$DURATION": "10",
+    "$RESULT_FILE": "/home/chris/Projekte/Vizard_Project/Vizard/resource/tasks/322df76b/result.csv"
+  }
+}

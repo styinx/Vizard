@@ -23,7 +23,7 @@ class User:
     def __del__(self):
         self.save()
 
-    def setTask(self, task, status="", started=0, completed=0, path=""):
+    def set_task(self, task, status="", started=0, completed=0, path=""):
         user_task_lock.acquire()
 
         if task.hash not in self.config["tasks"]:
@@ -44,7 +44,7 @@ class User:
         user_task_lock.release()
         self.save()
 
-    def getTasks(self):
+    def get_tasks(self):
         return self.config["tasks"]
 
     def create(self):
@@ -86,16 +86,18 @@ class Task:
         self.p_kwargs = kwargs
 
         self.path = TASK_PATH + "/" + self.hash
+
+    def create_path(self):
         if os.path.exists(self.path):
             rmtree(self.path)
 
         os.makedirs(self.path)
 
-    def setExecutionCallback(self, callback, kwargs=None):
+    def set_execution_callback(self, callback, kwargs=None):
         self.execution_callback = callback
         self.e_kwargs = kwargs
 
-    def setProcessingCallback(self, callback, kwargs=None):
+    def set_processing_callback(self, callback, kwargs=None):
         self.processing_callback = callback
         self.p_kwargs = kwargs
 
@@ -120,10 +122,10 @@ class TaskScheduler:
         self.active_tasks = 0
         self.poll_interval = 3
 
-    def addTask(self, task, user):
+    def add_task(self, task, user):
         self.lock.acquire()
         self.queue.append({user: task})
-        user.setTask(task, status="pending")
+        user.set_task(task, status="pending")
         self.lock.release()
 
     def run(self):
@@ -137,11 +139,11 @@ class TaskScheduler:
                 thread = Thread(target=task)
                 thread.start()
 
-                user.setTask(task, status="running", started=time())
+                user.set_task(task, status="running", started=time())
 
                 thread.join()
 
-                user.setTask(task, status="complete", completed=time())
+                user.set_task(task, status="complete", completed=time())
                 user.save()
 
                 self.lock.acquire()

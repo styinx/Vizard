@@ -5,6 +5,24 @@
 
   {% include "util/header.html" %}
 
+  <style>
+    .inline
+    {
+      display: inline;
+    }
+
+    .empty
+    {
+      list-style-type: none;
+    }
+
+    .header
+    {
+      height: 80px;
+    }
+
+  </style>
+
 </head>
 <body>
 
@@ -15,49 +33,98 @@
     <table width="100%">
 
       <tr>
-        <th style="width: 50%; height: 80px;"><u>Description</u></th>
-        <th style="width: 50%; height: 80px;"><u>URL</u></th>
+        <th class="header"><u>Description</u></th>
+        <th class="header"><u>URL</u></th>
+        <th class="header"><u>Note</u></th>
       </tr>
 
       <tr>
         <td><b>Perform an analysis:</b></td>
-        <td><pre style="display: inline">/loadtest</pre></td>
+        <td><pre class="inline">/analyze</pre></td>
+        <td></td>
       </tr>
 
       <tr>
         <td>
           <ul>
-            <li><b>JMeter</b></li>
-            <li><b>Locust</b></li>
+            <li>JMeter</li>
+            <li>Locust</li>
           </ul>
         </td>
         <td>
           <ul>
-            <li><pre style="display: inline">/loadtest/jmeter</pre></li>
-            <li><pre style="display: inline">/loadtest/locust</pre></li>
+            <li><pre class="inline">/analyze/loadtest/jmeter</pre></li>
+            <li><pre class="inline">/analyze/loadtest/locust</pre></li>
+          </ul>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>Parameters:</td>
+        <td></td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>
+          <ul>
+            <li>Domain</li>
+            <li>Duration</li>
+            <li>Load</li>
+            <li>Minimum wait time</li>
+            <li>Maximum wait time</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;domain=www.example.com</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;duration=5</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;load=10</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;Locust&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;min_wait=8</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;Locust&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;max_wait=12</pre></li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li class="empty">&nbsp;</li>
+            <li class="empty">&nbsp;</li>
+            <li class="empty">&nbsp;</li>
+            <li>Locust only</li>
+            <li>Locust only</li>
           </ul>
         </td>
       </tr>
+
+      <tr><td colspan="100%">&nbsp;</td></tr>
 
       <tr>
         <td><b>Inspect analysis data:</b></td>
-        <td><pre style="display: inline">/present</pre></td>
+        <td><pre class="inline">/present</pre></td>
+        <td></td>
       </tr>
 
       <tr>
         <td>
           <ul>
-            <li><b>Plain data</b></li>
-            <li><b>Report</b></li>
+            <li>Task overview</li>
+            <li>Show plain data</li>
+            <li>Create a report</li>
+            <li>Export a report</li>
           </ul>
         </td>
         <td>
           <ul>
-            <li><pre style="display: inline">/present/data</pre></li>
-            <li><pre style="display: inline">/present/report</pre></li>
+            <li><pre class="inline">/present/data</pre></li>
+            <li><pre class="inline">/present/data/&nbsp;<i>&lt;task_id&gt;</i></pre></li>
+            <li><pre class="inline">/present/report/&nbsp;<i>&lt;task_id&gt;</i></pre></li>
+            <li><pre class="inline">/present/report/&nbsp;<i>&lt;task_id&gt;&nbsp;/export</i></pre></li>
           </ul>
         </td>
+        <td></td>
       </tr>
+
+      <tr><td colspan="100%">&nbsp;</td></tr>
 
     </table>
 

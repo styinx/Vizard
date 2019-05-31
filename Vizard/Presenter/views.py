@@ -19,6 +19,11 @@ def data(request, api="", _id=""):
 
 
 def report_id(request, _id, export=None):
-    response = collect_report(request, RESPONSE.copy(), _id, export)
+    response, zipped = collect_report(request, RESPONSE.copy(), _id, export)
+
+    if export:
+        response = HttpResponse(zipped[1], content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename="' + zipped[0] + '"'
+        return response
 
     return render(request, "Presenter/Report.html", response)

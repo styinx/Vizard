@@ -22,7 +22,7 @@ def tasks(request):
     response = RESPONSE.copy()
     response["tasks"] = {}
 
-    for task in user.getTasks():
+    for task in user.get_tasks():
         if user.valid(task):
             response["tasks"][task] = user.config["tasks"][task]["status"]
 

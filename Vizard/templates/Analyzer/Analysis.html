@@ -71,6 +71,12 @@
     {
       border-radius: 50%;
     }
+
+    a, a:hover, a:active, a:visited
+    {
+      color: #2196F3;
+      text-decoration: underline;
+    }
   </style>
 
 </head>
@@ -83,7 +89,7 @@
     {% if hash %} <h2><u>Task-ID: {{ hash }}</u></h2>
     {% endif %}
 
-    {% if missing %}
+    {% if missing%}
 
       <h3 class="text">
         {% if missing|length > 1 %} Missing parameters:
@@ -97,11 +103,17 @@
         {% endfor %}
       </ul>
 
+{#      {% for parameter in missing %}#}
+{#        <p>{{ parameter }}</p>#}
+{#      {% endfor %}#}
+
     {% else %}
 
       <p class="text">
-        The results of your task will be available
-        <a href="{{ HTTP_HOST }}/present/data/{{ hash }}">here</a> once it is finished.
+        Once the analysis is finished you can either take a look at the <b>data</b>
+        <a href="{{ HTTP_HOST }}/present/data/{{ hash }}">here</a>
+        or instantly create a <b>report</b>
+        <a href="{{ HTTP_HOST }}/present/report/{{ hash }}">here</a>.
         <br>
         <s>If you would like to get notified upon completeness of the task then
 

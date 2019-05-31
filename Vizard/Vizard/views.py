@@ -25,7 +25,7 @@ def my(request, what=""):
     response = RESPONSE.copy()
 
     if what == "tasks":
-        response["tasks"] = user.getTasks()
+        response["tasks"] = user.get_tasks()
 
     elif what == "reports":
         response["reports"] = "TODO, nothing to see"

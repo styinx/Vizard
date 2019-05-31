@@ -1,3 +1,5 @@
+import re
+
 from source.util import unpack_request_values, dump
 
 from Vizard.settings import CONF_JMETER, CONF_LOCUST
@@ -38,7 +40,8 @@ def execute_jmeter(request, response, scheduler):
         response["missing"] = values
         return response
 
-    user.setTask(task, path=task.hash)
+    user.set_task(task, path=task.hash)
+    task.create_path()
 
     result_file = task.path + "/result.csv"
     experiment_file = task.path + "/experiment.jmx"
@@ -64,9 +67,9 @@ def execute_jmeter(request, response, scheduler):
     })
     jm.arg_separator = " "
 
-    task.setExecutionCallback(jm.execute, {"path": CONF_JMETER["executable_path"]})
-    task.setProcessingCallback(jm.process, {"path": result_file})
-    scheduler.addTask(task, user)
+    task.set_execution_callback(jm.execute, {"path": CONF_JMETER["executable_path"]})
+    task.set_processing_callback(jm.process, {"path": result_file})
+    scheduler.add_task(task, user)
 
     conf = dict(jm.config)
     del conf["-t"]
@@ -89,7 +92,10 @@ def execute_locust(request, response, scheduler):
         response["missing"] = values
         return response
 
-    user.setTask(task, path=task.hash)
+    values["domain"] = "http://" + values["domain"]
+
+    user.set_task(task, path=task.hash)
+    task.create_path()
 
     experiment_file = task.path + "/experiment.py"
     result_file = task.path + "/result_processed.json"
@@ -122,9 +128,9 @@ def execute_locust(request, response, scheduler):
     })
     lc.arg_separator = " "
 
-    task.setExecutionCallback(lc.execute)
-    task.setProcessingCallback(lc.process, {"path": result_file})
-    scheduler.addTask(task, user)
+    task.set_execution_callback(lc.execute)
+    task.set_processing_callback(lc.process, {"path": result_file})
+    scheduler.add_task(task, user)
 
     conf = dict(lc.config)
     del conf["--csv"]

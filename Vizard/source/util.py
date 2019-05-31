@@ -40,10 +40,26 @@ def copy_tree(source, destination):
 
 
 def pack_zip(source, filename):
-    if os.path.exists(filename):
+    if os.path.isfile(filename):
         os.remove(filename)
 
-    shutil.make_archive(filename, source)
+    shutil.make_archive(filename, 'zip', source)
+
+
+def pack_zip_files(files, folder_prefix=""):
+    s = io.BytesIO()
+
+    zf = zipfile.ZipFile(s, "w")
+
+    for original, new in files.items():
+        _, name = os.path.split(original)
+        zip_path = os.path.join(folder_prefix, new)
+
+        zf.write(original, zip_path)
+
+    zf.close()
+
+    return s.getvalue()
 
 
 def unpack_zip(buffer, destination):
@@ -71,6 +87,14 @@ def write(obj, filename):
 
 
 def read(filename):
+    return open(filename, "r").read()
+
+
+def writeb(obj, filename):
+    open(filename, "w").write(obj)
+
+
+def readb(filename):
     return open(filename, "r").read()
 
 

@@ -4,7 +4,7 @@ import sys
 
 from source.util import unpack_url_tar
 
-from Vizard.settings import RESOURCE_PATH, CONF_JMETER, CONF_GATLING
+from Vizard.settings import TOOL_PATH, CONF_JMETER, CONF_GATLING
 
 if __name__ == '__main__':
 
@@ -21,11 +21,11 @@ if __name__ == '__main__':
         ) from exc
 
     if not os.path.exists(CONF_JMETER["executable_path"]):
-        print("...Download JMeter")
-        unpack_url_tar(CONF_JMETER["download_url"], RESOURCE_PATH)
+        print("Download JMeter...")
+        unpack_url_tar(CONF_JMETER["download_url"], TOOL_PATH)
 
     # if not os.path.exists(CONF_GATLING["executable_path"]):
-    #     print("...Download Gatling")
-    #     unpack_url_zip(CONF_GATLING["download_url"], RESOURCE_PATH)
+    #     print("Download Gatling...")
+    #     unpack_url_zip(CONF_GATLING["download_url"], TOOL_PATH)
 
     execute_from_command_line(sys.argv)

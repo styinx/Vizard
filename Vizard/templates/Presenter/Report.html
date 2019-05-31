@@ -22,7 +22,7 @@
 
           Highcharts.stockChart("{{ metric }}", {
             series: [{
-              name: {{ metric }},
+              name: "{{ metric }}",
               data: {{ values.data }},
               showInLegend: true
             }]
@@ -37,19 +37,16 @@
 
   {% include "util/nav.html" %}
 
-{#  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">#}
-  <div class="">
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
     <h2><u>Report for {{ hash }}</u></h2>
 
-{#    <div class="mx-3 my-3 px-3 py-3">#}
-    <div class="">
+    <div class="mx-3 my-3 px-3 py-3">
 
       {% for metric, values in metrics.items %}
 
         <h4>{{ metric }}</h4>
-{#        <div class="mx-3 my-3 px-3 py-3" id="{{ metric }}"></div>#}
-        <div class="" id="{{ metric }}"></div>
+        <div class="mx-3 my-3 px-3 py-3" id="{{ metric }}"></div>
         <p class="mx-3 my-3 px-3 py-3">{{ values.text }}</p>
 
       {% endfor %}

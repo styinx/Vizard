@@ -46,17 +46,18 @@ class JMeter(AnalyzeTool):
     def process(self, path=None):
         result = {}
         result_file = path
-        f = open(result_file, "r")
+        lines = read(result_file).split('\n')
 
-        headers = {x: i for i, x in enumerate(f.readline()[:-1].split(","))}
+        headers = {x: i for i, x in enumerate(lines[0].split(','))}
 
         ts = -1
         if "timeStamp" in headers:
             ts = headers["timeStamp"]
 
         key = 0
-        for line in f.readlines():
-            values = list(line[:-1].split(","))
+        for line in lines[1:-1]:
+            values = list(line.split(','))
+            print(values)
 
             if ts >= 0:
                 ts_val = values[ts]
@@ -67,7 +68,7 @@ class JMeter(AnalyzeTool):
                 key += 1
 
         file_prefix = result_file[:result_file.rfind(".")]
-        processed = json.dumps(dict(sorted(result.items())))
+        processed = dict(sorted(result.items()))
 
         write(dump(processed), file_prefix + "_processed.json")
         serialize(result, file_prefix + "_cached.dat")
