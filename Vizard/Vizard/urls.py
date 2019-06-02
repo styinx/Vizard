@@ -11,6 +11,7 @@ urlpatterns = [
     path('details/', views.details, name='details'),
     path('documentation/', views.documentation, name='documentation'),
     path('bot/', views.bot, name='bot'),
+    path('demo/', views.demo, name='demo'),
     re_path(r'^my/(?:(?P<what>\w+)/)?$', views.my, name='my'),
 
     path('admin/', admin.site.urls),

@@ -20,6 +20,10 @@ def bot(request):
     return render(request, "Bot.html")
 
 
+def demo(request):
+    return render(request, "Demo.html")
+
+
 def my(request, what=""):
     user = User(request)
     response = RESPONSE.copy()
