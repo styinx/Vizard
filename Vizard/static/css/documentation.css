@@ -1,0 +1,14 @@
+.inline
+{
+    display: inline;
+}
+
+.empty
+{
+    list-style-type: none;
+}
+
+.header
+{
+    height: 80px;
+}

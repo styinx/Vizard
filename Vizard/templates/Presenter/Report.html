@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <title>Report {{ path }}</title>
 
   {% load static %}
@@ -31,6 +32,8 @@
       {% endfor %}
     });
   </script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
 
 </head>
 <body>

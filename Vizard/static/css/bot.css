@@ -1,0 +1,14 @@
+.bot-div
+{
+    position: absolute;
+    min-width: 350px;
+    min-height: 430px;
+    left: calc(50% - 175px);
+    top: calc(50% - 215px);
+}
+
+.bot-frame
+{
+    width: 350px;
+    height: 430px;
+}

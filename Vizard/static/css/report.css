@@ -1,0 +1,150 @@
+h4
+{
+    padding-bottom: 5px;
+    border-bottom: 1px solid #333;
+}
+
+.settings-sidebar
+{
+    position: fixed;
+    max-width: 4em;
+    top: 35%;
+    margin: 0.5em;
+    padding: 0.5em;
+    min-height: 30%;
+}
+
+.settings-sidebar img
+{
+    max-width: 2em;
+    max-height: 2em;
+    margin: 0.5em 0 0.5em 0;
+}
+
+.report
+{
+    position: absolute;
+    max-width: 100%;
+    left: 3em;
+}
+
+.report a, .report a:hover, .report a:active, .report a:visited
+{
+    color: #2196F3;
+    text-decoration: underline;
+}
+
+.report p, .report .text
+{
+    text-align: justify;
+}
+
+.report table
+{
+    overflow: auto;
+}
+
+.v-sec
+{
+    display: inline-block;
+    vertical-align: top;
+    margin: auto;
+    padding: 0.5em 1em 0.5em 1em;
+}
+
+.v-small
+{
+    min-width: calc(33% - 1em);
+    width: calc(33% - 1em);
+    max-width: calc(33% - 1em);
+}
+
+.v-medium
+{
+    min-width: calc(50% - 1em);
+    width: calc(50% - 1em);
+    max-width: calc(50% - 1em);
+}
+
+.v-large
+{
+    min-width: calc(66% - 1em);
+    width: calc(66% - 1em);
+    max-width: calc(66% - 1em);
+}
+
+@media only screen and (max-width: 1200px)
+{
+    .v-small
+    {
+        min-width: calc(50% - 1em);
+        width: calc(50% - 1em);
+        max-width: calc(50% - 1em);
+    }
+
+    .v-medium
+    {
+        min-width: calc(50% - 2em);
+        width: calc(50% - 1em);
+        max-width: calc(50% - 1em);
+    }
+
+    .v-large
+    {
+        min-width: calc(100%);
+        width: calc(100%);
+        max-width: calc(100%);
+    }
+}
+
+@media only screen and (max-width: 800px)
+{
+    .v-small, .v-medium, .v-large
+    {
+        min-width: calc(100%);
+        width: calc(100%);
+        max-width: calc(100%);
+    }
+}
+
+.tooltipC
+{
+    position: relative;
+    display: inline-block;
+    color: red;
+    border-bottom: 1px dotted black;
+}
+
+.tooltipC .tooltiptext
+{
+    visibility: hidden;
+    min-width: 120px;
+    width: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+    color: white;
+    text-align: center;
+    border-radius: 6px;
+    padding: 15px;
+    position: absolute;
+    z-index: 1;
+    top: 150%;
+    left: 50%;
+    margin-left: -120px;
+}
+
+.tooltipC .tooltiptext::after
+{
+    content: "";
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: transparent transparent black transparent;
+}
+
+.tooltipC:hover .tooltiptext
+{
+    visibility: visible;
+}

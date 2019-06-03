@@ -8,210 +8,27 @@
 
   {% include "util/header.html" %}
 
-  <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/highstock.js' %}"></script>
 
   <script type="text/javascript" src="{% static 'js/util.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/charts.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
 
-  <script>
-    $(document).ready(function()
-    {
-      Highcharts.setOptions(STYLE_SPLINE);
-
-        Highcharts.stockChart("CPU", {
-          series: [{
-            name: "CPU (%)",
-            data: [
-              [1337700010000,76],
-              [1337700020000,11],
-              [1337700030000,8],
-              [1337700040000,43],
-              [1337700050000,29],
-              [1337700060000,34],
-              [1337700070000,24],
-              [1337700080000,6],
-              [1337700090000,72],
-              [1337700100000,39],
-              [1337700110000,72],
-              [1337700120000,10],
-              {x: 1337700130000, y: 99, marker: {enabled: true, lineColor: "red", lineWidth: 3, borderColor: "red"}},
-              [1337700140000,23],
-              [1337700150000,78],
-              [1337700160000,59],
-              [1337700170000,32],
-              [1337700180000,64],
-              [1337700190000,73],
-              [1337700200000,3],
-              [1337700210000,58],
-              [1337700220000,22],
-              [1337700230000,9],
-              {x: 1337700240000, y: 1, marker: {enabled: true, lineColor: "green", lineWidth: 3, borderColor: "green"}},
-              [1337700250000,9],
-              [1337700260000,57],
-              [1337700270000,75],
-              [1337700280000,85],
-              [1337700290000,78],
-              [1337700300000,9],
-              [1337700310000,27],
-              [1337700320000,21],
-              [1337700330000,98],
-              [1337700340000,43],
-              [1337700350000,86],
-              [1337700360000,89],
-              [1337700370000,60],
-              [1337700380000,60],
-              [1337700390000,10],
-              [1337700400000,39]
-            ]
-          }]
-        });
-
-        Highcharts.stockChart("sparkline", merge(STYLE_SPARK_SPLINE,{
-          series: [{
-            name: "CPU (%)",
-            data: [
-              [1337700010000,76],
-              [1337700020000,11],
-              [1337700030000,8],
-              [1337700040000,43],
-              [1337700050000,29],
-              [1337700060000,34],
-              [1337700070000,24],
-              [1337700080000,6],
-              [1337700090000,72],
-              [1337700100000,39],
-              [1337700110000,72],
-              [1337700120000,10],
-              {x: 1337700130000, y: 99, marker: {enabled: true, lineColor: "red", lineWidth: 1, borderColor: "red"}},
-              [1337700140000,23],
-              [1337700150000,78],
-              [1337700160000,59],
-              [1337700170000,32],
-              [1337700180000,64],
-              [1337700190000,73],
-              [1337700200000,3],
-              [1337700210000,58],
-              [1337700220000,22],
-              [1337700230000,9],
-              {x: 1337700240000, y: 1, marker: {enabled: true, lineColor: "green", lineWidth: 1, borderColor: "green"}},
-              [1337700250000,9],
-              [1337700260000,57],
-              [1337700270000,75],
-              [1337700280000,85],
-              [1337700290000,78],
-              [1337700300000,9],
-              [1337700310000,27],
-              [1337700320000,21],
-              [1337700330000,98],
-              [1337700340000,43],
-              [1337700350000,86],
-              [1337700360000,89],
-              [1337700370000,60],
-              [1337700380000,60],
-              [1337700390000,10],
-              [1337700400000,39]
-            ]
-          }]
-        }));
-    });
-  </script>
-
-  <style>
-    .left
-    {
-      display: inline-block;
-      width: 25%;
-      vertical-align: top;
-    }
-
-    .right
-    {
-      display: inline-block;
-      width: 64%;
-      margin-left: 5%;
-      vertical-align: top;
-    }
-
-    .left2
-    {
-      display: inline-block;
-      width: 30%;
-      vertical-align: top;
-    }
-
-    .right2
-    {
-      display: inline-block;
-      width: 64%;
-      margin-right: 5%;
-      vertical-align: top;
-    }
-
-    @media only screen and (max-width: 1680px)
-    {
-      .left, .right, .left2, .right2
-      {
-        display: block;
-        margin: auto;
-        width: 80%;
-      }
-    }
-
-    .tooltipC {
-      position: relative;
-      display: inline-block;
-      color: red;
-      border-bottom: 1px dotted black;
-    }
-
-    .tooltipC .tooltiptext
-    {
-      visibility: hidden;
-      min-width: 120px;
-      width: auto;
-      background-color: rgba(0, 0, 0, 0.9);
-      color: white;
-      text-align: center;
-      border-radius: 6px;
-      padding: 15px;
-      position: absolute;
-      z-index: 1;
-      top: 150%;
-      left: 50%;
-      margin-left: -120px;
-    }
-
-    .tooltipC .tooltiptext::after
-    {
-      content: "";
-      position: absolute;
-      bottom: 100%;
-      left: 50%;
-      margin-left: -5px;
-      border-width: 5px;
-      border-style: solid;
-      border-color: transparent transparent black transparent;
-    }
-
-    .tooltipC:hover .tooltiptext
-    {
-      visibility: visible;
-    }
-
-    a, a:hover, a:active, a:visited
-    {
-      color: #2196F3;
-      text-decoration: underline;
-    }
-  </style>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
 
 </head>
 <body>
 
   {% include "util/nav.html" %}
 
-  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
+  <div class="settings-sidebar bg-white shadow border-dark">
+    <img src="{% static 'img/settings_transparent.svg' %}"/>
+    <img src="{% static 'img/note.png' %}"/>
+  </div>
+
+  <div class="report">
+
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5 main">
 
     <h2><u>Performance Report</u></h2>
 
@@ -220,7 +37,7 @@
       <h4>CPU Utilization</h4>
       <div class="mx-3 my-3 px-3 py-3" id="CPU"></div>
 
-      <table class="table left">
+      <table class="table v-medium v-sec">
         <thead class="thead">
           <tr>
             <th scope="col"></th>
@@ -255,7 +72,24 @@
         </tbody>
       </table>
 
-      <div class="right" style="text-align: justify;">
+      <div class="v-medium v-sec text">
+        Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
+        Cras dapibus iaculis est nec ultrices.
+        Ut sagittis arcu nunc, et ullamcorper massa ultricies eget.
+        Duis laoreet ipsum lacus, eget suscipit nibh malesuada in.
+        Some special
+        <span class="tooltipC">text
+          <div class="tooltip-background">
+            <div class="tooltiptext">
+              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline"></div>
+            </div>
+          </div>
+        </span> that shows a tooltip.
+        Praesent tincidunt sit amet nisl at consectetur.
+        Nullam vehicula feugiat scelerisque.
+    </div>
+
+      <div class="v-large v-sec text">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Nullam vitae urna aliquet quam convallis accumsan quis ut neque.
         Sed eu nisi lorem. Fusce ac justo ornare, tristique ante ac, iaculis quam.
@@ -295,7 +129,7 @@
     <h4>Analysis Summary</h4>
     <div class="mx-3 my-3 px-3 py-3">
 
-      <div class="right2" style="text-align: justify;">
+      <div class="v-large v-sec text">
         Nulla sagittis placerat magna in iaculis.
         Praesent quis eleifend nibh, nec iaculis nibh.
         Pellentesque dignissim nunc id fermentum pulvinar.
@@ -307,7 +141,7 @@
         Integer in laoreet magna, vitae porta risus. Sed ut viverra sem.
       </div>
 
-      <table class="table left2" width="100%">
+      <table class="table v-small v-sec">
       <tbody>
         <tr>
           <td>Analysis Tool:</td>
@@ -328,7 +162,26 @@
       </tbody>
     </table>
 
+    <div class="v-medium v-sec text">
+        Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
+        Cras dapibus iaculis est nec ultrices.
+        Ut sagittis arcu nunc, et ullamcorper massa ultricies eget.
+        Duis laoreet ipsum lacus, eget suscipit nibh malesuada in.
+        Some special
+        <span class="tooltipC">text
+          <div class="tooltip-background">
+            <div class="tooltiptext">
+              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline"></div>
+            </div>
+          </div>
+        </span> that shows a tooltip.
+        Praesent tincidunt sit amet nisl at consectetur.
+        Nullam vehicula feugiat scelerisque.
     </div>
+
+    </div>
+
+  </div>
 
   </div>
 

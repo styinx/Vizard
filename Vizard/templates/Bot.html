@@ -1,19 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
   <title>Performance Bot</title>
 
   {% load static %}
 
   {% include "util/header.html" %}
 
+  <link rel="stylesheet" type="text/css" href="{% static 'css/bot.css' %}">
+
 </head>
 <body>
 
   {% include "util/nav.html" %}
 
-  <div style="position: absolute; min-width: 350px; min-height: 430px; left: calc(50% - 175px); top: calc(50% - 215px);">
-    <iframe width="350" height="430" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/bd792e20-19dd-41eb-9e57-14f40c01c0ce"></iframe>
+  <div class="bot-div">
+    <iframe class="bot-frame" allow="microphone;" src="https://console.dialogflow.com/api-client/demo/embedded/bd792e20-19dd-41eb-9e57-14f40c01c0ce"></iframe>
   </div>
 
 </body>
