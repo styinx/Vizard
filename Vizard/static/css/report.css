@@ -6,8 +6,10 @@ h4
 
 .settings-sidebar
 {
+    z-index: 10;
     position: fixed;
-    max-width: 4em;
+    min-width: 3em;
+    max-width: 3em;
     top: 35%;
     margin: 0.5em;
     padding: 0.5em;
@@ -19,13 +21,44 @@ h4
     max-width: 2em;
     max-height: 2em;
     margin: 0.5em 0 0.5em 0;
+    cursor: pointer;
+}
+
+.v-popup
+{
+    z-index: 10;
+    display: none;
+    position: fixed;
+    top: 25%;
+    left: 25%;
+    min-width: 480px;
+    width: 50%;
+    min-height: 480px;
+    height: 50%;
+    border: 1px solid #333;
+    border-radius: 0.25rem;
+    background: white;
+    padding: 5em;
+}
+
+.v-popup p
+{
+    line-height: 2;
 }
 
 .report
 {
     position: absolute;
-    max-width: 100%;
-    left: 3em;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    vertical-align: top;
+    top: 5em;
+    left: 8em;
+    right: 5em;
+    padding: 5em 5em 5em 5em;
+    min-width: calc(480px + 8em);
+    max-width: calc(100% - 14em);
 }
 
 .report a, .report a:hover, .report a:active, .report a:visited
@@ -39,71 +72,154 @@ h4
     text-align: justify;
 }
 
+.report h1, .report h2, .report h3, .report h4
+{
+    min-width: 480px;
+    width: 100%;
+    max-width: 1920px;
+    padding: 1em 0.1em 0.5em 0.1em;
+    margin: 0 auto 0.5em auto;
+}
+
+.report h4[data-toggle="collapse"]
+{
+    cursor: pointer;
+}
+
 .report table
 {
     overflow: auto;
+    vertical-align: middle;
+}
+
+.report .diagram
+{
+    width: 100%;
+}
+
+.report .v-table
+{
+    display: table;
+    vertical-align: middle;
+}
+
+.v-float
+{
+    display: inline;
+    float: left;
+    width: 50%;
+    margin: 1em 1em -1em 1em;
+    overflow: auto;
+    vertical-align: middle;
+}
+
+.v-inline
+{
+    display: inline;
 }
 
 .v-sec
 {
     display: inline-block;
     vertical-align: top;
-    margin: auto;
-    padding: 0.5em 1em 0.5em 1em;
+    margin: 0.1em auto 0.1em auto;
+    padding: 0.25em 0.5em 0.25em 0.5em;
 }
 
 .v-small
 {
-    min-width: calc(33% - 1em);
-    width: calc(33% - 1em);
-    max-width: calc(33% - 1em);
+    min-width: 480px;
+    width: 33%;
+    max-width: 576px;
 }
 
 .v-medium
 {
-    min-width: calc(50% - 1em);
-    width: calc(50% - 1em);
-    max-width: calc(50% - 1em);
+    min-width: 480px;
+    width: 50%;
+
+    float: left;
+    display: inline;
+    max-width: 960px;
 }
 
 .v-large
 {
-    min-width: calc(66% - 1em);
-    width: calc(66% - 1em);
-    max-width: calc(66% - 1em);
+    min-width: 480px;
+    width: calc(66% + 480px);
+    max-width: 1920px;
+}
+
+.v-big
+{
+    min-width: 480px;
+    width: 100%;
+    max-width: 100%;
 }
 
 @media only screen and (max-width: 1200px)
 {
+    .v-float
+    {
+        width: 66%;
+    }
+
     .v-small
     {
-        min-width: calc(50% - 1em);
-        width: calc(50% - 1em);
-        max-width: calc(50% - 1em);
+        width: 50%;
     }
 
     .v-medium
     {
-        min-width: calc(50% - 2em);
-        width: calc(50% - 1em);
-        max-width: calc(50% - 1em);
+        width: 50%;
     }
 
     .v-large
     {
-        min-width: calc(100%);
-        width: calc(100%);
-        max-width: calc(100%);
+        width: 100%;
     }
 }
 
 @media only screen and (max-width: 800px)
 {
+    .report
+    {
+        width: 100%;
+        max-width: 100%;
+        top: 12em;
+        left: 0;
+        right: 0;
+        padding: 1em;
+    }
+
+    .settings-sidebar
+    {
+        position: fixed;
+        max-height: 3em;
+        min-height: 3em;
+        top: calc(100% - 4em);
+        left: 35%;
+        margin: 0.5em;
+        padding: 0.5em;
+        width: 30%;
+        min-width: 200px;
+    }
+
+    .settings-sidebar img
+    {
+        max-width: 2em;
+        max-height: 2em;
+        margin: 0 0.5em 0 0.5em;
+    }
+
+    .v-float
+    {
+        width: 100%;
+    }
+
     .v-small, .v-medium, .v-large
     {
-        min-width: calc(100%);
-        width: calc(100%);
-        max-width: calc(100%);
+        width: 100%;
     }
 }
 

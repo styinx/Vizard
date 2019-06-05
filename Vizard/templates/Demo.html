@@ -15,6 +15,7 @@
   <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/query.css' %}">
 
 </head>
 <body>
@@ -22,57 +23,90 @@
   {% include "util/nav.html" %}
 
   <div class="settings-sidebar bg-white shadow border-dark">
+    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
+    <img src="{% static 'img/download.svg' %}"/>
     <img src="{% static 'img/settings_transparent.svg' %}"/>
-    <img src="{% static 'img/note.png' %}"/>
   </div>
 
-  <div class="report">
+  <div class="v-popup">
+    <p>What was the
 
-  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5 main">
+      <select class="v-metric v-badge">
+        <option class="v-badge">Response Time</option>
+        <option class="v-badge">CPU Utilization</option>
+        <option class="v-badge">Traffic</option>
+      </select>
+      <br>
+
+      of the domain
+
+      <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/>
+      <br>
+
+      between
+
+      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00" max="2020-01-06T00:00"/>
+      <br>
+
+      and
+
+      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00" max="2020-01-06T00:00"/>
+
+      .
+    </p>
+
+{#    <div>#}
+{#      <span class="v-badge v-metric">asd</span>#}
+{#      <span class="v-badge-area v-metric-area v-metric">asd</span>#}
+{#      <span class="v-badge v-unit">asd</span>#}
+{#      <span class="v-badge-area v-unit-area v-unit">asd</span>#}
+{#      <span class="v-badge v-limit">asd</span>#}
+{#      <span class="v-badge-area v-limit-area v-limit">asd</span>#}
+{#      <span class="v-badge v-sign">asd</span>#}
+{#      <span class="v-badge-area v-sign-area v-sign"></span>#}
+{#    </div>#}
+  </div>
+
+  <div class="bg-white shadow border-dark report">
 
     <h2><u>Performance Report</u></h2>
 
-    <div class="mx-3 my-3 px-3 py-3">
+    <h4>CPU Utilization</h4>
+    <div class="v-sec v-big diagram" id="CPU"></div>
 
-      <h4>CPU Utilization</h4>
-      <div class="mx-3 my-3 px-3 py-3" id="CPU"></div>
+    <div class="v-sec v-large">
 
-      <table class="table v-medium v-sec">
-        <thead class="thead">
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">Min.</th>
-            <th scope="col">Max.</th>
-            <th scope="col">Avg.</th>
-            <th scope="col">Med.</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>Time:</td>
-            <td>17:24:00</td>
-            <td>17:22:00</td>
-            <td>-</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>Value:</td>
-            <td style="color: green">1%</td>
-            <td style="color: red">99%</td>
-            <td>52%</td>
-            <td>45%</td>
-          </tr>
-          <tr>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-            <td></td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="v-float">
+        <table class="table">
+          <thead class="thead">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Min.</th>
+              <th scope="col">Max.</th>
+              <th scope="col">Avg.</th>
+              <th scope="col">Med.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Time:</td>
+              <td>17:24:00</td>
+              <td>17:22:00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Value:</td>
+              <td style="color: green">1%</td>
+              <td style="color: red">99%</td>
+              <td>52%</td>
+              <td>45%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <div class="v-medium v-sec text">
+      <div class="v-inline">
         Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
         Cras dapibus iaculis est nec ultrices.
         Ut sagittis arcu nunc, et ullamcorper massa ultricies eget.
@@ -81,15 +115,15 @@
         <span class="tooltipC">text
           <div class="tooltip-background">
             <div class="tooltiptext">
-              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline"></div>
+              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline1"></div>
             </div>
           </div>
         </span> that shows a tooltip.
         Praesent tincidunt sit amet nisl at consectetur.
         Nullam vehicula feugiat scelerisque.
-    </div>
+      </div>
 
-      <div class="v-large v-sec text">
+      <div class="v-inline">
         Lorem ipsum dolor sit amet, consectetur adipiscing elit.
         Nullam vitae urna aliquet quam convallis accumsan quis ut neque.
         Sed eu nisi lorem. Fusce ac justo ornare, tristique ante ac, iaculis quam.
@@ -103,7 +137,7 @@
         <span class="tooltipC">text
           <div class="tooltip-background">
             <div class="tooltiptext">
-              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline"></div>
+              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline2"></div>
             </div>
           </div>
         </span> that shows a tooltip.
@@ -127,9 +161,10 @@
     </div>
 
     <h4>Analysis Summary</h4>
-    <div class="mx-3 my-3 px-3 py-3">
 
-      <div class="v-large v-sec text">
+    <div class="v-sec v-large">
+
+      <div class="v-inline">
         Nulla sagittis placerat magna in iaculis.
         Praesent quis eleifend nibh, nec iaculis nibh.
         Pellentesque dignissim nunc id fermentum pulvinar.
@@ -141,28 +176,34 @@
         Integer in laoreet magna, vitae porta risus. Sed ut viverra sem.
       </div>
 
-      <table class="table v-small v-sec">
-      <tbody>
-        <tr>
-          <td>Analysis Tool:</td>
-          <td>JMeter</td>
-        </tr>
-        <tr>
-          <td>Duration:</td>
-          <td>2h 20min</td>
-        </tr>
-        <tr>
-          <td>Collected Samples:</td>
-          <td>150536</td>
-        </tr>
-        <tr>
-          <td>Metrics:</td>
-          <td><a href="#CPU">CPU Utilization</a>, Response Time</td>
-        </tr>
-      </tbody>
-    </table>
+      <div class="v-float">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>Analysis Tool:</td>
+              <td>JMeter</td>
+            </tr>
+            <tr>
+              <td>Duration:</td>
+              <td>2h 20min</td>
+            </tr>
+            <tr>
+              <td>Collected Samples:</td>
+              <td>150536</td>
+            </tr>
+            <tr>
+              <td>Metrics:</td>
+              <td>
+                <a href="#CPU">CPU Utilization</a>,
+                <a href="#Response Time">Response Time</a>,
+                <a href="#Traffic">Traffic</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-    <div class="v-medium v-sec text">
+      <div class="v-inline">
         Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
         Cras dapibus iaculis est nec ultrices.
         Ut sagittis arcu nunc, et ullamcorper massa ultricies eget.
@@ -171,17 +212,60 @@
         <span class="tooltipC">text
           <div class="tooltip-background">
             <div class="tooltiptext">
-              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline"></div>
+              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline3"></div>
             </div>
           </div>
         </span> that shows a tooltip.
         Praesent tincidunt sit amet nisl at consectetur.
         Nullam vehicula feugiat scelerisque.
-    </div>
+      </div>
 
     </div>
 
-  </div>
+
+    <h4 data-toggle="collapse" href="#TrafficCollapse">Traffic</h4>
+
+    <div class="collapse" id="TrafficCollapse">
+
+      <div class="v-sec v-big diagram" id="Traffic"></div>
+
+      <div class="v-sec v-large">
+        <div class="v-inline">
+        Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
+        Cras dapibus iaculis est nec ultrices.
+        Ut sagittis arcu nunc, et ullamcorper massa ultricies eget.
+        Duis laoreet ipsum lacus, eget suscipit nibh malesuada in.
+        Some special
+        <span class="tooltipC">text
+          <div class="tooltip-background">
+            <div class="tooltiptext">
+              Some explanations and maybe a small sparkline. <div style="margin: 20px; width: 160px; height: 60px;" id="sparkline3"></div>
+            </div>
+          </div>
+        </span> that shows a tooltip.
+        Praesent tincidunt sit amet nisl at consectetur.
+        Nullam vehicula feugiat scelerisque.
+      </div>
+      </div>
+
+    </div>
+
+
+    <h4 data-toggle="collapse" href="#ResponseTimeCollapse">Response Time</h4>
+
+    <div class="collapse" id="ResponseTimeCollapse">
+
+      <div class="v-sec v-big diagram" id="Response Time"></div>
+
+      <div class="v-sec v-large">
+
+        <div class="v-inline">
+          Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
+
+        </div>
+      </div>
+
+    </div>
 
   </div>
 

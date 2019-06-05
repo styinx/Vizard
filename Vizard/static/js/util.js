@@ -1,3 +1,23 @@
+function toggleVisibility(el) {
+  if($(el).is(":hidden"))
+    $(el).show();
+  else
+    $(el).hide();
+}
+
+function validate(what, el)
+{
+  let patterns = {
+    "url" : /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+  };
+
+  console.log(patterns[what].test($(el).val()));
+
+  return patterns[what].test($(el).val());
+
+
+}
+
 function pad(val)
 {
   if(Math.log10(val) < 1)
