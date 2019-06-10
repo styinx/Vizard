@@ -37,18 +37,20 @@ let STYLE_SPARK_BASE = {
     backgroundColor: "white",
     borderWidth: 1,
     shadow: false,
-    useHTML: true,
+    outside: true,
+    hideDelay: 0,
     style: {
+      transition: '100ms',
       padding: 0,
+      fontFamily: 'Roboto Mono'
     },
     formatter: function () {
       return this.points.map(function (point) {
-        return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': ' + point.y;
+        return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': ' + padT(point.y);
       });
     },
-    positioner: function (w, h, point) {
-      return {x: point.plotX + 20, y: 0};
-      //return {x: point.plotX - w / 2, y: point.plotY - h - 15};
+    positioner: function (w, h, p) {
+      return {x: chart.plotLeft, y: chart.plotTop};
     }
   },
   plotOptions: {
@@ -112,7 +114,9 @@ let STYLE_BASE = {
     labels: {
       rotation: -45,
       x: 15,
-      formatter: function () { return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f"); }
+      formatter: function () {
+        return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
+      }
     }
   },
   yAxis: {
@@ -138,7 +142,7 @@ let STYLE_BASE = {
       borderColor: 'black'
     }
   },
-  plotOptions:{series:{marker:{enabled: false}}},
+  plotOptions: {series: {marker: {enabled: false}}},
   scrollbar: {
     height: 5,
     margin: 0,

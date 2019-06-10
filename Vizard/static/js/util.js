@@ -1,8 +1,16 @@
-function toggleVisibility(el) {
-  if($(el).is(":hidden"))
-    $(el).show();
-  else
-    $(el).hide();
+function toggleVisibility(el, timeout=0) {
+  if(timeout === 0) {
+    if ($(el).is(":hidden"))
+      $(el).show();
+    else
+      $(el).hide();
+  }
+  else {
+    if ($(el).is(":hidden"))
+      $(el).delay(timeout).show();
+    else
+      $(el).delay(timeout).hide();
+  }
 }
 
 function validate(what, el)
@@ -11,11 +19,7 @@ function validate(what, el)
     "url" : /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
   };
 
-  console.log(patterns[what].test($(el).val()));
-
   return patterns[what].test($(el).val());
-
-
 }
 
 function pad(val)
@@ -27,8 +31,15 @@ function pad(val)
   return val;
 }
 
+function padT(text, width=5)
+{
+  let space = " ";
+  let t = text + "";
+  if(t.length < width)
+    return space.repeat(width - t.length) + t + space;
+}
 
-function time(val, format) {
+function time(val, format="%d.%m.%Y %H:%M:%S.%f") {
   let d = new Date(val);
   let D = pad(d.getDate());
   let M = pad(d.getMonth() + 1);

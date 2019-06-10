@@ -12,6 +12,19 @@ from Vizard.models import User
 def collect_data(request, response, api, _id):
     user = User(request)
 
+    if api:
+        response["experiments"] = {}
+        tasks_info = user.get_tasks()
+
+        # TODO run only necessary tasks
+        for experiment in tasks_info:
+            response["experiments"][experiment] = read(TASK_PATH + "/" + experiment + "/result_processed.json")
+
+        if _id:
+            return str(response["experiments"][_id])
+
+        return str(response["experiments"])
+
     if _id:
         if user.valid(_id):
             data = json.loads(read(TASK_PATH + "/" + _id + "/result_processed.json"))
@@ -24,17 +37,6 @@ def collect_data(request, response, api, _id):
         response["message"] = "Sorry, the requested job id (" + str(_id) + ") seems not to exists."
 
         return response
-
-    if api:
-        response["experiments"] = {}
-        tasks_info = user.get_tasks()
-        for experiment in tasks_info:
-            response["experiments"][experiment] = open(TASK_PATH + "/" + experiment + "/re", )
-
-        if _id:
-            return dump(response["experiments"][_id])
-
-        return dump(response["experiments"])
 
     response["experiments"] = {}
 
@@ -56,7 +58,6 @@ def collect_report(request, response, _id, export):
     if _id in user.get_tasks():
         task = user.get_tasks()[_id]
         path = TASK_PATH + "/" + task["path"]
-        config = read(path + "/vizard.json")
         data_blob = json.loads(read(path + "/result_processed.json"))
 
         values = [[int(ts), round(float(data_blob[ts][3]), 2)] for ts in data_blob]
@@ -76,6 +77,19 @@ def collect_report(request, response, _id, export):
         response["status"] = "404"
         response["message"] = "Sorry, the requested id (" + str(_id) + ") seems not to exists."
         return response, None
+
+
+def collect_report_result(request, response, _id):
+    user = User(request)
+
+    if _id in user.get_tasks():
+        task = user.get_tasks()[_id]
+        path = TASK_PATH + "/" + task["path"]
+        config = read(path + "/vizard.json")
+
+        return str(config)
+
+    return response
 
 
 def export_report(response, path, _id):

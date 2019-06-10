@@ -1,9 +1,0 @@
-{
-  "tool": "Locust",
-  "task": "0926ccb7",
-  "arguments": {
-    "$MIN_WAIT": "1000",
-    "$MAX_WAIT": "2000",
-    "$RESULT_FILE": "/home/chris/Projekte/Vizard_Project/Vizard/resource/tasks/0926ccb7/result_processed.json"
-  }
-}

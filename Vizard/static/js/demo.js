@@ -1,4 +1,15 @@
 $(document).ready(function () {
+
+  $(document).mouseup(function(e)
+  {
+      var container = $(".v-popup");
+
+      if (!container.is(e.target) && container.has(e.target).length === 0)
+      {
+          container.hide();
+      }
+  });
+
   Highcharts.setOptions(STYLE_SPLINE);
 
   Highcharts.stockChart("CPU", {

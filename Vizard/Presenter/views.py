@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from Vizard.settings import RESPONSE
-from Presenter.report import collect_data, collect_report
+from Presenter.report import collect_data, collect_report, collect_report_result
 
 
 def index(request):
@@ -18,8 +18,11 @@ def data(request, api="", _id=""):
     return render(request, "Presenter/Data.html", response)
 
 
-def report_id(request, _id, export=None):
+def report_id(request, api="", _id="", export=None):
     response, zipped = collect_report(request, RESPONSE.copy(), _id, export)
+
+    if api:
+        return HttpResponse(collect_report_result(request, response, _id))
 
     if export:
         response = HttpResponse(zipped[1], content_type='application/force-download')

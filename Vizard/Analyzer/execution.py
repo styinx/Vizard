@@ -12,18 +12,18 @@ from Analyzer.tools import *
 # Fields with the value 'None' are mandatory.
 def unpack_loadtest_values(request):
     return unpack_request_values(request, {
-        "domain": None,
-        "port": "",
-        "duration": "10",
-        "load": "10",
+        "domain":     None,
+        "port":       "",
+        "duration":   "10",
+        "load":       "10",
 
         # jmeter
-        "ramp_up": "1",
-        "ramp_down": "1",
+        "ramp_up":    "1",
+        "ramp_down":  "1",
 
         # locust
-        "min_wait": "1000",
-        "max_wait": "2000",
+        "min_wait":   "1000",
+        "max_wait":   "2000",
         "hatch_rate": "1"
 
         # gatling
@@ -44,7 +44,6 @@ def execute_jmeter(request, response, scheduler):
     task.create_path()
 
     result_file = task.path + "/result.csv"
-    experiment_file = task.path + "/experiment.jmx"
     loadtest_arguments = {
         "$DOMAIN":      values["domain"],
         "$THREADS":     values["load"],
@@ -52,13 +51,15 @@ def execute_jmeter(request, response, scheduler):
         "$RESULT_FILE": result_file}
 
     vizard_configuration = {
-        "tool":       "JMeter",
-        "task":       task.hash,
-        "arguments":  loadtest_arguments
+        "tool":      "JMeter",
+        "task":      task.hash,
+        "arguments": values
     }
 
     Vizardplan(task, vizard_configuration)
-    testplan = Testplan(CONF_JMETER["template"], experiment_file, loadtest_arguments)
+    testplan = Testplan(CONF_JMETER["template"],
+                        task.path + "/experiment.jmx",
+                        loadtest_arguments)
 
     jm = JMeter({
         "-n": "",
@@ -92,12 +93,12 @@ def execute_locust(request, response, scheduler):
         response["missing"] = values
         return response
 
-    values["domain"] = "http://" + values["domain"]
+    if not values["domain"].startswith("http"):
+        values["domain"] = "http://" + values["domain"]
 
     user.set_task(task, path=task.hash)
     task.create_path()
 
-    experiment_file = task.path + "/experiment.py"
     result_file = task.path + "/result_processed.json"
 
     loadtest_arguments = {
@@ -106,13 +107,15 @@ def execute_locust(request, response, scheduler):
         "$RESULT_FILE": result_file}
 
     vizard_configuration = {
-        "tool":       "Locust",
-        "task":       task.hash,
-        "arguments":  loadtest_arguments
+        "tool":      "Locust",
+        "task":      task.hash,
+        "arguments": values
     }
 
     Vizardplan(task, vizard_configuration)
-    testplan = Testplan(CONF_LOCUST["template"], experiment_file, loadtest_arguments)
+    testplan = Testplan(CONF_LOCUST["template"],
+                        task.path + "/experiment.py",
+                        loadtest_arguments)
 
     lc = Locust({
         "-f":             testplan.target,

@@ -57,7 +57,6 @@ class JMeter(AnalyzeTool):
         key = 0
         for line in lines[1:-1]:
             values = list(line.split(','))
-            print(values)
 
             if ts >= 0:
                 ts_val = values[ts]
