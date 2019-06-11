@@ -103,11 +103,6 @@ svg
     margin: 0 auto 0.5em auto;
 }
 
-.report h4[data-toggle="collapse"]
-{
-    cursor: pointer;
-}
-
 .report table
 {
     overflow: auto;
@@ -123,6 +118,16 @@ svg
 {
     display: table;
     vertical-align: middle;
+}
+
+.report .link
+{
+    cursor: pointer;
+}
+
+.report .hidden
+{
+    display: none;
 }
 
 .v-float

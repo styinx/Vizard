@@ -1,22 +1,47 @@
 $(document).ready(function () {
 
-  $(document).mouseup(function(e)
-  {
-      var container = $(".v-popup");
+  $(document).mouseup(function (e) {
+    var container = $(".v-popup");
 
-      if (!container.is(e.target) && container.has(e.target).length === 0)
-      {
-          container.hide();
-      }
+    if (!container.is(e.target) && container.has(e.target).length === 0) {
+      container.hide();
+    }
   });
 
   Highcharts.setOptions(STYLE_SPLINE);
 
-  Highcharts.stockChart("CPU", {
+  let options = {
+    xAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      showEmpty: false,
+      lineWidth: 1,
+      lineColor: "#333",
+      labels: {
+        rotation: -45,
+        x: 15,
+        formatter: function () {
+          return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
+        }
+      }
+    }, {
+      visible: false,
+      labels: {
+        formatter: function () {
+          return false;
+        }
+      }
+    }]
+  };
+
+  Highcharts.stockChart("CPU", merge(options, {
+    legend: {enabled: true},
     series: [{
       name: "CPU (%)",
+      xAxis: 0,
       data: [
-        [1337700010000, 76],
+        [1320000010000, 76],
         [1337700020000, 11],
         [1337700030000, 8],
         [1337700040000, 43],
@@ -28,7 +53,7 @@ $(document).ready(function () {
         [1337700100000, 39],
         [1337700110000, 72],
         [1337700120000, 10],
-        {x: 1337700130000, y: 99, marker: {enabled: true, lineColor: "red", lineWidth: 3, borderColor: "red"}},
+        {x: 1337700130000, y: 99, marker: {enabled: true, fillColor: "red"}},
         [1337700140000, 23],
         [1337700150000, 78],
         [1337700160000, 59],
@@ -39,7 +64,7 @@ $(document).ready(function () {
         [1337700210000, 58],
         [1337700220000, 22],
         [1337700230000, 9],
-        {x: 1337700240000, y: 1, marker: {enabled: true, lineColor: "green", lineWidth: 3, borderColor: "green"}},
+        {x: 1337700240000, y: 1, marker: {enabled: true, fillColor: "green"}},
         [1337700250000, 9],
         [1337700260000, 57],
         [1337700270000, 75],
@@ -50,15 +75,47 @@ $(document).ready(function () {
         [1337700320000, 21],
         [1337700330000, 98],
         [1337700340000, 43],
-        [1337700350000, 86],
-        [1337700360000, 89],
-        [1337700370000, 60],
-        [1337700380000, 60],
-        [1337700390000, 10],
-        [1337700400000, 39]
+        [1347700350000, 86],
+        [1347700360000, 89],
+        [1347700370000, 60],
+        [1347700380000, 60],
+        [1347700390000, 10],
+        [1347700400000, 39]
       ]
+    }, {
+      name: "Cumulative distribution",
+      xAxis: 1,
+      data: [
+        1,
+        2,
+        3,
+        5,
+        10,
+        10,
+        15,
+        20,
+        25,
+        25,
+        30,
+        32,
+        40,
+        45,
+        50,
+        52,
+        55,
+        58,
+        62,
+        65,
+        70,
+        73,
+        78,
+        82,
+        90,
+        92,
+        95,
+        99]
     }]
-  });
+  }));
 
   Highcharts.stockChart("Traffic", {
     series: [{

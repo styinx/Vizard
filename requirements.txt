@@ -1,3 +1,4 @@
+pandas
 Django == 2.1.7
 
 locustio == 0.9.0

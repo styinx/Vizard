@@ -13,6 +13,7 @@
   <script type="text/javascript" src="{% static 'js/util.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/charts.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/demo.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/text.js' %}"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
   <link rel="stylesheet" type="text/css" href="{% static 'css/query.css' %}">
@@ -223,13 +224,13 @@
     </div>
 
 
-    <h4 data-toggle="collapse" href="#TrafficCollapse">Traffic</h4>
+    <h4 class="link" onclick="toggleVisibility($('#TrafficCollapse'), 0, true)">Traffic</h4>
 
-    <div class="collapse" id="TrafficCollapse">
+    <div class="v-large hidden" id="TrafficCollapse">
 
       <div class="v-sec v-big diagram" id="Traffic"></div>
 
-      <div class="v-sec v-large">
+      <div class="v-sec v-big">
         <div class="v-inline">
         Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
         Cras dapibus iaculis est nec ultrices.
@@ -251,13 +252,13 @@
     </div>
 
 
-    <h4 data-toggle="collapse" href="#ResponseTimeCollapse">Response Time</h4>
+    <h4 class="link" onclick="toggleVisibility($('#ResponseTimeCollapse'), 0, true)">Response Time</h4>
 
-    <div class="collapse" id="ResponseTimeCollapse">
+    <div class="v-large hidden" id="ResponseTimeCollapse">
 
       <div class="v-sec v-big diagram" id="Response Time"></div>
 
-      <div class="v-sec v-large">
+      <div class="v-sec v-big">
 
         <div class="v-inline">
           Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.

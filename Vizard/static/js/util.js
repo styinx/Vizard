@@ -1,15 +1,20 @@
-function toggleVisibility(el, timeout=0) {
+function toggleVisibility(el, timeout=0, soft=false) {
+  let e = $(el);
+
   if(timeout === 0) {
-    if ($(el).is(":hidden"))
-      $(el).show();
+    if (e.is(":hidden")) {
+      e.show();
+      if(soft)
+        e.css('display', 'inline-block');
+    }
     else
-      $(el).hide();
+      e.hide();
   }
   else {
-    if ($(el).is(":hidden"))
-      $(el).delay(timeout).show();
+    if (e.is(":hidden"))
+      e.delay(timeout).show();
     else
-      $(el).delay(timeout).hide();
+      e.delay(timeout).hide();
   }
 }
 
@@ -19,7 +24,14 @@ function validate(what, el)
     "url" : /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
   };
 
-  return patterns[what].test($(el).val());
+  let result = patterns[what].test($(el).val());
+
+  $(el).css('padding', '0.1em 0.4em');
+
+  if(result)
+    $(el).css('border', 'calc(1px + 0.1em) solid green');
+  else
+    $(el).css('border', 'calc(1px + 0.1em) solid red');
 }
 
 function pad(val)

@@ -39,6 +39,9 @@ def copy_tree(source, destination):
             shutil.copy2(s, d)
 
 
+# Archive
+
+
 def pack_zip(source, filename):
     if os.path.isfile(filename):
         os.remove(filename)
@@ -82,6 +85,9 @@ def unpack_url_tar(url, destination):
     unpack_tar(io.BytesIO(urllib.request.urlopen(url).read()), destination)
 
 
+# Read / Write
+
+
 def write(obj, filename):
     open(filename, "w").write(obj)
 
@@ -104,6 +110,19 @@ def serialize(obj, filename):
 
 def unserialize(filename):
     return pickle.load(open(filename, "rb"))
+
+
+# Conversion
+
+def normalize_value(value):
+    cpy = value
+
+    if isinstance(cpy, list):
+        return [normalize_value(x) for x in cpy]
+
+    if isinstance(cpy, str):
+        if cpy.isdigit():
+            return float(cpy)
 
 
 # Django methods

@@ -36,7 +36,7 @@ class LocustRun(HttpLocust):
     def save(self, request_type, name, response_time, response_length, success):
         timestamp = int(round(time() * 1000))
         if timestamp != self.last_entry:
-            self.data[timestamp] = [name, request_type, success, response_time, response_length]
+            self.data[int(timestamp)] = [name, request_type, success, response_time, response_length]
             self.last_entry = timestamp
 
     def write(self):

@@ -46,7 +46,7 @@ let STYLE_SPARK_BASE = {
     },
     formatter: function () {
       return this.points.map(function (point) {
-        return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': ' + padT(point.y);
+        return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': <b>' + padT(point.y) + '</b>';
       });
     },
     positioner: function (w, h, p) {
@@ -109,6 +109,7 @@ let STYLE_BASE = {
     minorTickInterval: 'auto',
     startOnTick: true,
     endOnTick: true,
+    showEmpty: false,
     lineWidth: 1,
     lineColor: "#333",
     labels: {
@@ -127,6 +128,14 @@ let STYLE_BASE = {
     lineColor: "#333",
     opposite: false
   },
+  plotOptions: {series: {marker: {enabled: false, radius: 4}}},
+  legend: {
+    enabled: true,
+    y: 60,
+    align: 'right',
+    layout: 'vertical',
+    verticalAlign: 'top'
+  },
   navigator: {
     enabled: true,
     margin: 5,
@@ -142,7 +151,56 @@ let STYLE_BASE = {
       borderColor: 'black'
     }
   },
-  plotOptions: {series: {marker: {enabled: false}}},
+  tooltip: {
+    formatter: function () {
+      if (!this.points[0].series.xAxis.visible) {
+        return this.points.map(function (point) {
+          let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile';
+          return '<span style="color:' + point.series.color + '">●</span> ' + percentile + ': <b>' + padT(point.y) + '</b>';
+        });
+      } else {
+        return this.points.map(function (point) {
+          return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': <b>' + padT(point.y) + '</b>';
+        });
+      }
+    }
+  },
+  rangeSelector: {
+    enabled: true,
+    verticalAlign: 'top',
+    inputDateFormat: '%d.%m %H:%M',
+    inputEditDateFormat: '%d.%m %H:%M',
+    inputPosition: {align: 'left', y: -32, x: 0},
+    buttonPosition: {align: 'left', y: 32, x: 0},
+    buttons: [{
+      type: 'second',
+      count: 60,
+      text: '60s'
+    }, {
+      type: 'minute',
+      count: 5,
+      text: '5min'
+    }, {
+      type: 'minute',
+      count: 30,
+      text: '30min'
+    }, {
+      type: 'hour',
+      count: 1,
+      text: '1h'
+    }, {
+      type: 'hour',
+      count: 12,
+      text: '12h'
+    }, {
+      type: 'day',
+      count: 1,
+      text: '1d'
+    }, {
+      type: 'all',
+      text: 'All'
+    }]
+  },
   scrollbar: {
     height: 5,
     margin: 0,
@@ -163,30 +221,19 @@ let STYLE_BASE = {
     trackBorderWidth: 0,
     trackBorderRadius: 0,
     rifleColor: 'transparent'
-  },
-  rangeSelector: {enabled: true},
-  legend: {
-    enabled: true,
-    layout: 'horizontal'
-  },
+  }
 };
 
 let STYLE_SPLINE = merge(STYLE_BASE, {
-  chart: {
-    type: "spline"
-  }
+  chart: {type: "spline"}
 });
 
 let STYLE_SCATTER = merge(STYLE_BASE, {
-  chart: {
-    type: "scatter"
-  }
+  chart: {type: "scatter"}
 });
 
 let STYLE_PIE = merge(STYLE_BASE, {
-  chart: {
-    type: "scatter"
-  },
+  chart: {type: "scatter"},
   plotOptions: {
     pie: {
       allowPointSelect: true,

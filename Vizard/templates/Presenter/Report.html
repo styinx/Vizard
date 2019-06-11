@@ -8,13 +8,26 @@
 
   {% include "util/header.html" %}
 
-  <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/highstock.js' %}"></script>
 
   <script type="text/javascript" src="{% static 'js/util.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/charts.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/text.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/query.css' %}">
 
   <script>
+    $(document).mouseup(function(e)
+    {
+        var container = $(".v-popup");
+
+        if (!container.is(e.target) && container.has(e.target).length === 0)
+        {
+            container.hide();
+        }
+    });
+
     $(document).ready(function()
     {
       Highcharts.setOptions(STYLE_SPLINE);
@@ -22,6 +35,7 @@
       {% for metric, values in metrics.items %}
 
           Highcharts.stockChart("{{ metric }}", {
+            legend: {enabled: true},
             series: [{
               name: "{{ metric }}",
               data: {{ values.data }},
@@ -33,16 +47,136 @@
     });
   </script>
 
-  <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
-
 </head>
 <body>
 
   {% include "util/nav.html" %}
 
-  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
+  <div class="settings-sidebar bg-white shadow border-dark">
+    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
+    <img src="{% static 'img/download.svg' %}"/>
+    <img src="{% static 'img/settings_transparent.svg' %}"/>
+  </div>
 
-    <h2><u>Report for {{ hash }}</u></h2>
+  <div class="v-popup">
+    <p>
+      What was the
+      <select class="v-metric v-badge">
+        <option class="v-badge">Response Time</option>
+        <option class="v-badge">CPU Utilization</option>
+        <option class="v-badge">Traffic</option>
+      </select><br>
+      of the domain
+      <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/><br>
+      between
+      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00" max="2020-01-06T00:00"/><br>
+      and
+      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00" max="2020-01-06T00:00"/>
+      .
+    </p>
+  </div>
+
+  <div class="bg-white shadow border-dark report">
+
+    <h2>Performance Report {{ hash }}</h2>
+
+    <h4>CPU Utilization</h4>
+    <div class="v-sec v-big diagram" id="CPU"></div>
+
+    <div class="v-sec v-large">
+
+      <div class="v-float">
+        <table class="table">
+          <thead class="thead">
+            <tr>
+              <th scope="col"></th>
+              <th scope="col">Min.</th>
+              <th scope="col">Max.</th>
+              <th scope="col">Avg.</th>
+              <th scope="col">Med.</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Time:</td>
+              <td>17:24:00</td>
+              <td>17:22:00</td>
+              <td>-</td>
+              <td>-</td>
+            </tr>
+            <tr>
+              <td>Value:</td>
+              <td style="color: green">1%</td>
+              <td style="color: red">99%</td>
+              <td>52%</td>
+              <td>45%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="v-inline">Explanation</div>
+
+      <div class="v-inline">Explanation</div>
+
+    </div>
+
+    <h4>Analysis Summary</h4>
+
+    <div class="v-sec v-large">
+
+      <div class="v-inline">Explanation</div>
+
+      <div class="v-float">
+        <table class="table">
+          <tbody>
+            <tr>
+              <td>Analysis Tool:</td>
+              <td>JMeter</td>
+            </tr>
+            <tr>
+              <td>Duration:</td>
+              <td>2h 20min</td>
+            </tr>
+            <tr>
+              <td>Collected Samples:</td>
+              <td>150536</td>
+            </tr>
+            <tr>
+              <td>Metrics:</td>
+              <td>
+                <a href="#CPU">CPU Utilization</a>,
+                <a href="#Response Time">Response Time</a>,
+                <a href="#Traffic">Traffic</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="v-inline">Explanation</div>
+
+    </div>
+
+{#    <h4 data-toggle="collapse" href="#ResponseTimeCollapse">Response Time</h4>#}
+{##}
+{#    <div class="collapse" id="ResponseTimeCollapse">#}
+{##}
+{#      <div class="v-sec v-big diagram" id="Response Time"></div>#}
+{##}
+{#      <div class="v-sec v-large">#}
+{##}
+{#        <div class="v-inline">#}
+{#          Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.#}
+{##}
+{#        </div>#}
+{#      </div>#}
+{##}
+{#    </div>#}
+
+  </div>
+
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
     <div class="mx-3 my-3 px-3 py-3">
 
