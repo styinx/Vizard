@@ -14,42 +14,45 @@ user_task_lock = Lock()
 class User:
     def __init__(self, request):
         self.ip = get_client_ip(request)
-        self.mail = "asd"
-        self.config = {"email": "", "pro": False, "tasks": {}}
+        self.config = {'email': '', 'pro': False, 'tasks': {}}
         self.hash = hash_id(self.ip)
+        self.registered = False
+
+        if not self.registered:
+            self.hash = '0xffffffff'
 
         self.load()
 
     def __del__(self):
         self.save()
 
-    def set_task(self, task, status="", started=0, completed=0, path=""):
+    def set_task(self, task, status='', started=0, completed=0, path=''):
         user_task_lock.acquire()
 
-        if task.hash not in self.config["tasks"]:
-            self.config["tasks"][task.hash] = {"status": "", "started": 0, "completed": 0, "path": ""}
+        if task.hash not in self.config['tasks']:
+            self.config['tasks'][task.hash] = {'status': '', 'started': 0, 'completed': 0, 'path': ''}
 
-        if status != "":
-            self.config["tasks"][task.hash]["status"] = status
+        if status != '':
+            self.config['tasks'][task.hash]['status'] = status
 
         if started != 0:
-            self.config["tasks"][task.hash]["started"] = started
+            self.config['tasks'][task.hash]['started'] = started
 
         if completed != 0:
-            self.config["tasks"][task.hash]["completed"] = completed
+            self.config['tasks'][task.hash]['completed'] = completed
 
-        if path != "":
-            self.config["tasks"][task.hash]["path"] = path
+        if path != '':
+            self.config['tasks'][task.hash]['path'] = path
 
         user_task_lock.release()
         self.save()
 
     def get_tasks(self):
-        return self.config["tasks"]
+        return self.config['tasks']
 
     def create(self):
-        path = USER_PATH + "/" + self.hash
-        file = path + "/config.dat"
+        path = USER_PATH + '/' + self.hash
+        file = path + '/config.dat'
 
         if not os.path.exists(path):
             os.makedirs(path)
@@ -61,16 +64,16 @@ class User:
         self.create()
 
         user_save_lock.acquire()
-        serialize(self.config, USER_PATH + "/" + self.hash + "/config.dat")
+        serialize(self.config, USER_PATH + '/' + self.hash + '/config.dat')
         user_save_lock.release()
 
     def load(self):
         self.create()
 
-        self.config = unserialize(USER_PATH + "/" + self.hash + "/config.dat")
+        self.config = unserialize(USER_PATH + '/' + self.hash + '/config.dat')
 
     def valid(self, task):
-        if task in self.config["tasks"]:
+        if task in self.config['tasks']:
             return True
         return False
 
@@ -85,7 +88,7 @@ class Task:
         self.e_kwargs = kwargs
         self.p_kwargs = kwargs
 
-        self.path = TASK_PATH + "/" + self.hash
+        self.path = TASK_PATH + '/' + self.hash
 
     def create_path(self):
         if os.path.exists(self.path):
@@ -125,7 +128,7 @@ class TaskScheduler:
     def add_task(self, task, user):
         self.lock.acquire()
         self.queue.append({user: task})
-        user.set_task(task, status="pending")
+        user.set_task(task, status='pending')
         self.lock.release()
 
     def run(self):
@@ -139,11 +142,11 @@ class TaskScheduler:
                 thread = Thread(target=task)
                 thread.start()
 
-                user.set_task(task, status="running", started=time())
+                user.set_task(task, status='running', started=time())
 
                 thread.join()
 
-                user.set_task(task, status="complete", completed=time())
+                user.set_task(task, status='complete', completed=time())
                 user.save()
 
                 self.lock.acquire()

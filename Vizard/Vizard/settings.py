@@ -41,7 +41,7 @@ ROOT_URLCONF = 'Vizard.urls'
 TEMPLATES = [
     {
         'BACKEND':  'django.template.backends.django.DjangoTemplates',
-        'DIRS':     ["templates", "Vizard/templates"],
+        'DIRS':     ['templates', 'Vizard/templates'],
         'APP_DIRS': True,
         'OPTIONS':  {
             'context_processors': [
@@ -93,95 +93,104 @@ USE_TZ = True
 STATIC_URL = '/static'
 
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 ]
 
-RESOURCE_PATH = BASE_DIR + "/resource"
-TOOL_PATH = RESOURCE_PATH + "/tools"
-TEMPLATE_PATH = RESOURCE_PATH + "/templates"
-USER_PATH = RESOURCE_PATH + "/users"
-TASK_PATH = RESOURCE_PATH + "/tasks"
+RESOURCE_PATH = BASE_DIR + '/resource'
+TOOL_PATH = RESOURCE_PATH + '/tools'
+TEMPLATE_PATH = RESOURCE_PATH + '/templates'
+USER_PATH = RESOURCE_PATH + '/users'
+TASK_PATH = RESOURCE_PATH + '/tasks'
 
 MAX_THREADS = psutil.cpu_count()
 
 RESPONSE = {
-    "status":  200,
-    "message": ""
+    'status':  200,
+    'message': ''
 }
 
 ERROR = {
-    "200": "All good.",
-    "400": "",
-    "404": "",
-    "501": "We are sorry, this feature is currently not implemented."
+    '200': 'All good.',
+    '400': '',
+    '404': '',
+    '501': 'We are sorry, this feature is currently not implemented.'
 }
 
-JMETER_VERSION = "apache-jmeter-5.1.1"
+JMETER_VERSION = 'apache-jmeter-5.1.1'
 CONF_JMETER = {
-    "path":            TOOL_PATH + "/" + JMETER_VERSION,
-    "executable_path": TOOL_PATH + "/" + JMETER_VERSION + "/bin/",
-    "template":        TEMPLATE_PATH + "/JMeter_template.jmx",
-    "download_url":    "https://www-eu.apache.org/dist/jmeter/binaries/" + JMETER_VERSION + ".tgz"
+    'path':            TOOL_PATH + '/' + JMETER_VERSION,
+    'executable_path': TOOL_PATH + '/' + JMETER_VERSION + '/bin/',
+    'template':        TEMPLATE_PATH + '/JMeter_template.jmx',
+    'download_url':    'https://www-eu.apache.org/dist/jmeter/binaries/' + JMETER_VERSION + '.tgz'
 }
 
 CONF_LOCUST = {
     # executable is installed via pip
-    "template": TEMPLATE_PATH + "/Locust_template.py",
+    'template': TEMPLATE_PATH + '/Locust_template.py',
 }
 
-GATLING_VERSION = "gatling-charts-highcharts-bundle-3.1.2"
+GATLING_VERSION = 'gatling-charts-highcharts-bundle-3.1.2'
 CONF_GATLING = {
-    "path":            TOOL_PATH + "/" + GATLING_VERSION,
-    "executable_path": TOOL_PATH + "/" + GATLING_VERSION + "/bin/",
-    "template":        TEMPLATE_PATH + "/Gatling_template.py",
-    "download_url":    "https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/3.1.2/gatling-charts-highcharts-bundle-3.1.2-bundle.zip"
+    'path':            TOOL_PATH + '/' + GATLING_VERSION,
+    'executable_path': TOOL_PATH + '/' + GATLING_VERSION + '/bin/',
+    'template':        TEMPLATE_PATH + '/Gatling_template.py',
+    'download_url':    'https://repo1.maven.org/maven2/io/gatling/highcharts/gatling-charts-highcharts-bundle/3.1.2/gatling-charts-highcharts-bundle-3.1.2-bundle.zip'
 }
 
 REPORT = {
-    "JMeter": {
-        "headers": ["timeStamp", "elapsed", "responseCode", "success", "bytes",
-                    "sentBytes", "grpThreads", "allThreads", "Latency", "IdleTime", "Connect"],
-        "metrics": {
-            "elapsed time":     {
-                "index": 1,
-                "type":  "continuous"
+    'JMeter': {
+        'headers': ['timeStamp', 'elapsed', 'responseCode', 'success', 'bytes',
+                    'sentBytes', 'grpThreads', 'allThreads', 'Latency', 'IdleTime', 'Connect'],
+        'metrics': {
+            'elapsed time':     {
+                'index': 1,
+                'type':  'spline',
+                'unit':  'ms'
             },
-            "status":           {
-                "index": 3,
-                "type":  "portion"
+            'status':           {
+                'index': 3,
+                'type':  'pie',
+                'unit':  ''
             },
-            "received traffic": {
-                "index": 4,
-                "type":  "discrete"
+            'received traffic': {
+                'index': 4,
+                'type':  'bar',
+                'unit':  'bytes'
             },
-            "sent traffic":     {
-                "index": 5,
-                "type":  "discrete"
+            'sent traffic':     {
+                'index': 5,
+                'type':  'column',
+                'unit':  'bytes',
             },
-            "latency":          {
-                "index": 8,
-                "type":  "continuous"
+            'latency':          {
+                'index': 8,
+                'type':  'spline',
+                'unit':  'ms'
             },
-            "response time":    {
-                "index": [1, 8, 9, 10],
-                "type":  "continuous"
+            'response time':    {
+                'index': [1, 8, 9, 10],
+                'type':  'spline',
+                'unit':  'ms'
             },
         }
     },
-    "Locust": {
-        "headers": ["timeStamp", "service", "type", "success", "responseTime", "bytes"],
-        "metrics": {
-            "status":        {
-                "index": 3,
-                "type":  "portion"
+    'Locust': {
+        'headers': ['timeStamp', 'service', 'type', 'success', 'responseTime', 'bytes'],
+        'metrics': {
+            # 'status':        {
+            #     'index': 2,
+            #     'type':  'pie',
+            #     'unit':  ''
+            # },
+            'response time': {
+                'index': 3,
+                'type':  'spline',
+                'unit':  'ms'
             },
-            "response time": {
-                "index": 4,
-                "type":  "continuous"
-            },
-            "sent traffic":  {
-                "index": 5,
-                "type":  "discrete"
+            'sent traffic':  {
+                'index': 4,
+                'type':  'column',
+                'unit':  'bytes per request'
             },
         }
     }

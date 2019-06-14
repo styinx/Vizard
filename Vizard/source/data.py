@@ -36,7 +36,7 @@ class Series:
         return self
 
     def addValue(self, *args):
-        index, value, key = self.index, None, ""
+        index, value, key = self.index, None, ''
 
         if len(args) > 0:
 
@@ -56,7 +56,7 @@ class Series:
                 elif isinstance(args[2], str):
                     key = args[2]
 
-            if key != "":
+            if key != '':
                 self.values[index] = {key: value}
             else:
                 self.values[index] = value
@@ -91,14 +91,14 @@ class Series:
 
     def addStr(self, args):
         if isinstance(args, str):
-            _range = re.match(r"(\d+):(\d+)(:(\d+))", args)
+            _range = re.match(r'(\d+):(\d+)(:(\d+))', args)
             while _range:
                 groups = _range.groups()
                 start, stop, step = int(groups[0]), int(groups[1]), 1
                 if len(groups) == 4:
                     step = int(groups[3])
                 self.addList(list(range(start, stop, step)))
-                args = re.sub(r"(\d+):(\d+)(:(\d+))", "", args)
-                _range = re.match(r"(\d+):(\d+)(:(\d+))", args)
+                args = re.sub(r'(\d+):(\d+)(:(\d+))', '', args)
+                _range = re.match(r'(\d+):(\d+)(:(\d+))', args)
                 print(list(range(start, stop, step)))
         return self

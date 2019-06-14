@@ -39,33 +39,33 @@
 
   {% else %}
 
-  <div class="container main-box">
+    {% if hash == '0xffffffff' %}
 
-    <div class="row">
+    <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
 
-      <a href="/my/tasks" class="col shadow tile-box">
-        <h4 class="font-weight-bolder">Tasks</h4>
-      </a>
-
-      <a href="/my/reports" class="col shadow tile-box">
-        <h4 class="font-weight-bolder">Reports</h4>
-      </a>
+      <div>It seems that you are not logged in. You can login <s><a href="">here</a></s>.</div>
 
     </div>
 
-    <!--<div class="row">-->
+    {% else %}
 
-      <!--<div class="col shadow tile-box">-->
-        <!--<h4 class="font-weight-bolder"></h4>-->
-      <!--</div>-->
+    <div class="container main-box">
 
-      <!--<div class="col shadow tile-box">-->
-        <!--<h4 class="font-weight-bolder"></h4>-->
-      <!--</div>-->
+      <div class="row">
 
-    <!--</div>-->
+        <a href="/my/tasks" class="col shadow tile-box">
+          <h4 class="font-weight-bolder">Tasks</h4>
+        </a>
 
-  </div>
+        <a href="/my/reports" class="col shadow tile-box">
+          <h4 class="font-weight-bolder">Reports</h4>
+        </a>
+
+      </div>
+
+    </div>
+
+    {% endif %}
 
   {% endif %}
 

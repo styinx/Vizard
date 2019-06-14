@@ -7,10 +7,10 @@ class ConfigurableTest(TestCase):
     def testSetItem(self):
 
         c = Configurable()
-        c["name"] = "peter pan"
-        self.assertEqual(c["name"], "peter pan")
-        self.assertEqual(c.name, "peter pan")
+        c['name'] = 'peter pan'
+        self.assertEqual(c['name'], 'peter pan')
+        self.assertEqual(c.name, 'peter pan')
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()

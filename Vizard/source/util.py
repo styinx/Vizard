@@ -49,10 +49,10 @@ def pack_zip(source, filename):
     shutil.make_archive(filename, 'zip', source)
 
 
-def pack_zip_files(files, folder_prefix=""):
+def pack_zip_files(files, folder_prefix=''):
     s = io.BytesIO()
 
-    zf = zipfile.ZipFile(s, "w")
+    zf = zipfile.ZipFile(s, 'w')
 
     for original, new in files.items():
         _, name = os.path.split(original)
@@ -89,27 +89,29 @@ def unpack_url_tar(url, destination):
 
 
 def write(obj, filename):
-    open(filename, "w").write(obj)
+    open(filename, 'w').write(obj)
 
 
 def read(filename):
-    return open(filename, "r").read()
+    if filename[-4:] == 'json':
+        return json.loads(open(filename, 'r').read())
+    return open(filename, 'r').read()
 
 
 def writeb(obj, filename):
-    open(filename, "w").write(obj)
+    open(filename, 'w').write(obj)
 
 
 def readb(filename):
-    return open(filename, "r").read()
+    return open(filename, 'r').read()
 
 
 def serialize(obj, filename):
-    pickle.dump(obj, open(filename, "wb"))
+    pickle.dump(obj, open(filename, 'wb'))
 
 
 def unserialize(filename):
-    return pickle.load(open(filename, "rb"))
+    return pickle.load(open(filename, 'rb'))
 
 
 # Conversion
@@ -191,37 +193,37 @@ class Executable(Configurable):
         super().__init__(self.config)
 
         self.executable = executable
-        self.executable_path = ""
-        self.arg_separator = "="
+        self.executable_path = ''
+        self.arg_separator = '='
 
     def execute(self, path=None):
-        args = ""
+        args = ''
 
         if path is not None:
             self.executable_path = path
 
         for arg in self.__iter__():
             args += arg
-            if self.__getitem__(arg) != "":
+            if self.__getitem__(arg) != '':
                 args += self.arg_separator + str(self.__getitem__(arg))
-            args += " "
+            args += ' '
 
-        os.system(self.executable_path + self.executable + " " + args)
+        os.system(self.executable_path + self.executable + ' ' + args)
 
 
 class ConfigFile:
     def __init__(self, target):
-        self.path = ""
-        self.section = "DEFAULT"
-        self.dictionary = {"DEFAULT": {}}
+        self.path = ''
+        self.section = 'DEFAULT'
+        self.dictionary = {'DEFAULT': {}}
         self.separator = '='
-        self.comments = [';', '#', "//"]
-        self.bool_true = ['t', "true", 'y', "yes"]
-        self.bool_false = ['f', "false", 'n', "no"]
+        self.comments = [';', '#', '//']
+        self.bool_true = ['t', 'true', 'y', 'yes']
+        self.bool_false = ['f', 'false', 'n', 'no']
 
         if os.path.exists(target):
             self.path = target
-            f = open(target, mode='r', encoding="utf-8")
+            f = open(target, mode='r', encoding='utf-8')
             self.read(f.readlines())
         else:
             self.read(target.split('\n'))
@@ -240,9 +242,9 @@ class ConfigFile:
 
     def read(self, lines):
         for line in lines:
-            if re.match(r"\s[" + ''.join(self.comments) + "].*", line) or re.match(r"^\s+", line):
+            if re.match(r'\s[' + ''.join(self.comments) + '].*', line) or re.match(r'^\s+', line):
                 continue
-            elif re.match(r"\[.*\]", line):
+            elif re.match(r'\[.*\]', line):
                 self.section = line.replace('[', '').replace(']', '').strip()
                 self.dictionary[self.section] = {}
             else:
@@ -254,12 +256,12 @@ class ConfigFile:
 
     def readEntry(self, value):
         value = value.strip()
-        if re.match(r"\d*\.\d+", value):
+        if re.match(r'\d*\.\d+', value):
             return float(value)
-        elif re.match(r"\d+", value):
+        elif re.match(r'\d+', value):
             return int(value)
-        elif re.match(r"\".*\"", value):
-            return value.split('"')[1]
+        elif re.match(r'\'.*\'', value):
+            return value.split('\'')[1]
         elif value.lower() in self.bool_true:
             return True
         elif value.lower() in self.bool_false:
@@ -271,14 +273,14 @@ class ConfigFile:
             value = value[value.find('(') + 1:value.rfind(')')]
 
             # compute nested functions recursively
-            res = re.search(r"(\w+\.)*\w+\(\w+[^\(\)]*\)", value)
+            res = re.search(r'(\w+\.)*\w+\(\w+[^\(\)]*\)', value)
             if res:
                 while res:
                     res_val = self.readEntry(res[0])
-                    value = re.sub(r"(\w+\.)*\w+\(\w+[^\(\)]*\)", str(res_val), value)
-                    res = re.search(r"(\w+\.)*\w+\(\w+[^\(\)]*\)", value)
+                    value = re.sub(r'(\w+\.)*\w+\(\w+[^\(\)]*\)', str(res_val), value)
+                    res = re.search(r'(\w+\.)*\w+\(\w+[^\(\)]*\)', value)
 
-            arguments = [str(eval(x)) for x in value.split(",")]
+            arguments = [str(eval(x)) for x in value.split(',')]
 
             # import module from string if not yet imported
             if class_name != '':

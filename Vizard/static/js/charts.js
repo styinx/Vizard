@@ -35,22 +35,15 @@ let STYLE_SPARK_BASE = {
   rangeSelector: {enabled: false},
   tooltip: {
     backgroundColor: "white",
-    borderWidth: 1,
-    shadow: false,
     outside: true,
     hideDelay: 0,
     style: {
-      transition: '100ms',
-      padding: 0,
-      fontFamily: 'Roboto Mono'
+      padding: 0
     },
     formatter: function () {
       return this.points.map(function (point) {
-        return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': <b>' + padT(point.y) + '</b>';
+        return '<span style="color:' + point.series.color + '">●</span><b>' + padT(point.y) + '</b>';
       });
-    },
-    positioner: function (w, h, p) {
-      return {x: chart.plotLeft, y: chart.plotTop};
     }
   },
   plotOptions: {
@@ -105,7 +98,7 @@ let STYLE_BASE = {
   },
   title: {text: ""},
   credits: {text: ""},
-  xAxis: {
+  xAxis: [{
     minorTickInterval: 'auto',
     startOnTick: true,
     endOnTick: true,
@@ -119,7 +112,14 @@ let STYLE_BASE = {
         return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
       }
     }
-  },
+  }, {
+    visible: false,
+    labels: {
+      formatter: function () {
+        return false;
+      }
+    }
+  }],
   yAxis: {
     minorTickInterval: 'auto',
     startOnTick: true,
@@ -152,17 +152,39 @@ let STYLE_BASE = {
     }
   },
   tooltip: {
-    formatter: function () {
-      if (!this.points[0].series.xAxis.visible) {
-        return this.points.map(function (point) {
-          let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile';
-          return '<span style="color:' + point.series.color + '">●</span> ' + percentile + ': <b>' + padT(point.y) + '</b>';
-        });
+    shared: true,
+    split: true,
+    outside: true,
+    backgroundColor: 'white',
+    positioner: function (width, height, point) {
+      let point_pos = point.plotX + this.chart.plotLeft - width / 2;
+      let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
+
+      if (point.isHeader) {
+        return {
+          x: Math.max(0, Math.min(point_pos, max_right)),
+          y: this.chart.chartHeight
+        };
       } else {
-        return this.points.map(function (point) {
-          return '<span style="color:' + point.series.color + '">●</span> ' + time(point.x) + ': <b>' + padT(point.y) + '</b>';
-        });
+        return {
+          x: Math.max(0, Math.min(point_pos, max_right)),
+          y: 0
+        };
       }
+    },
+    formatter: function () {
+      return [time(this.x, "<b>%d.%m.%Y</b><br><b>%H:%M:%S.%f</b>")].concat(
+        this.points.map(function (point) {
+          let val = padT(dec(point.y));
+
+          if (point.series.xAxis.visible) {
+            return '<span style="color:' + point.series.color + '">●</span> <b>' + val + '</b>';
+          } else {
+            let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile'
+            return '<span style="color:' + point.series.color + '">●</span> ' + percentile + '<b>' + val + '</b>';
+          }
+        })
+      );
     }
   },
   rangeSelector: {
@@ -232,8 +254,16 @@ let STYLE_SCATTER = merge(STYLE_BASE, {
   chart: {type: "scatter"}
 });
 
+let STYLE_COLUMN = merge(STYLE_BASE, {
+  chart: {type: "column"}
+});
+
+let STYLE_BAR = merge(STYLE_BASE, {
+  chart: {type: "bar"}
+});
+
 let STYLE_PIE = merge(STYLE_BASE, {
-  chart: {type: "scatter"},
+  chart: {type: "pie"},
   plotOptions: {
     pie: {
       allowPointSelect: true,
@@ -245,3 +275,11 @@ let STYLE_PIE = merge(STYLE_BASE, {
     }
   }
 });
+
+
+let STYLE_CHART = {
+  "spline": STYLE_SPLINE,
+  "pie": STYLE_PIE,
+  "bar": STYLE_BAR,
+  "column": STYLE_COLUMN,
+};

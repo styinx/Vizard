@@ -14,19 +14,19 @@ scheduler_thread.start()
 
 
 def index(request):
-    return render(request, "Analyzer/Index.html")
+    return render(request, 'Analyzer/Index.html')
 
 
 def tasks(request):
     user = User(request)
     response = RESPONSE.copy()
-    response["tasks"] = {}
+    response['tasks'] = {}
 
     for task in user.get_tasks():
         if user.valid(task):
-            response["tasks"][task] = user.config["tasks"][task]["status"]
+            response['tasks'][task] = user.config['tasks'][task]['status']
 
-    return render(request, "Analyzer/Tasks.html", response)
+    return render(request, 'Analyzer/Tasks.html', response)
 
 
 def loadtest(request):
@@ -36,14 +36,14 @@ def loadtest(request):
 def loadtest_jmeter(request):
     response = execute_jmeter(request, RESPONSE.copy(), scheduler)
 
-    return render(request, "Analyzer/Analysis.html", response)
+    return render(request, 'Analyzer/Analysis.html', response)
 
 
 def loadtest_locust(request):
     response = execute_locust(request, RESPONSE.copy(), scheduler)
 
-    return render(request, "Analyzer/Analysis.html", response)
+    return render(request, 'Analyzer/Analysis.html', response)
 
 
 def stresstest(request):
-    return HttpResponse("TODO")
+    return HttpResponse('TODO')

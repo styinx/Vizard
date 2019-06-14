@@ -4,7 +4,7 @@ from time import time
 
 
 def index(l):
-    l.client.get("/")
+    l.client.get('/')
 
 
 class DomainTaskSet(TaskSet):
@@ -12,11 +12,11 @@ class DomainTaskSet(TaskSet):
 
 
 class LocustRun(HttpLocust):
-    result_file = "$RESULT_FILE"
+    result_file = '$RESULT_FILE'
     min_wait = $MIN_WAIT
     max_wait = $MAX_WAIT
     task_set = DomainTaskSet
-    header = ["timeStamp", "service", "type", "success", "responseTime", "bytes"]
+    header = ['timeStamp', 'service', 'type', 'success', 'responseTime', 'bytes']
     data = {}
     last_entry = 0
 
@@ -27,6 +27,12 @@ class LocustRun(HttpLocust):
         events.request_failure += self.save_fail
         events.quitting += self.write
 
+    @staticmethod
+    def success(result):
+        if result:
+            return 'true'
+        return 'false'
+
     def save_succ(self, request_type, name, response_time, response_length):
         self.save(request_type, name, response_time, response_length, 1)
 
@@ -36,6 +42,7 @@ class LocustRun(HttpLocust):
     def save(self, request_type, name, response_time, response_length, success):
         timestamp = int(round(time() * 1000))
         if timestamp != self.last_entry:
+            success = LocustRun.success(success)
             self.data[int(timestamp)] = [name, request_type, success, response_time, response_length]
             self.last_entry = timestamp
 

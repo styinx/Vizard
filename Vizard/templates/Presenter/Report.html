@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 
-  <title>Report {{ path }}</title>
-
   {% load static %}
+  {% load text %}
+
+  <title>Report {{ hash }}</title>
 
   {% include "util/header.html" %}
 
@@ -15,32 +16,69 @@
   <script type="text/javascript" src="{% static 'js/text.js' %}"></script>
 
   <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
-  <link rel="stylesheet" type="text/css" href="{% static 'css/query.css' %}">
 
   <script>
-    $(document).mouseup(function(e)
-    {
+
+    $(document).ready(function () {
+      {# Add event handler for pop-up #}
+      $(document).mouseup(function (e) {
         var container = $(".v-popup");
 
-        if (!container.is(e.target) && container.has(e.target).length === 0)
-        {
-            container.hide();
+        if (!container.is(e.target) && container.has(e.target).length === 0) {
+          container.hide();
         }
-    });
+      });
 
-    $(document).ready(function()
-    {
-      Highcharts.setOptions(STYLE_SPLINE);
 
+      {# Create diagrams for all metrics #}
       {% for metric, values in metrics.items %}
 
-          Highcharts.stockChart("{{ metric }}", {
-            legend: {enabled: true},
-            series: [{
-              name: "{{ metric }}",
-              data: {{ values.data }},
-              showInLegend: true
-            }]
+        Highcharts.setOptions(STYLE_CHART["{{ values.type }}"]);
+
+        Highcharts.stockChart("{{ metric|idfy }}", merge({
+          xAxis: [{
+            minorTickInterval: 'auto',
+            startOnTick: true,
+            endOnTick: true,
+            showEmpty: false,
+            lineWidth: 1,
+            lineColor: "#333",
+            labels: {
+              rotation: -45,
+              x: 15,
+              formatter: function () {
+                return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
+              }
+            }
+          }, {
+            visible: false,
+            labels: {
+              formatter: function () {
+                return false;
+              }
+            }
+          }]
+        }, {
+          legend: {enabled: true},
+          series: [{
+            name: "{{ metric|cap }} {{ values.unit|empty:'('|add:values.unit|add:')' }}",
+            data: {{ values.data }},
+            showInLegend: true
+          }, {
+            name: "Cumulative distribution",
+            data: {{ values.cumulative }},
+            type: 'spline',
+            visible: false,
+            xAxis: 1
+          }],
+          tooltip: {valueSuffix: "{{ values.unit }}"}
+        }));
+
+        {# Add link onclick handler for hidden metrics #}
+        $("#{{ metric|idfy }}Anchor").on('click',
+          function () {
+            $("#{{ metric|idfy }}Collapse").css('display', 'inline-block');
+            return true;
           });
 
       {% endfor %}
@@ -50,147 +88,142 @@
 </head>
 <body>
 
-  {% include "util/nav.html" %}
+{% include "util/nav.html" %}
 
-  <div class="settings-sidebar bg-white shadow border-dark">
-    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
-    <img src="{% static 'img/download.svg' %}"/>
-    <img src="{% static 'img/settings_transparent.svg' %}"/>
-  </div>
+<div class="settings-sidebar bg-white shadow border-dark">
+  <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
+  <a href="/present/report/{{ hash }}/export"><img src="{% static 'img/download.svg' %}"/></a>
+  <img src="{% static 'img/settings_transparent.svg' %}"/>
+</div>
 
-  <div class="v-popup">
-    <p>
-      What was the
-      <select class="v-metric v-badge">
-        <option class="v-badge">Response Time</option>
-        <option class="v-badge">CPU Utilization</option>
-        <option class="v-badge">Traffic</option>
-      </select><br>
-      of the domain
-      <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/><br>
-      between
-      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00" max="2020-01-06T00:00"/><br>
-      and
-      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00" max="2020-01-06T00:00"/>
-      .
-    </p>
-  </div>
-
-  <div class="bg-white shadow border-dark report">
-
-    <h2>Performance Report {{ hash }}</h2>
-
-    <h4>CPU Utilization</h4>
-    <div class="v-sec v-big diagram" id="CPU"></div>
-
-    <div class="v-sec v-large">
-
-      <div class="v-float">
-        <table class="table">
-          <thead class="thead">
-            <tr>
-              <th scope="col"></th>
-              <th scope="col">Min.</th>
-              <th scope="col">Max.</th>
-              <th scope="col">Avg.</th>
-              <th scope="col">Med.</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Time:</td>
-              <td>17:24:00</td>
-              <td>17:22:00</td>
-              <td>-</td>
-              <td>-</td>
-            </tr>
-            <tr>
-              <td>Value:</td>
-              <td style="color: green">1%</td>
-              <td style="color: red">99%</td>
-              <td>52%</td>
-              <td>45%</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="v-inline">Explanation</div>
-
-      <div class="v-inline">Explanation</div>
-
-    </div>
-
-    <h4>Analysis Summary</h4>
-
-    <div class="v-sec v-large">
-
-      <div class="v-inline">Explanation</div>
-
-      <div class="v-float">
-        <table class="table">
-          <tbody>
-            <tr>
-              <td>Analysis Tool:</td>
-              <td>JMeter</td>
-            </tr>
-            <tr>
-              <td>Duration:</td>
-              <td>2h 20min</td>
-            </tr>
-            <tr>
-              <td>Collected Samples:</td>
-              <td>150536</td>
-            </tr>
-            <tr>
-              <td>Metrics:</td>
-              <td>
-                <a href="#CPU">CPU Utilization</a>,
-                <a href="#Response Time">Response Time</a>,
-                <a href="#Traffic">Traffic</a>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
-      <div class="v-inline">Explanation</div>
-
-    </div>
-
-{#    <h4 data-toggle="collapse" href="#ResponseTimeCollapse">Response Time</h4>#}
-{##}
-{#    <div class="collapse" id="ResponseTimeCollapse">#}
-{##}
-{#      <div class="v-sec v-big diagram" id="Response Time"></div>#}
-{##}
-{#      <div class="v-sec v-large">#}
-{##}
-{#        <div class="v-inline">#}
-{#          Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.#}
-{##}
-{#        </div>#}
-{#      </div>#}
-{##}
-{#    </div>#}
-
-  </div>
-
-  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
-
-    <div class="mx-3 my-3 px-3 py-3">
-
+<div class="v-popup">
+  <p>
+    What was the
+    <select class="v-metric v-badge">
       {% for metric, values in metrics.items %}
 
-        <h4>{{ metric }}</h4>
-        <div class="mx-3 my-3 px-3 py-3" id="{{ metric }}"></div>
-        <p class="mx-3 my-3 px-3 py-3">{{ values.text }}</p>
+        <option class="v-badge">{{ metric }}</option>
 
       {% endfor %}
+    </select><br>
+    of the domain
+    <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/><br>
+    between
+    <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00"
+           max="2020-01-06T00:00"/><br>
+    and
+    <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00"
+           max="2020-01-06T00:00"/>
+    .
+  </p>
+</div>
+
+<div class="bg-white shadow border-dark report">
+
+  <h2 align="center">Performance report for task {{ hash }}</h2>
+
+  <h4>Requested metric TODO</h4>
+  <div class="v-sec v-big diagram" id="CPU"></div>
+
+  <div class="v-sec v-large">
+
+    <div class="v-float">
+      <table class="table">
+        <thead class="thead">
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Min.</th>
+          <th scope="col">Max.</th>
+          <th scope="col">Avg.</th>
+          <th scope="col">Med.</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+          <td>Time:</td>
+          <td>17:24:00</td>
+          <td>17:22:00</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+        <tr>
+          <td>Value:</td>
+          <td style="color: green">1%</td>
+          <td style="color: red">99%</td>
+          <td>52%</td>
+          <td>45%</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="v-inline">Explanation</div>
+
+    <div class="v-inline">Explanation</div>
+
+  </div>
+
+  <h4>Analysis Summary</h4>
+
+  <div class="v-sec v-large">
+
+    <div class="v-inline">Explanation</div>
+
+    <div class="v-float">
+      <table class="table">
+        <tbody>
+        <tr>
+          <td>Analysis Tool:</td>
+          <td>JMeter</td>
+        </tr>
+        <tr>
+          <td>Duration:</td>
+          <td>2h 20min</td>
+        </tr>
+        <tr>
+          <td>Collected Samples:</td>
+          <td>150536</td>
+        </tr>
+        <tr>
+          <td>Metrics:</td>
+          <td>
+            {% for metric, values in metrics.items %}
+
+              <a href="#{{ metric|idfy }}Collapse" id="{{ metric|idfy }}Anchor">{{ metric|cap }}</a><br>
+
+            {% endfor %}
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="v-inline">Explanation</div>
+
+  </div>
+
+
+  {% for metric, values in metrics.items %}
+
+    <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
+
+    <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
+
+      <div class="v-sec v-big diagram" id="{{ metric|idfy }}"></div>
+
+      <div class="v-sec v-big">
+
+        <div class="v-inline">
+          Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
+        </div>
+
+      </div>
 
     </div>
 
-  </div>
+  {% endfor %}
+
+</div>
 
 </body>
 </html>

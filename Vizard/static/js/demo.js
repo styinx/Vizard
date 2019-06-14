@@ -84,6 +84,7 @@ $(document).ready(function () {
       ]
     }, {
       name: "Cumulative distribution",
+      visible: false,
       xAxis: 1,
       data: [
         1,

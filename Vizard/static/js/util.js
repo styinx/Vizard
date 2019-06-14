@@ -1,16 +1,14 @@
-function toggleVisibility(el, timeout=0, soft=false) {
+function toggleVisibility(el, timeout = 0, soft = false) {
   let e = $(el);
 
-  if(timeout === 0) {
+  if (timeout === 0) {
     if (e.is(":hidden")) {
       e.show();
-      if(soft)
+      if (soft)
         e.css('display', 'inline-block');
-    }
-    else
+    } else
       e.hide();
-  }
-  else {
+  } else {
     if (e.is(":hidden"))
       e.delay(timeout).show();
     else
@@ -18,40 +16,41 @@ function toggleVisibility(el, timeout=0, soft=false) {
   }
 }
 
-function validate(what, el)
-{
+function validate(what, el) {
   let patterns = {
-    "url" : /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
+    "url": /[-a-zA-Z0-9@:%_\+.~#?&//=]{2,256}\.[a-z]{2,4}\b(\/[-a-zA-Z0-9@:%_\+.~#?&//=]*)?/gi
   };
 
   let result = patterns[what].test($(el).val());
 
   $(el).css('padding', '0.1em 0.4em');
 
-  if(result)
+  if (result)
     $(el).css('border', 'calc(1px + 0.1em) solid green');
   else
     $(el).css('border', 'calc(1px + 0.1em) solid red');
 }
 
-function pad(val)
-{
-  if(Math.log10(val) < 1)
-  {
+function pad(val) {
+  if (Math.log10(val) < 1) {
     return "0" + val;
   }
   return val;
 }
 
-function padT(text, width=5)
-{
-  let space = " ";
-  let t = text + "";
-  if(t.length < width)
-    return space.repeat(width - t.length) + t + space;
+function dec(val, decimals=2) {
+  return val.toFixed(decimals);
 }
 
-function time(val, format="%d.%m.%Y %H:%M:%S.%f") {
+function padT(text, width = 5) {
+  let space = " ";
+  let t = text + "";
+  if (t.length < width)
+    return space.repeat(width - t.length) + t + space;
+  return text;
+}
+
+function time(val, format = "%d.%m.%Y %H:%M:%S.%f") {
   let d = new Date(val);
   let D = pad(d.getDate());
   let M = pad(d.getMonth() + 1);
@@ -107,10 +106,10 @@ function range(start, end, step) {
 
 function merge(first, second) {
   let cpy = Object.assign({}, first);
-	for (var prop in second) {
-		if (second.hasOwnProperty(prop)) {
-			cpy[prop] = second[prop];
-		}
-	}
-	return cpy;
+  for (var prop in second) {
+    if (second.hasOwnProperty(prop)) {
+      cpy[prop] = second[prop];
+    }
+  }
+  return cpy;
 }

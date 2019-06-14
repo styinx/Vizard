@@ -18,11 +18,24 @@ function v_number(number, noun) {
   }
 }
 
-function v_capital(text, capital) {
-  if (capital) {
+function v_capital(text, capital='first') {
+  if (capital === 'first') {
     return text[0].toUpperCase() + text.substr(1);
-  } else {
+  }
+  else if (capital === 'all') {
+    return text.split(' ').map(function(t){return v_capital(t, 'first')}).join(' ');
+  }
+  else {
     return text;
+  }
+}
+
+function v_empty(text, value) {
+  if(value !== "") {
+    return text + value;
+  }
+  else {
+    return "";
   }
 }
 
