@@ -57,10 +57,8 @@ def collect_report(request, response, _id, export):
     response['metrics'] = {}
 
     if os.path.exists(TASK_PATH + '/' + _id):
-        #if _id in user.get_tasks():
-        # task = user.get_tasks()[_id]
         path = TASK_PATH + '/' + _id
-        data = unserialize(path + '/result_cached.dat')
+        df = unserialize(path + '/result_cached.dat').df
         meta = read(path + '/vizard.json')
 
         response['meta'] = {
@@ -78,8 +76,8 @@ def collect_report(request, response, _id, export):
                 'text':       'dummy text',
                 'unit':       unit,
                 'type':       data_type,
-                'data':       data.df[index].tolist(),
-                'cumulative': sorted(data.df[index].values)
+                'data':       [[x[0], x[1]] for x in df[index].items()],
+                'cumulative': sorted(df[index].values)
             }
 
         if export is None:

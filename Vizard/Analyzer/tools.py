@@ -58,10 +58,11 @@ class JMeter(AnalyzeTool):
             result[normalize_value(ts_val)] = normalize_value(values)
 
         file_prefix = result_file[:result_file.rfind('.')]
+
         processed = dict(sorted(result.items()))
 
         headers = {i: x for i, x in enumerate(lines[0].split(',')[1:])}
-        df = AnalysisData(result, headers)
+        df = AnalysisData(processed, headers)
 
         write(dump(processed), file_prefix + '_processed.json')
         serialize(df, file_prefix + '_cached.dat')

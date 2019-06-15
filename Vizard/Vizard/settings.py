@@ -148,23 +148,23 @@ REPORT = {
                 'type':  'spline',
                 'unit':  'ms'
             },
-            # 'status':           {
-            #     'index': 3,
-            #     'col':   'success',
-            #     'type':  'pie',
-            #     'unit':  ''
-            # },
+            'request status':           {
+                'index': 3,
+                'col':   'success',
+                'type':  'pie',
+                'unit':  ''
+            },
             'received traffic': {
                 'index': 4,
                 'col':   'bytes',
                 'type':  'column',
-                'unit':  'bytes'
+                'unit':  'bytes per request'
             },
             'sent traffic':     {
                 'index': 5,
                 'col':   'sentBytes',
                 'type':  'column',
-                'unit':  'bytes',
+                'unit':  'bytes per request',
             },
             'latency':          {
                 'index': 8,
@@ -195,7 +195,7 @@ REPORT = {
     'Locust': {
         'headers': ['timeStamp', 'service', 'type', 'success', 'responseTime', 'bytes'],
         'metrics': {
-            # 'status':        {
+            # 'request status':        {
             #     'index': 2,
             #     'col': 'success',
             #     'type':  'pie',

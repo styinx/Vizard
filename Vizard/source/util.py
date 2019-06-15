@@ -125,6 +125,10 @@ def normalize_value(value):
     if isinstance(cpy, str):
         if cpy.isdigit():
             return float(cpy)
+        else:
+            if cpy == 'false':
+                return False
+            return True
 
 
 # Django methods

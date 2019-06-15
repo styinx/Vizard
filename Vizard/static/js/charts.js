@@ -128,7 +128,17 @@ let STYLE_BASE = {
     lineColor: "#333",
     opposite: false
   },
-  plotOptions: {series: {marker: {enabled: false, radius: 4}}},
+  plotOptions: {
+    series: {
+      dataGrouping: {
+        enabled: false
+      },
+      marker: {
+        enabled: false,
+        radius: 4
+      }
+    }
+  },
   legend: {
     enabled: true,
     y: 60,
@@ -283,3 +293,82 @@ let STYLE_CHART = {
   "bar": STYLE_BAR,
   "column": STYLE_COLUMN,
 };
+
+function chart(type, metric_idfy, metric_cap, unit, data, cum) {
+  Highcharts.setOptions(STYLE_CHART[type]);
+
+  switch (type) {
+    case 'spline':
+    case 'column': {
+      _default(metric_idfy, metric_cap, unit, data, cum);
+      break;
+    }
+    case 'pie': {
+      pie(metric_idfy, metric_cap, unit, data, cum);
+    }
+  }
+}
+
+function _default(metric_idfy, metric_cap, unit, data, cum) {
+  Highcharts.stockChart(metric_idfy, merge({
+    xAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      showEmpty: false,
+      lineWidth: 1,
+      lineColor: "#333",
+      labels: {
+        rotation: -45,
+        x: 15,
+        formatter: function () {
+          return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
+        }
+      }
+    }, {
+      visible: false,
+      labels: {
+        formatter: function () {
+          return false;
+        }
+      }
+    }]
+  }, {
+    legend: {enabled: true},
+    series: [{
+      name: metric_cap + unit,
+      data: data,
+      showInLegend: true
+    }, {
+      name: "Cumulative distribution",
+      data: cum,
+      type: 'spline',
+      visible: false,
+      xAxis: 1
+    }]
+  }));
+}
+
+function pie(metric_idfy, metric_cap, unit, data, cum) {
+  Highcharts.stockChart(metric_idfy, merge({
+    tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+    },
+    plotOptions: {
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+                enabled: false
+            },
+            showInLegend: true
+        }
+    },
+    legend: {enabled: true},
+    series: [{
+      name: metric_cap,
+      data: data,
+      showInLegend: true
+    }]
+  }));
+}

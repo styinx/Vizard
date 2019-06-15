@@ -34,11 +34,10 @@ def cap(text, which='first'):
 
     return text
 
-
 @register.filter(name='empty')
 def empty(val, text):
     if val != "":
-        return text
+        return text.replace('%s', val)
     else:
         return ""
 

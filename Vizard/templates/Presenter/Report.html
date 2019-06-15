@@ -33,45 +33,7 @@
       {# Create diagrams for all metrics #}
       {% for metric, values in metrics.items %}
 
-        Highcharts.setOptions(STYLE_CHART["{{ values.type }}"]);
-
-        Highcharts.stockChart("{{ metric|idfy }}", merge({
-          xAxis: [{
-            minorTickInterval: 'auto',
-            startOnTick: true,
-            endOnTick: true,
-            showEmpty: false,
-            lineWidth: 1,
-            lineColor: "#333",
-            labels: {
-              rotation: -45,
-              x: 15,
-              formatter: function () {
-                return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
-              }
-            }
-          }, {
-            visible: false,
-            labels: {
-              formatter: function () {
-                return false;
-              }
-            }
-          }]
-        }, {
-          legend: {enabled: true},
-          series: [{
-            name: "{{ metric|cap }} {{ values.unit|empty:'('|add:values.unit|add:')' }}",
-            data: {{ values.data }},
-            showInLegend: true
-          }, {
-            name: "Cumulative distribution",
-            data: {{ values.cumulative }},
-            type: 'spline',
-            visible: false,
-            xAxis: 1
-          }]
-        }));
+        chart({{ metric|idfy }}, values);
 
         {# Add link onclick handler for hidden metrics #}
         $("#{{ metric|idfy }}Anchor").on('click',
