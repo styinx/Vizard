@@ -70,8 +70,7 @@
             type: 'spline',
             visible: false,
             xAxis: 1
-          }],
-          tooltip: {valueSuffix: "{{ values.unit }}"}
+          }]
         }));
 
         {# Add link onclick handler for hidden metrics #}
@@ -174,7 +173,7 @@
         <tbody>
         <tr>
           <td>Analysis Tool:</td>
-          <td>JMeter</td>
+          <td>{{ meta.tool }}</td>
         </tr>
         <tr>
           <td>Duration:</td>
