@@ -1,3 +1,4 @@
+import os
 import json
 from time import strftime, gmtime
 
@@ -55,7 +56,8 @@ def collect_report(request, response, _id, export):
     response['hash'] = _id
     response['metrics'] = {}
 
-    if True:  # _id in user.get_tasks():
+    if os.path.exists(TASK_PATH + '/' + _id):
+        #if _id in user.get_tasks():
         # task = user.get_tasks()[_id]
         path = TASK_PATH + '/' + _id
         data = unserialize(path + '/result_cached.dat')

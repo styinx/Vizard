@@ -8,8 +8,6 @@ from Vizard.settings import TOOL_PATH, CONF_JMETER, CONF_GATLING
 
 if __name__ == '__main__':
 
-    print('==========\nStart App\n==========\n')
-
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Vizard.settings')
     try:
         from django.core.management import execute_from_command_line
