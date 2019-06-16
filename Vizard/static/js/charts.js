@@ -91,170 +91,201 @@ let STYLE_SPARK_SCATTER = merge(STYLE_SPARK_BASE, {
  * Holds general configuration about HighChart charts.
  */
 let STYLE_BASE = {
-  chart: {
-    spacing: 100,
-    margin: 100,
-    padding: 100
-  },
-  title: {text: ""},
-  credits: {text: ""},
-  xAxis: [{
-    minorTickInterval: 'auto',
-    startOnTick: true,
-    endOnTick: true,
-    showEmpty: false,
-    lineWidth: 1,
-    lineColor: "#333",
-    labels: {
-      rotation: -45,
-      x: 15,
-      formatter: function () {
-        return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
+    chart: {
+      spacing: 100,
+      margin: 100,
+      padding: 100
+    },
+    title: {text: ""},
+    credits: {text: ""},
+    xAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      showEmpty: false,
+      lineWidth: 1,
+      lineColor: "#333",
+      labels: {
+        rotation: -45,
+        x: 15,
+        formatter: function () {
+          return time(this.value, "%d.%m<br>%H:%M:%S.%f");
+        }
       }
-    }
-  }, {
-    visible: false,
-    labels: {
-      formatter: function () {
-        return false;
+    }, {
+      title: '1',
+      visible: false,
+      labels: {
+        formatter: function () {
+          return false;
+        }
       }
-    }
-  }],
-  yAxis: {
-    minorTickInterval: 'auto',
-    startOnTick: true,
-    endOnTick: true,
-    lineWidth: 1,
-    lineColor: "#333",
-    opposite: false
-  },
-  plotOptions: {
-    series: {
-      dataGrouping: {
-        enabled: false
-      },
-      marker: {
-        enabled: false,
-        radius: 4
+    }, {
+      title: '2',
+      visible: false,
+      labels: {
+        formatter: function () {
+          return false;
+        }
       }
-    }
-  },
-  legend: {
-    enabled: true,
-    y: 60,
-    align: 'right',
-    layout: 'vertical',
-    verticalAlign: 'top'
-  },
-  navigator: {
-    enabled: true,
-    margin: 5,
-    height: 35,
-    outlineWidth: 0,
-    outlineColor: 'transparent',
-    xAxis: {labels: {enabled: false}},
-    yAxis: {lineWidth: 0},
-    handles: {
-      height: 20,
-      width: 8,
-      backgroundColor: 'white',
-      borderColor: 'black'
-    }
-  },
-  tooltip: {
-    shared: true,
-    split: true,
-    outside: true,
-    backgroundColor: 'white',
-    positioner: function (width, height, point) {
-      let point_pos = point.plotX + this.chart.plotLeft - width / 2;
-      let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
-
-      if (point.isHeader) {
-        return {
-          x: Math.max(0, Math.min(point_pos, max_right)),
-          y: this.chart.chartHeight
-        };
-      } else {
-        return {
-          x: Math.max(0, Math.min(point_pos, max_right)),
-          y: 0
-        };
+    }],
+    yAxis: {
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: "#333",
+      opposite: false
+    },
+    plotOptions: {
+      series: {
+        dataGrouping: {
+          enabled: false
+        },
+        marker: {
+          enabled: false,
+          radius: 4
+        }
       }
     },
-    formatter: function () {
-      return [time(this.x, "<b>%d.%m.%Y</b><br><b>%H:%M:%S.%f</b>")].concat(
-        this.points.map(function (point) {
-          let val = padT(dec(point.y));
+    legend: {
+      enabled: true,
+      y: 60,
+      align: 'right',
+      layout: 'vertical',
+      verticalAlign: 'top'
+    },
+    navigator: {
+      enabled: true,
+      margin: 5,
+      height: 35,
+      outlineWidth: 0,
+      outlineColor: 'transparent',
+      xAxis: {labels: {enabled: false}},
+      yAxis: {lineWidth: 0},
+      handles: {
+        height: 20,
+        width: 8,
+        backgroundColor: 'white',
+        borderColor: 'black'
+      }
+    },
+    tooltip: {
+      useHTML: true,
+      shared: true,
+      split: true,
+      outside: true,
+      backgroundColor: 'white',
+      positioner: function (width, height, point) {
+        let point_pos = point.plotX + this.chart.plotLeft - width / 2;
+        let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
 
-          if (point.series.xAxis.visible) {
-            return '<span style="color:' + point.series.color + '">●</span> <b>' + val + '</b>';
-          } else {
-            let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile'
-            return '<span style="color:' + point.series.color + '">●</span> ' + percentile + '<b>' + val + '</b>';
-          }
-        })
-      );
+        if (point.isHeader) {
+          return {
+            x: Math.max(0, Math.min(point_pos, max_right)),
+            y: this.chart.chartHeight
+          };
+        } else {
+          return {
+            x: Math.max(0, Math.min(point_pos, max_right)),
+            y: 0
+          };
+        }
+      },
+      formatter: base_tooltip_formatter,
+    },
+    rangeSelector: {
+      enabled: true,
+      verticalAlign:
+        'top',
+      inputDateFormat:
+        '%d.%m %H:%M',
+      inputEditDateFormat:
+        '%d.%m %H:%M',
+      inputPosition:
+        {
+          align: 'left', y:
+            -32, x:
+            0
+        }
+      ,
+      buttonPosition: {
+        align: 'left', y:
+          32, x:
+          0
+      }
+      ,
+      buttons: [{
+        type: 'second',
+        count: 60,
+        text: '60s'
+      }, {
+        type: 'minute',
+        count: 5,
+        text: '5min'
+      }, {
+        type: 'minute',
+        count: 30,
+        text: '30min'
+      }, {
+        type: 'hour',
+        count: 1,
+        text: '1h'
+      }, {
+        type: 'hour',
+        count: 12,
+        text: '12h'
+      }, {
+        type: 'day',
+        count: 1,
+        text: '1d'
+      }, {
+        type: 'all',
+        text: 'All'
+      }]
     }
-  },
-  rangeSelector: {
-    enabled: true,
-    verticalAlign: 'top',
-    inputDateFormat: '%d.%m %H:%M',
-    inputEditDateFormat: '%d.%m %H:%M',
-    inputPosition: {align: 'left', y: -32, x: 0},
-    buttonPosition: {align: 'left', y: 32, x: 0},
-    buttons: [{
-      type: 'second',
-      count: 60,
-      text: '60s'
-    }, {
-      type: 'minute',
-      count: 5,
-      text: '5min'
-    }, {
-      type: 'minute',
-      count: 30,
-      text: '30min'
-    }, {
-      type: 'hour',
-      count: 1,
-      text: '1h'
-    }, {
-      type: 'hour',
-      count: 12,
-      text: '12h'
-    }, {
-      type: 'day',
-      count: 1,
-      text: '1d'
-    }, {
-      type: 'all',
-      text: 'All'
-    }]
-  },
-  scrollbar: {
-    height: 5,
-    margin: 0,
-    minWidth: 0,
-    showFull: false,
-    zIndex: 0,
-    barBackgroundColor: 'transparent',
-    barBorderColor: 'transparent',
-    barBorderRadius: 0,
-    barBorderWidth: 0,
-    buttonBackgroundColor: 'transparent',
-    buttonArrowColor: 'transparent',
-    buttonBorderColor: 'transparent',
-    buttonBorderWidth: 0,
-    buttonBorderRadius: 0,
-    trackBackgroundColor: 'transparent',
-    trackBorderColor: 'transparent',
-    trackBorderWidth: 0,
-    trackBorderRadius: 0,
-    rifleColor: 'transparent'
+    ,
+    scrollbar: {
+      height: 5,
+      margin:
+        0,
+      minWidth:
+        0,
+      showFull:
+        false,
+      zIndex:
+        0,
+      barBackgroundColor:
+        'transparent',
+      barBorderColor:
+        'transparent',
+      barBorderRadius:
+        0,
+      barBorderWidth:
+        0,
+      buttonBackgroundColor:
+        'transparent',
+      buttonArrowColor:
+        'transparent',
+      buttonBorderColor:
+        'transparent',
+      buttonBorderWidth:
+        0,
+      buttonBorderRadius:
+        0,
+      trackBackgroundColor:
+        'transparent',
+      trackBorderColor:
+        'transparent',
+      trackBorderWidth:
+        0,
+      trackBorderRadius:
+        0,
+      rifleColor:
+        'transparent'
+    }
   }
-};
+;
 
 let STYLE_SPLINE = merge(STYLE_BASE, {
   chart: {type: "spline"}
@@ -294,22 +325,25 @@ let STYLE_CHART = {
   "column": STYLE_COLUMN,
 };
 
-function chart(type, metric_idfy, metric_cap, unit, data, cum) {
-  Highcharts.setOptions(STYLE_CHART[type]);
+function chart(metric_idfy, metric_cap, values) {
+  Highcharts.setOptions(STYLE_CHART[values.type]);
 
-  switch (type) {
+  switch (values.type) {
+    default:
     case 'spline':
     case 'column': {
-      _default(metric_idfy, metric_cap, unit, data, cum);
+      _default(metric_idfy, metric_cap, values);
       break;
     }
     case 'pie': {
-      pie(metric_idfy, metric_cap, unit, data, cum);
+      pie(metric_idfy, metric_cap, values);
     }
   }
 }
 
-function _default(metric_idfy, metric_cap, unit, data, cum) {
+function _default(metric_idfy, metric_cap, values) {
+  let data = markMinMax(values.data, values.min, values.max);
+
   Highcharts.stockChart(metric_idfy, merge({
     xAxis: [{
       minorTickInterval: 'auto',
@@ -320,12 +354,23 @@ function _default(metric_idfy, metric_cap, unit, data, cum) {
       lineColor: "#333",
       labels: {
         rotation: -45,
-        x: 15,
+        x: -10,
+        y: 30,
+        align: 'center',
         formatter: function () {
-          return time(this.value, "%d.%m.%Y<br>%H:%M:%S.%f");
+          return time(this.value, "%d.%m.<br>%H:%M:%S.%f");
         }
       }
     }, {
+      title: '1',
+      visible: false,
+      labels: {
+        formatter: function () {
+          return false;
+        }
+      }
+    }, {
+      title: '2',
       visible: false,
       labels: {
         formatter: function () {
@@ -336,39 +381,81 @@ function _default(metric_idfy, metric_cap, unit, data, cum) {
   }, {
     legend: {enabled: true},
     series: [{
-      name: metric_cap + unit,
+      name: metric_cap + v_empty(" (%s)", values.unit),
       data: data,
       showInLegend: true
     }, {
       name: "Cumulative distribution",
-      data: cum,
+      data: values.cumulative,
       type: 'spline',
       visible: false,
       xAxis: 1
+    }, {
+      name: "Median",
+      data: [[values.from, values.med], [values.to, values.med]],
+      color: 'orange',
+      type: 'spline',
+      visible: false,
+      xAxis: 2
     }]
   }));
 }
 
-function pie(metric_idfy, metric_cap, unit, data, cum) {
+function pie(metric_idfy, metric_cap, values) {
   Highcharts.stockChart(metric_idfy, merge({
     tooltip: {
-        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
     },
     plotOptions: {
-        pie: {
-            allowPointSelect: true,
-            cursor: 'pointer',
-            dataLabels: {
-                enabled: false
-            },
-            showInLegend: true
-        }
+      pie: {
+        allowPointSelect: true,
+        cursor: 'pointer',
+        dataLabels: {
+          enabled: false
+        },
+        showInLegend: true
+      }
     },
     legend: {enabled: true},
     series: [{
       name: metric_cap,
-      data: data,
+      data: values.data,
       showInLegend: true
     }]
   }));
+}
+
+function markMinMax(data, min, max) {
+  let minmax = 0;
+  for (let index = 0; index < data.length; ++index) {
+    let entry = data[index];
+    if (entry[0] === min[0]) {
+      data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'green'}};
+      minmax += 1;
+    }
+    if (entry[0] === max[0]) {
+      data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'red'}};
+      minmax += 1;
+    }
+
+    if (minmax === 2)
+      break;
+  }
+  return data;
+}
+
+function base_tooltip_formatter() {
+  return [time(this.x, "<b>%d.%m</b><br><b>%H:%M:%S.%f</b>")].concat(
+    this.points.map(function (point) {
+      let val = padT(dec(point.y));
+      if(point.series._i === 0) {
+        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + '</b>';
+      } else if (point.series._i === 1) {
+        let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile'
+        return '<span style="color:' + point.series.color + '">●</span> ' + percentile + '<b>' + val + '</b>';
+      } else if (point.series._i === 2) {
+        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + '</b>';
+      }
+    })
+  );
 }

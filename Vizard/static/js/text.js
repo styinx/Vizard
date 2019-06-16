@@ -32,7 +32,7 @@ function v_capital(text, capital='first') {
 
 function v_empty(text, value) {
   if(value !== "") {
-    return text + value;
+    return text.replace("%s", value);
   }
   else {
     return "";

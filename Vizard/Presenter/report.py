@@ -62,7 +62,8 @@ def collect_report(request, response, _id, export):
         meta = read(path + '/vizard.json')
 
         response['meta'] = {
-            'tool': meta['tool'],
+            'tool':      meta['tool'],
+            'samples':   df.shape[0],
             'arguments': meta['arguments']
         }
 
@@ -73,11 +74,21 @@ def collect_report(request, response, _id, export):
             index = metrics[metric]['col']
 
             response['metrics'][metric] = {
-                'text':       'dummy text',
                 'unit':       unit,
                 'type':       data_type,
                 'data':       [[x[0], x[1]] for x in df[index].items()],
-                'cumulative': sorted(df[index].values)
+                'cumulative': sorted(df[index].values),
+                'min':        [df[index].idxmin(), df[index].min().round(2)],
+                'max':        [df[index].idxmax(), df[index].max().round(2)],
+                'mean':       df[index].mean().round(2),
+                'med':        df[index].median().round(2),
+                'total':      df[index].sum().round(2),
+                'from':       int(df[index].head(1).index[0]),
+                'to':         int(df[index].tail(1).index[0])
+            }
+
+            response['metrics'][metric]['text'] = {
+                'explanation': 'dummy explanation'
             }
 
         if export is None:

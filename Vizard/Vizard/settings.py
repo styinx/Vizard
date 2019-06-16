@@ -148,12 +148,12 @@ REPORT = {
                 'type':  'spline',
                 'unit':  'ms'
             },
-            'request status':           {
-                'index': 3,
-                'col':   'success',
-                'type':  'pie',
-                'unit':  ''
-            },
+            # 'request status':           {
+            #     'index': 3,
+            #     'col':   'success',
+            #     'type':  'pie',
+            #     'unit':  ''
+            # },
             'received traffic': {
                 'index': 4,
                 'col':   'bytes',

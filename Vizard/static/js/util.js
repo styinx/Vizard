@@ -38,7 +38,7 @@ function pad(val) {
   return val;
 }
 
-function dec(val, decimals=2) {
+function dec(val, decimals = 2) {
   return val.toFixed(decimals);
 }
 
@@ -50,7 +50,7 @@ function padT(text, width = 5) {
   return text;
 }
 
-function time(val, format = "%d.%m.%Y %H:%M:%S.%f") {
+function time(val, format = "%d.%m %H:%M:%S.%f") {
   let d = new Date(val);
   let D = pad(d.getDate());
   let M = pad(d.getMonth() + 1);
@@ -67,6 +67,23 @@ function time(val, format = "%d.%m.%Y %H:%M:%S.%f") {
     .replace("%M", m)
     .replace("%S", s)
     .replace("%f", ms);
+}
+
+function duration(ms, format = "%Yy %mm %dd %Hh %Mm %Ss %fms") {
+  let S = Math.round(ms / 1000);
+  let M = Math.round(S / 60);
+  let H = Math.round(M / 60);
+  let d = Math.round(H / 24);
+  let m = Math.round(d / 31);
+  let Y = Math.round(m / 12);
+
+  return format.replace("%Y", Y % 1)
+    .replace("%m", m % 12)
+    .replace("%d", d % 365)
+    .replace("%H", H % 24)
+    .replace("%M", M % 60)
+    .replace("%S", S % 60)
+    .replace("%f", ms % 1000);
 }
 
 function range(start, end, step) {

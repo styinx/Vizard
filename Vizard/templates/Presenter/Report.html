@@ -19,31 +19,35 @@
 
   <script>
 
-    $(document).ready(function () {
-      {# Add event handler for pop-up #}
-      $(document).mouseup(function (e) {
-        var container = $(".v-popup");
+    {% if metrics %}
 
-        if (!container.is(e.target) && container.has(e.target).length === 0) {
-          container.hide();
-        }
+      $(document).ready(function () {
+        {# Add event handler for pop-up #}
+        $(document).mouseup(function (e) {
+          var container = $(".v-popup");
+
+          if (!container.is(e.target) && container.has(e.target).length === 0) {
+            container.hide();
+          }
+        });
+
+
+        {# Create diagrams for all metrics #}
+        {% for metric, values in metrics.items %}
+
+          chart("{{ metric|idfy }}", "{{ metric|cap }}", {{ values|safe }});
+
+          {# Add link onclick handler for hidden metrics #}
+          $("#{{ metric|idfy }}Anchor").on('click',
+            function () {
+              $("#{{ metric|idfy }}Collapse").css('display', 'inline-block');
+              return true;
+            });
+
+        {% endfor %}
       });
 
-
-      {# Create diagrams for all metrics #}
-      {% for metric, values in metrics.items %}
-
-        chart({{ metric|idfy }}, values);
-
-        {# Add link onclick handler for hidden metrics #}
-        $("#{{ metric|idfy }}Anchor").on('click',
-          function () {
-            $("#{{ metric|idfy }}Collapse").css('display', 'inline-block');
-            return true;
-          });
-
-      {% endfor %}
-    });
+    {% endif %}
   </script>
 
 </head>
@@ -51,140 +55,182 @@
 
 {% include "util/nav.html" %}
 
-<div class="settings-sidebar bg-white shadow border-dark">
-  <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
-  <a href="/present/report/{{ hash }}/export"><img src="{% static 'img/download.svg' %}"/></a>
-  <img src="{% static 'img/settings_transparent.svg' %}"/>
-</div>
+  {% if metrics %}
 
-<div class="v-popup">
-  <p>
-    What was the
-    <select class="v-metric v-badge">
-      {% for metric, values in metrics.items %}
-
-        <option class="v-badge">{{ metric }}</option>
-
-      {% endfor %}
-    </select><br>
-    of the domain
-    <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/><br>
-    between
-    <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00"
-           max="2020-01-06T00:00"/><br>
-    and
-    <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00"
-           max="2020-01-06T00:00"/>
-    .
-  </p>
-</div>
-
-<div class="bg-white shadow border-dark report">
-
-  <h2 align="center">Performance report for task {{ hash }}</h2>
-
-  <h4>Requested metric TODO</h4>
-  <div class="v-sec v-big diagram" id="CPU"></div>
-
-  <div class="v-sec v-large">
-
-    <div class="v-float">
-      <table class="table">
-        <thead class="thead">
-        <tr>
-          <th scope="col"></th>
-          <th scope="col">Min.</th>
-          <th scope="col">Max.</th>
-          <th scope="col">Avg.</th>
-          <th scope="col">Med.</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-          <td>Time:</td>
-          <td>17:24:00</td>
-          <td>17:22:00</td>
-          <td>-</td>
-          <td>-</td>
-        </tr>
-        <tr>
-          <td>Value:</td>
-          <td style="color: green">1%</td>
-          <td style="color: red">99%</td>
-          <td>52%</td>
-          <td>45%</td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="v-inline">Explanation</div>
-
-    <div class="v-inline">Explanation</div>
-
+  <div class="settings-sidebar bg-white shadow border-dark">
+    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
+    <a href="/present/report/{{ hash }}/export"><img src="{% static 'img/download.svg' %}"/></a>
+    <img src="{% static 'img/settings_transparent.svg' %}"/>
   </div>
 
-  <h4>Analysis Summary</h4>
+  <div class="v-popup">
+    <p>
+      What was the
+      <select class="v-metric v-badge">
+        {% for metric, values in metrics.items %}
 
-  <div class="v-sec v-large">
+          <option class="v-badge">{{ metric }}</option>
 
-    <div class="v-inline">Explanation</div>
-
-    <div class="v-float">
-      <table class="table">
-        <tbody>
-        <tr>
-          <td>Analysis Tool:</td>
-          <td>{{ meta.tool }}</td>
-        </tr>
-        <tr>
-          <td>Duration:</td>
-          <td>2h 20min</td>
-        </tr>
-        <tr>
-          <td>Collected Samples:</td>
-          <td>150536</td>
-        </tr>
-        <tr>
-          <td>Metrics:</td>
-          <td>
-            {% for metric, values in metrics.items %}
-
-              <a href="#{{ metric|idfy }}Collapse" id="{{ metric|idfy }}Anchor">{{ metric|cap }}</a><br>
-
-            {% endfor %}
-          </td>
-        </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <div class="v-inline">Explanation</div>
-
+        {% endfor %}
+      </select><br>
+      of the domain
+      <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/><br>
+      between
+      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00"
+             max="2020-01-06T00:00"/><br>
+      and
+      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00"
+             max="2020-01-06T00:00"/>
+      .
+    </p>
   </div>
 
+  <div class="bg-white shadow border-dark report">
 
-  {% for metric, values in metrics.items %}
+    <h2 align="center">Performance report for task {{ hash }}</h2>
 
-    <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
+    <h4>The requested metric the user asked for (TODO)</h4>
+    <div class="v-sec v-big diagram" id="CPU"></div>
 
-    <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
+    <div class="v-sec v-big">
 
-      <div class="v-sec v-big diagram" id="{{ metric|idfy }}"></div>
+      <div class="v-float">
+        <table class="table">
+          <thead class="thead">
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Min.</th>
+            <th scope="col">Max.</th>
+            <th scope="col">Avg.</th>
+            <th scope="col">Med.</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Time:</td>
+            <td>17:24:00</td>
+            <td>17:22:00</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>Value:</td>
+            <td style="color: green">1%</td>
+            <td style="color: red">99%</td>
+            <td>52%</td>
+            <td>45%</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
 
-      <div class="v-sec v-big">
+      <div class="v-inline">Explanation</div>
 
-        <div class="v-inline">
-          Praesent ipsum sapien, maximus sed facilisis non, sagittis quis tortor.
+      <div class="v-inline">Explanation</div>
+
+    </div>
+
+    <h4>Analysis Summary</h4>
+
+    <div class="v-sec v-large">
+
+      <div class="v-inline">Explanation</div>
+
+      <div class="v-float">
+        <table class="table">
+          <tbody>
+          <tr>
+            <td>Analysis Tool:</td>
+            <td>{{ meta.tool }}</td>
+          </tr>
+          <tr>
+            <td>Duration:</td>
+            <td>{{ meta.arguments.duration|duration }}</td>
+          </tr>
+          <tr>
+            <td>Collected samples:</td>
+            <td>{{ meta.samples }}</td>
+          </tr>
+          <tr>
+            <td>Metrics:</td>
+            <td>
+              {% for metric, values in metrics.items %}
+
+                <a href="#{{ metric|idfy }}Collapse" id="{{ metric|idfy }}Anchor">{{ metric|cap }}</a><br>
+
+              {% endfor %}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="v-inline">Explanation</div>
+
+    </div>
+
+
+    {% for metric, values in metrics.items %}
+
+      <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
+
+      <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
+
+        <div class="v-sec v-big diagram" id="{{ metric|idfy }}"></div>
+
+        <div class="v-sec v-big">
+
+          <div class="v-float">
+            <table class="table">
+              <thead class="thead">
+              <tr>
+                <th scope="col"></th>
+                <th scope="col">Min.</th>
+                <th scope="col">Max.</th>
+                <th scope="col">Mean.</th>
+                <th scope="col">Med.</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td>Time:</td>
+                <td>{{ values.min.0|date }}</td>
+                <td>{{ values.max.0|date }}</td>
+                <td>-</td>
+                <td>-</td>
+              </tr>
+              <tr>
+                <td>Value:</td>
+                <td style="color: green">{{ values.min.1 }} {{ values.unit }}</td>
+                <td style="color: red">{{ values.max.1 }} {{ values.unit }}</td>
+                <td>{{ values.mean }} {{ values.unit }}</td>
+                <td>{{ values.med }} {{ values.unit }}</td>
+              </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="v-inline">
+            {{ values.text.explanation }}
+          </div>
+
         </div>
 
       </div>
 
-    </div>
+    {% endfor %}
 
-  {% endfor %}
+  </div>
 
-</div>
+  {% else %}
+
+  <div class="bg-white shadow border-dark report">
+
+    <div class="v-sec v-big">{{ message }}</div>
+
+  </div>
+
+  {% endif %}
 
 </body>
 </html>
