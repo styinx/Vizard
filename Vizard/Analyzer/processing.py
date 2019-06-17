@@ -1,12 +1,12 @@
 import pandas as pd
-import numpy as np
-
-from source.util import write, read
 
 
 class AnalysisData:
-    def __init__(self, data, headers):
-        self.df = pd.DataFrame(data).T.rename(columns=headers)
+    def __init__(self, data, headers, csv=True):
+        if csv:
+            self.df = pd.read_csv(data).set_index(headers[0])
+        else:
+            self.df = pd.DataFrame(data).T.rename(columns=headers)
 
-    def store(self, filename):
-        read(filename)
+        self.df = self.df.sort_index()
+        self.df = self.df.loc[~self.df.index.duplicated(keep='first')]

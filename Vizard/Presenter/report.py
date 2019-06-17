@@ -56,7 +56,7 @@ def collect_report(request, response, _id, export):
     response['hash'] = _id
     response['metrics'] = {}
 
-    if os.path.exists(TASK_PATH + '/' + _id):
+    try:
         path = TASK_PATH + '/' + _id
         df = unserialize(path + '/result_cached.dat').df
         meta = read(path + '/vizard.json')
@@ -67,22 +67,24 @@ def collect_report(request, response, _id, export):
             'arguments': meta['arguments']
         }
 
+        print(df)
+
         metrics = REPORT[meta['tool']]['metrics']
         for metric in metrics:
             unit = metrics[metric]['unit']
-            data_type = metrics[metric]['type']
+            chart_type = metrics[metric]['type']
             index = metrics[metric]['col']
 
             response['metrics'][metric] = {
                 'unit':       unit,
-                'type':       data_type,
+                'type':       chart_type,
                 'data':       [[x[0], x[1]] for x in df[index].items()],
                 'cumulative': sorted(df[index].values),
-                'min':        [df[index].idxmin(), df[index].min().round(2)],
-                'max':        [df[index].idxmax(), df[index].max().round(2)],
-                'mean':       df[index].mean().round(2),
-                'med':        df[index].median().round(2),
-                'total':      df[index].sum().round(2),
+                'min':        [df[index].idxmin(), round(df[index].min(), 2)],
+                'max':        [df[index].idxmax(), round(df[index].max(), 2)],
+                'mean':       round(df[index].mean(), 2),
+                'med':        round(df[index].median(), 2),
+                'total':      round(df[index].sum(), 2),
                 'from':       int(df[index].head(1).index[0]),
                 'to':         int(df[index].tail(1).index[0])
             }
@@ -97,7 +99,7 @@ def collect_report(request, response, _id, export):
         else:
             return response, export_report(response, path, _id)
 
-    else:
+    except FileNotFoundError:
         response['status'] = '404'
         response['message'] = 'Sorry, the requested id (' + str(_id) + ') seems not to exists.'
         return response, None

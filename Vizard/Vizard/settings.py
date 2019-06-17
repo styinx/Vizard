@@ -144,47 +144,55 @@ REPORT = {
         'metrics': {
             'elapsed time':     {
                 'index': 1,
+                'dtype': int,
                 'col':   'elapsed',
                 'type':  'spline',
                 'unit':  'ms'
             },
             # 'request status':           {
             #     'index': 3,
+            #     'dtype': str,
             #     'col':   'success',
             #     'type':  'pie',
             #     'unit':  ''
             # },
             'received traffic': {
                 'index': 4,
+                'dtype': int,
                 'col':   'bytes',
                 'type':  'column',
                 'unit':  'bytes per request'
             },
             'sent traffic':     {
                 'index': 5,
+                'dtype': int,
                 'col':   'sentBytes',
                 'type':  'column',
                 'unit':  'bytes per request',
             },
             'latency':          {
                 'index': 8,
+                'dtype': int,
                 'col':   'Latency',
                 'type':  'spline',
                 'unit':  'ms'
             },
             'idle time':        {
                 'index': 9,
+                'dtype': int,
                 'col':   'IdleTime',
                 'type':  'spline',
                 'unit':  'ms'
             },
             'connection time':  {
                 'index': 10,
+                'dtype': int,
                 'col':   'Connect',
                 'type':  'spline',
                 'unit':  'ms'
             },
             # 'response time':    {
+            # 'dtype':            int,
             #     'index': [1, 8, 9, 10],
             #     'col':   ['elapsed', 'Latency', 'IdleTime', 'Connect'],
             #     'type':  'spline',
@@ -197,18 +205,21 @@ REPORT = {
         'metrics': {
             # 'request status':        {
             #     'index': 2,
+            # 'dtype': str,
             #     'col': 'success',
             #     'type':  'pie',
             #     'unit':  ''
             # },
             'response time': {
                 'index': 3,
+                'dtype': float,
                 'col':   'responseTime',
                 'type':  'spline',
                 'unit':  'ms'
             },
             'sent traffic':  {
                 'index': 4,
+                'dtype': float,
                 'col':   'bytes',
                 'type':  'column',
                 'unit':  'bytes per request'

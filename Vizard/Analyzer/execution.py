@@ -98,7 +98,7 @@ def execute_locust(request, response, scheduler):
     user.set_task(task, path=task.hash)
     task.create_path()
 
-    result_file = task.path + '/result_processed.json'
+    result_file = task.path + '/result.csv'
 
     loadtest_arguments = {
         '$MIN_WAIT':    values['min_wait'],
@@ -123,7 +123,7 @@ def execute_locust(request, response, scheduler):
         '--only-summary': '',
         '-H':             values['domain'],
         # '-P':             values['port'],
-        '-L':             'CRITICAL',
+        #'-L':             'CRITICAL',
         '-c':             values['load'],
         '-t':             values['duration'] + 's',
         '-r':             values['hatch_rate']

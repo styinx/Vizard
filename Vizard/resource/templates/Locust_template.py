@@ -1,4 +1,4 @@
-import json
+import csv
 from locust import HttpLocust, TaskSet, events
 from time import time
 
@@ -17,7 +17,7 @@ class LocustRun(HttpLocust):
     max_wait = $MAX_WAIT
     task_set = DomainTaskSet
     header = ['timeStamp', 'service', 'type', 'success', 'responseTime', 'bytes']
-    data = {}
+    data = []
     last_entry = 0
 
     def __init__(self):
@@ -40,11 +40,13 @@ class LocustRun(HttpLocust):
         self.save(request_type, name, response_time, 0, 0)
 
     def save(self, request_type, name, response_time, response_length, success):
-        timestamp = int(round(time() * 1000))
+        timestamp = round(time() * 1000)
         if timestamp != self.last_entry:
             success = LocustRun.success(success)
-            self.data[int(timestamp)] = [name, request_type, success, response_time, response_length]
+            self.data.append([timestamp, name, request_type, success, response_time, response_length])
             self.last_entry = timestamp
 
     def write(self):
-        open(self.result_file, 'w').write(json.dumps(self.data))
+        file = csv.writer(open(self.result_file, 'w'), delimiter=',')
+        file.writerow(self.header)
+        file.writerows(self.data)

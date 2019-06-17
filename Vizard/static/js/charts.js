@@ -426,19 +426,20 @@ function pie(metric_idfy, metric_cap, values) {
 }
 
 function markMinMax(data, min, max) {
-  let minmax = 0;
+  let mins = 0;
+  let maxs = 0;
   for (let index = 0; index < data.length; ++index) {
     let entry = data[index];
     if (entry[0] === min[0]) {
       data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'green'}};
-      minmax += 1;
+      mins += 1;
     }
     if (entry[0] === max[0]) {
       data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'red'}};
-      minmax += 1;
+      maxs += 1;
     }
 
-    if (minmax === 2)
+    if(mins >= 1 && maxs >= 1)
       break;
   }
   return data;
