@@ -3,7 +3,10 @@
 <head>
 
   {% load static %}
+  {% load std %}
+  {% load util %}
   {% load text %}
+  {% load uc %}
 
   <title>Report {{ hash }}</title>
 
@@ -24,13 +27,15 @@
       $(document).ready(function () {
         {# Add event handler for pop-up #}
         $(document).mouseup(function (e) {
-          var container = $(".v-popup");
+          var overlay = $(".v-overlay");
 
-          if (!container.is(e.target) && container.has(e.target).length === 0) {
-            container.hide();
+          if (overlay.is(e.target)) {
+            overlay.hide();
           }
         });
 
+        {# Enable tooltips #}
+        $('[data-toggle="tooltip"]').tooltip();
 
         {# Create diagrams for all metrics #}
         {% for metric, values in metrics.items %}
@@ -58,34 +63,33 @@
   {% if metrics %}
 
   <div class="settings-sidebar bg-white shadow border-dark">
-    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-popup')"/>
+    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-overlay')"/>
     <a href="/present/report/{{ hash }}/export"><img src="{% static 'img/download.svg' %}"/></a>
     <img src="{% static 'img/settings_transparent.svg' %}"/>
   </div>
 
-  <div class="v-popup">
-    <p>
-      What was the
-      <select class="v-metric v-badge">
-        {% for metric, values in metrics.items %}
-
-          <option class="v-badge">{{ metric }}</option>
-
-        {% endfor %}
-      </select><br>
-      of the domain
-      <input type="text" class="v-unit v-badge" oninput="validate('url', this);"/><br>
-      between
-      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-21T10:00" min="2019-01-06T01:00"
-             max="2020-01-06T00:00"/><br>
-      and
-      <input type="datetime-local" class=" v-limit v-badge" value="2019-12-24T10:00" min="2019-01-06T01:00"
-             max="2020-01-06T00:00"/>
-      .
-    </p>
+  <div class="v-overlay">
+    <div class="v-popup">
+      <p style="text-align: center">
+        What was the
+        <select class="v-metric v-badge" id="uc-metric">
+          {% for metric, values in metrics.items %}
+            <option class="" value="{{ metric }}">{{ metric }}</option>
+          {% endfor %}
+        </select>
+        of the domain
+        <input type="text" class="v-unit v-badge" id="uc-domain" oninput="validate('url', this);"/>
+        between
+        <input type="text" class="v-time v-badge" id="uc-stop"/>
+        and
+        <input type="text" class="v-time v-badge" id="uc-stop"/>
+        .
+      </p>
+    </div>
   </div>
 
   <div class="bg-white shadow border-dark report">
+
 
     <h2 align="center">Performance report for task {{ hash }}</h2>
 
@@ -94,7 +98,7 @@
 
     <div class="v-sec v-big">
 
-      <div class="v-float">
+      <div class="v-float v-medium">
         <table class="table">
           <thead class="thead">
           <tr>
@@ -124,28 +128,27 @@
         </table>
       </div>
 
-      <div class="v-inline">Explanation</div>
+      <span class="v-inline">Explanation</span>
 
-      <div class="v-inline">Explanation</div>
+      <span class="v-inline">Explanation</span>
 
     </div>
 
+
     <h4>Analysis Summary</h4>
 
-    <div class="v-sec v-large">
+    <div class="v-sec v-big">
 
-      <div class="v-inline">Explanation</div>
-
-      <div class="v-float">
+      <div class="v-float v-small">
         <table class="table">
           <tbody>
           <tr>
             <td>Analysis Tool:</td>
-            <td>{{ meta.tool }}</td>
+            <td><a href="{{ meta.tool_link }}" target="_">{{ meta.tool}}</a></td>
           </tr>
           <tr>
             <td>Duration:</td>
-            <td>{{ meta.arguments.duration|duration }}</td>
+            <td>{{ meta.duration|duration }}</td>
           </tr>
           <tr>
             <td>Collected samples:</td>
@@ -154,18 +157,23 @@
           <tr>
             <td>Metrics:</td>
             <td>
-              {% for metric, values in metrics.items %}
 
-                <a href="#{{ metric|idfy }}Collapse" id="{{ metric|idfy }}Anchor">{{ metric|cap }}</a><br>
-
-              {% endfor %}
+              {% autoescape off %}
+                {{ metrics|dict_keys|cap|anchorfy:'Collapse;Anchor'|join:', ' }}
+              {% endautoescape %}
             </td>
           </tr>
           </tbody>
         </table>
       </div>
 
-      <div class="v-inline">Explanation</div>
+      {% autoescape off %}
+        <span class="v-inline v-small">{{ meta.text.experiment }}</span>
+      {% endautoescape %}
+      <br>
+      {% autoescape off %}
+        <span class="v-inline v-small">{{ meta.text.wiki }}</span>
+      {% endautoescape %}
 
     </div>
 
@@ -180,39 +188,27 @@
 
         <div class="v-sec v-big">
 
-          <div class="v-float">
+          <div class="v-float v-medium">
             <table class="table">
-              <thead class="thead">
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Min.</th>
-                <th scope="col">Max.</th>
-                <th scope="col">Mean.</th>
-                <th scope="col">Med.</th>
-              </tr>
-              </thead>
-              <tbody>
-              <tr>
-                <td>Time:</td>
-                <td>{{ values.min.0|date }}</td>
-                <td>{{ values.max.0|date }}</td>
-                <td>-</td>
-                <td>-</td>
-              </tr>
-              <tr>
-                <td>Value:</td>
-                <td style="color: green">{{ values.min.1 }} {{ values.unit }}</td>
-                <td style="color: red">{{ values.max.1 }} {{ values.unit }}</td>
-                <td>{{ values.mean }} {{ values.unit }}</td>
-                <td>{{ values.med }} {{ values.unit }}</td>
-              </tr>
-              </tbody>
+              {% autoescape off %}
+                {{ values.text.table }}
+              {% endautoescape %}
             </table>
           </div>
 
-          <div class="v-inline">
-            {{ values.text.explanation }}
-          </div>
+          <span class="v-inline v-small">
+            {% autoescape off %}
+              {{ values.text.explanation }}
+            {% endautoescape %}
+          </span>
+
+          <br>
+
+          <span class="v-inline v-small">
+            {% autoescape off %}
+              {{ values.text.description }}
+            {% endautoescape %}
+          </span>
 
         </div>
 

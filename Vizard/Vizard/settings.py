@@ -139,68 +139,80 @@ CONF_GATLING = {
 
 REPORT = {
     'JMeter': {
+        'wiki':    'Apache_JMeter',
+        'link':    'https://jmeter.apache.org/',
         'headers': ['timeStamp', 'elapsed', 'responseCode', 'success', 'bytes',
                     'sentBytes', 'grpThreads', 'allThreads', 'Latency', 'IdleTime', 'Connect'],
         'metrics': {
             'elapsed time':     {
-                'index': 1,
-                'dtype': int,
-                'col':   'elapsed',
-                'type':  'spline',
-                'unit':  'ms'
+                'index':      1,
+                'dtype':      int,
+                'col':        'elapsed',
+                'type':       'spline',
+                'unit':       'ms',
+                'definition': str()
             },
             # 'request status':           {
             #     'index': 3,
             #     'dtype': str,
             #     'col':   'success',
             #     'type':  'pie',
-            #     'unit':  ''
+            #     'unit':  '',
+            #     'definition': str()
             # },
             'received traffic': {
-                'index': 4,
-                'dtype': int,
-                'col':   'bytes',
-                'type':  'column',
-                'unit':  'bytes per request'
+                'index':      4,
+                'dtype':      int,
+                'col':        'bytes',
+                'type':       'column',
+                'unit':       'bytes per request',
+                'definition': str()
             },
             'sent traffic':     {
-                'index': 5,
-                'dtype': int,
-                'col':   'sentBytes',
-                'type':  'column',
-                'unit':  'bytes per request',
+                'index':      5,
+                'dtype':      int,
+                'col':        'sentBytes',
+                'type':       'column',
+                'unit':       'bytes per request',
+                'definition': str()
             },
             'latency':          {
-                'index': 8,
-                'dtype': int,
-                'col':   'Latency',
-                'type':  'spline',
-                'unit':  'ms'
+                'index':      8,
+                'dtype':      int,
+                'col':        'Latency',
+                'type':       'spline',
+                'unit':       'ms',
+                'definition': str()
             },
             'idle time':        {
-                'index': 9,
-                'dtype': int,
-                'col':   'IdleTime',
-                'type':  'spline',
-                'unit':  'ms'
+                'index':      9,
+                'dtype':      int,
+                'col':        'IdleTime',
+                'type':       'spline',
+                'unit':       'ms',
+                'definition': str()
             },
             'connection time':  {
-                'index': 10,
-                'dtype': int,
-                'col':   'Connect',
-                'type':  'spline',
-                'unit':  'ms'
+                'index':      10,
+                'dtype':      int,
+                'col':        'Connect',
+                'type':       'spline',
+                'unit':       'ms',
+                'definition': str()
             },
             # 'response time':    {
             # 'dtype':            int,
             #     'index': [1, 8, 9, 10],
             #     'col':   ['elapsed', 'Latency', 'IdleTime', 'Connect'],
             #     'type':  'spline',
-            #     'unit':  'ms'
+            #     'unit':  'ms',
+            #     'definition': str()
             # },
         }
     },
     'Locust': {
+        'wiki':    '',
+        'link':    'https://locust.io/',
         'headers': ['timeStamp', 'service', 'type', 'success', 'responseTime', 'bytes'],
         'metrics': {
             # 'request status':        {
@@ -208,21 +220,24 @@ REPORT = {
             # 'dtype': str,
             #     'col': 'success',
             #     'type':  'pie',
-            #     'unit':  ''
+            #     'unit':  '',
+            #     'definition': str()
             # },
             'response time': {
-                'index': 3,
-                'dtype': float,
-                'col':   'responseTime',
-                'type':  'spline',
-                'unit':  'ms'
+                'index':      3,
+                'dtype':      float,
+                'col':        'responseTime',
+                'type':       'spline',
+                'unit':       'ms',
+                'definition': str()
             },
             'sent traffic':  {
-                'index': 4,
-                'dtype': float,
-                'col':   'bytes',
-                'type':  'column',
-                'unit':  'bytes per request'
+                'index':      4,
+                'dtype':      float,
+                'col':        'bytes',
+                'type':       'column',
+                'unit':       'bytes per request',
+                'definition': str()
             },
         }
     }

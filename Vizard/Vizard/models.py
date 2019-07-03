@@ -1,4 +1,5 @@
 import os
+from requests import post
 from time import sleep, time
 from threading import Lock, Thread
 from shutil import rmtree
@@ -122,6 +123,7 @@ class TaskScheduler:
     def __init__(self):
         self.lock = Lock()
         self.queue = []
+        self.api_callback = {}
         self.active_tasks = 0
         self.poll_interval = 3
 
@@ -130,6 +132,9 @@ class TaskScheduler:
         self.queue.append({user: task})
         user.set_task(task, status='pending')
         self.lock.release()
+
+    def add_task_callback(self, _hash, url):
+        self.api_callback[_hash] = url
 
     def run(self):
         while True:
@@ -145,6 +150,9 @@ class TaskScheduler:
                 user.set_task(task, status='running', started=time())
 
                 thread.join()
+
+                if task.hash in self.api_callback:
+                    post(self.api_callback[task.hash])
 
                 user.set_task(task, status='complete', completed=time())
                 user.save()

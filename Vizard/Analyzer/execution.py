@@ -10,7 +10,7 @@ from Analyzer.tools import *
 
 # Sets default test values.
 # Fields with the value 'None' are mandatory.
-def unpack_loadtest_values(request):
+def unpack_jmeter_values(request):
     return unpack_request_values(request, {
         'domain':     None,
         'port':       '',
@@ -20,13 +20,20 @@ def unpack_loadtest_values(request):
         # jmeter
         'ramp_up':    '1',
         'ramp_down':  '1',
+    })
+
+
+def unpack_locust_values(request):
+    return unpack_request_values(request, {
+        'domain':     None,
+        'port':       '',
+        'duration':   '10',
+        'load':       '10',
 
         # locust
         'min_wait':   '1000',
         'max_wait':   '2000',
         'hatch_rate': '1'
-
-        # gatling
     })
 
 
@@ -34,7 +41,7 @@ def execute_jmeter(request, response, scheduler):
     task = Task(0)
     user = User(request)
 
-    values = unpack_loadtest_values(request)
+    values = unpack_jmeter_values(request)
 
     if isinstance(values, list):
         response['missing'] = values
@@ -86,7 +93,7 @@ def execute_locust(request, response, scheduler):
     task = Task(0)
     user = User(request)
 
-    values = unpack_loadtest_values(request)
+    values = unpack_locust_values(request)
 
     if isinstance(values, list):
         response['missing'] = values
@@ -123,7 +130,7 @@ def execute_locust(request, response, scheduler):
         '--only-summary': '',
         '-H':             values['domain'],
         # '-P':             values['port'],
-        #'-L':             'CRITICAL',
+        # '-L':             'CRITICAL',
         '-c':             values['load'],
         '-t':             values['duration'] + 's',
         '-r':             values['hatch_rate']

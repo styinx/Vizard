@@ -30,3 +30,11 @@ def report_id(request, api='', _id='', export=None):
         return response
 
     return render(request, 'Presenter/Report.html', response)
+
+
+def report_compare(request, api='', compare='', export=None):
+    id1, id2 = compare.split('-')
+
+
+    return HttpResponse('todo')
+    #return render(request, 'Presenter/Compare.html', response)

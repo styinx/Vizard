@@ -4,6 +4,16 @@ h4
     border-bottom: 1px solid #333;
 }
 
+svg
+{
+    overflow: visible;
+}
+
+sup, sub
+{
+    cursor: pointer;
+}
+
 .diagram
 {
 
@@ -16,9 +26,9 @@ h4
     margin: 10px;
 }
 
-svg
+.important
 {
-    overflow: visible;
+    text-decoration: underline;
 }
 
 .highcharts-container
@@ -46,11 +56,23 @@ svg
     cursor: pointer;
 }
 
-.v-popup
+.v-overlay
 {
     z-index: 10;
     display: none;
     position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    background: rgba(150, 150, 150, 0.75);
+}
+
+.v-popup
+{
+    position: relative;
     top: 25%;
     left: 25%;
     min-width: 480px;
@@ -66,13 +88,15 @@ svg
 .v-popup p
 {
     line-height: 2;
+    font-family: 'Roboto Mono', Sans-Serif, sans-serif;
+    font-size: 1.2rem;
 }
 
 .v-badge
 {
     font-family: 'Roboto Mono', Sans-Serif, sans-serif;
     font-weight: bolder;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 0.2rem 0.5rem;
     border: none;
     border-radius: 0.25rem;
@@ -90,7 +114,7 @@ svg
 {
     font-family: 'Roboto Mono', Sans-Serif, sans-serif;
     font-weight: bolder;
-    font-size: 0.75rem;
+    font-size: 0.9rem;
     padding: 0.1rem 0.5rem;
     border-radius: 0.25rem;
     display: inline-block;
@@ -105,14 +129,49 @@ svg
     min-width: 2.5rem;
 }
 
-.v-metric { background: #0C0; }
-.v-metric-area { background: rgba(0, 204, 0, 0.1); border-color: #0C0; }
-.v-limit { background: #0AD; }
-.v-limit-area { background: rgba(0, 170, 221, 0.1); border-color: #0AD; }
-.v-unit { background: #B6C; }
-.v-unit-area { background: rgba(187, 102, 204, 0.1); border-color: #B6C; }
-.v-sign { background: #F82; }
-.v-sign-area { background: rgba(255, 136, 34, 0.1); border-color: #F82; }
+.v-metric
+{
+    background: #0C0;
+}
+
+.v-metric-area
+{
+    background: rgba(0, 204, 0, 0.1);
+    border-color: #0C0;
+}
+
+.v-time
+{
+    background: #0AD;
+}
+
+.v-time-area
+{
+    background: rgba(0, 170, 221, 0.1);
+    border-color: #0AD;
+}
+
+.v-unit
+{
+    background: #B6C;
+}
+
+.v-unit-area
+{
+    background: rgba(187, 102, 204, 0.1);
+    border-color: #B6C;
+}
+
+.v-sign
+{
+    background: #F82;
+}
+
+.v-sign-area
+{
+    background: rgba(255, 136, 34, 0.1);
+    border-color: #F82;
+}
 
 .report
 {
@@ -153,6 +212,7 @@ svg
 {
     overflow: auto;
     vertical-align: middle;
+    padding: 0 5px 0 5px;
 }
 
 .report .diagram
@@ -189,6 +249,7 @@ svg
 .v-inline
 {
     display: inline;
+    vertical-align:top;
 }
 
 .v-sec
@@ -234,7 +295,7 @@ svg
 {
     .v-float
     {
-        width: 66%;
+        width: 100%;
     }
 
     .v-small
@@ -255,11 +316,16 @@ svg
 
 @media only screen and (max-width: 800px)
 {
+    .navbar
+    {
+        display: none;
+    }
+
     .report
     {
         width: 100%;
         max-width: 100%;
-        top: 12em;
+        top: 0;
         left: 0;
         right: 0;
         padding: 1em;
@@ -288,11 +354,13 @@ svg
     .v-float
     {
         width: 100%;
+        max-width: 100%;
     }
 
     .v-small, .v-medium, .v-large
     {
         width: 100%;
+        max-width: 100%;
     }
 }
 

@@ -1,9 +1,10 @@
-import os
 import json
 from time import strftime, gmtime
 
 from django.template.loader import render_to_string
 
+from Presenter.report_text import explanation_text, description_text, experiment_summary_text, experiment_tool_text, \
+    table_text
 from source.util import dump, write, read, pack_zip_files, unserialize
 
 from Vizard.settings import TASK_PATH, STATIC_URL, BASE_DIR, DATE_FORMAT, REPORT
@@ -63,11 +64,19 @@ def collect_report(request, response, _id, export):
 
         response['meta'] = {
             'tool':      meta['tool'],
+            'tool_wiki': REPORT[meta['tool']]['wiki'],
+            'tool_link': REPORT[meta['tool']]['link'],
             'samples':   df.shape[0],
+            'from':      df.index[0],
+            'to':        df.index[len(df.index) - 1],
+            'duration':  df.index[len(df.index) - 1] - df.index[0],
             'arguments': meta['arguments']
         }
 
-        print(df)
+        response['meta']['text'] = {
+            'experiment': experiment_summary_text(response['meta']),
+            'wiki':       experiment_tool_text(REPORT[meta['tool']]['wiki'])
+        }
 
         metrics = REPORT[meta['tool']]['metrics']
         for metric in metrics:
@@ -75,22 +84,29 @@ def collect_report(request, response, _id, export):
             chart_type = metrics[metric]['type']
             index = metrics[metric]['col']
 
+            frequency = df[index].value_counts().to_dict()
+            _min = df[index].min()
+            _max = df[index].max()
+
             response['metrics'][metric] = {
-                'unit':       unit,
-                'type':       chart_type,
-                'data':       [[x[0], x[1]] for x in df[index].items()],
-                'cumulative': sorted(df[index].values),
-                'min':        [df[index].idxmin(), round(df[index].min(), 2)],
-                'max':        [df[index].idxmax(), round(df[index].max(), 2)],
-                'mean':       round(df[index].mean(), 2),
-                'med':        round(df[index].median(), 2),
-                'total':      round(df[index].sum(), 2),
-                'from':       int(df[index].head(1).index[0]),
-                'to':         int(df[index].tail(1).index[0])
+                'unit':          unit,
+                'type':          chart_type,
+                'data':          [[x[0], x[1]] for x in df[index].items()],
+                'cumulative':    sorted(df[index].values),
+                'min':           [df[index].idxmin(), round(_min, 2)],
+                'max':           [df[index].idxmax(), round(_max, 2)],
+                'mean':          round(df[index].mean(), 2),
+                'med':           round(df[index].median(), 2),
+                'total':         round(df[index].sum(), 2),
+                'frequencies':   {k: frequency[k] for k in list(frequency)[:3]},
+                'min_frequency': frequency[_min],
+                'max_frequency': frequency[_max],
             }
 
             response['metrics'][metric]['text'] = {
-                'explanation': 'dummy explanation'
+                'table': table_text(response['metrics'][metric], response['meta']),
+                'explanation': explanation_text(metrics[metric]['definition']),
+                'description': description_text(response['metrics'][metric], response['meta'])
             }
 
         if export is None:

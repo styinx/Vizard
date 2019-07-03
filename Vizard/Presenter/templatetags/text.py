@@ -6,12 +6,43 @@ from django.template import Library
 register = Library()
 
 
+@register.filter(name='keys')
+def keys(d):
+    return d.keys()
+
+
+@register.filter(name='b')
+def b(text):
+    return tag(text, 'b')
+
+
+@register.filter(name='i')
+def i(text):
+    return tag(text, 'i')
+
+
 @register.filter(name='s')
 def s(val, text):
     res = str(val) + text
     if abs(val) == 1:
         return res
     return res + 's'
+
+
+@register.filter(name='important')
+def important(text):
+    return tag_value(text, 'span;class="important"')
+
+
+@register.filter(name='times')
+def times(val):
+    if val == 0:
+        return 'never'
+    elif val == 1:
+        return 'once'
+    elif val == 2:
+        return 'twice'
+    return str(val) + ' times'
 
 
 @register.filter(name='idx')
@@ -33,26 +64,49 @@ def cap(text, which='first'):
             return text[0].upper() + text[1:]
         elif which == 'all':
             return ' '.join([cap(x) for x in text.split(' ')])
+        else:
+            return text
 
-    return text
+    elif isinstance(text, list):
+        return [cap(x, which) if i == 0 else cap(x, 'None') for i, x in enumerate(text)]
 
 
-@register.filter(name='empty')
-def empty(val, text):
+@register.filter(name='empty_text')
+def empty_text(val, text=''):
     if val != "":
-        return text.replace('%s', val)
+        if text:
+            return text.replace('%s', val)
+        else:
+            return val
     else:
         return ""
 
 
 @register.filter(name='date')
-def date(ts, t_format='%d.%m %H:%M:%S'):
+def date(ts, t_format='%d.%m.%Y %H:%M:%S'):
+    if t_format.find('%f') >= 0:
+        return dt.utcfromtimestamp(ts / 1000).strftime(t_format)[:-4]
     return dt.utcfromtimestamp(ts / 1000).strftime(t_format)
+
+
+@register.filter(name='better_date')
+def better_date(ts, dur):
+    __1m = 60000
+    __1h = __1m * 60
+    __1d = __1h * 24
+
+    if dur < __1m:
+        return date(ts, '%S.%f')
+    elif dur < __1h:
+        return date(ts, '%M:%S.%f')
+    elif dur < __1d:
+        return date(ts, '%H:%M:%S')
+    else:
+        return date(ts, '%d.%m %H:%M')
 
 
 @register.filter(name='duration')
 def duration(ms, t_format='%Yy %dd %Hh %Mm %Ss %fms'):
-    ms = int(ms) * 1000
     S = ms / 1000
     M = S / 60
     H = M / 60
@@ -92,11 +146,34 @@ def duration(ms, t_format='%Yy %dd %Hh %Mm %Ss %fms'):
     return t_format
 
 
+@register.filter(name='better_duration')
+def better_duration(_to, _from):
+    return duration(_to - _from)
+
+
 @register.filter(name='idfy')
 def idfy(text):
     return re.sub(r'\s', '_', text)
 
 
+@register.filter(name='anchorfy')
+def anchorfy(text, values):
+    if isinstance(text, str):
+        href, _id = values.split(';')
+        return tag_value(text, 'a;href="#' + idfy(text) + href + '" id="' + idfy(text) + _id + '"')
+
+    elif isinstance(text, list):
+        return [anchorfy(x, values) for x in text]
+
+    return ""
+
+
 @register.filter(name='tag')
 def tag(text, t):
     return '<' + t + '>' + text + '</' + t + '>'
+
+
+@register.filter(name='tag_value')
+def tag_value(text, values):
+    t, values = values.split(';')
+    return '<' + t + ' ' + values + '>' + text + '</' + t + '>'

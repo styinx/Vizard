@@ -6,6 +6,7 @@ from django.shortcuts import render
 from Vizard.models import User, Task, TaskScheduler
 from Vizard.settings import RESPONSE
 from Analyzer.execution import execute_jmeter, execute_locust
+from source.util import dump
 
 scheduler = TaskScheduler()
 scheduler_thread = Thread(target=scheduler.run)
@@ -17,7 +18,7 @@ def index(request):
     return render(request, 'Analyzer/Index.html')
 
 
-def tasks(request):
+def tasks(request, api=None):
     user = User(request)
     response = RESPONSE.copy()
     response['tasks'] = {}
@@ -29,21 +30,24 @@ def tasks(request):
     return render(request, 'Analyzer/Tasks.html', response)
 
 
-def loadtest(request):
-    return loadtest_jmeter(request)
+def loadtest(request, tool=None, api=None):
+    response = RESPONSE.copy()
 
+    if tool == "locust":
+        response = execute_locust(request, response, scheduler)
+    else:
+        response = execute_jmeter(request, response, scheduler)
 
-def loadtest_jmeter(request):
-    response = execute_jmeter(request, RESPONSE.copy(), scheduler)
+    if api:
+        if "missing" not in response:
+            scheduler.add_task_callback(response['hash'], request.GET['callback'])
+
+        return HttpResponse(dump(response))
 
     return render(request, 'Analyzer/Analysis.html', response)
 
 
-def loadtest_locust(request):
-    response = execute_locust(request, RESPONSE.copy(), scheduler)
+def stresstest(request, tool=None, api=None):
+    response = RESPONSE.copy()
 
-    return render(request, 'Analyzer/Analysis.html', response)
-
-
-def stresstest(request):
     return HttpResponse('TODO')

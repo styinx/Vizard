@@ -1,3 +1,4 @@
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import RedirectView
 from django.contrib import admin
 from django.urls import include, path, re_path
@@ -13,6 +14,7 @@ urlpatterns = [
     path('documentation/', views.documentation, name='documentation'),
     path('bot/', views.bot, name='bot'),
     path('demo/', views.demo, name='demo'),
+    path('webhook/', csrf_exempt(views.webhook), name='webhook'),
     re_path(r'^my/(?:(?P<what>\w+)/)?$', views.my, name='my'),
 
     path('admin/', admin.site.urls),

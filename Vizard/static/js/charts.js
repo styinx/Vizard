@@ -170,6 +170,21 @@ let STYLE_BASE = {
         borderColor: 'black'
       }
     },
+    responsive: {
+      rules: [{
+        condition: {
+          maxWidth: 800,
+        },
+        chartOptions: {
+          legend: {
+            y: 0,
+            align: 'center',
+            layout: 'horizontal',
+            verticalAlign: 'bottom'
+          }
+        }
+      }]
+    },
     tooltip: {
       useHTML: true,
       shared: true,
@@ -192,7 +207,7 @@ let STYLE_BASE = {
           };
         }
       },
-      formatter: base_tooltip_formatter,
+      formatter: base_tooltip_formatter
     },
     rangeSelector: {
       enabled: true,
@@ -345,60 +360,88 @@ function _default(metric_idfy, metric_cap, values) {
   let data = markMinMax(values.data, values.min, values.max);
 
   Highcharts.stockChart(metric_idfy, merge({
-    xAxis: [{
-      minorTickInterval: 'auto',
-      startOnTick: true,
-      endOnTick: true,
-      showEmpty: false,
-      lineWidth: 1,
-      lineColor: "#333",
-      labels: {
-        rotation: -45,
-        x: -10,
-        y: 30,
-        align: 'center',
-        formatter: function () {
-          return time(this.value, "%d.%m.<br>%H:%M:%S.%f");
+      xAxis: [{
+        minorTickInterval: 'auto',
+        startOnTick: true,
+        endOnTick: true,
+        showEmpty: false,
+        lineWidth: 1,
+        lineColor: "#333",
+        labels: {
+          rotation: -45,
+          x: -10,
+          y: 30,
+          align: 'center',
+          formatter: function () {
+            return time(this.value, "%d.%m.<br>%H:%M:%S.%f");
+          }
         }
-      }
-    }, {
-      title: '1',
-      visible: false,
-      labels: {
-        formatter: function () {
-          return false;
+      }, {
+        title: '1',
+        visible: false,
+        labels: {
+          formatter: function () {
+            return false;
+          }
         }
-      }
-    }, {
-      title: '2',
-      visible: false,
-      labels: {
-        formatter: function () {
-          return false;
+      }, {
+        title: '2',
+        visible: false,
+        labels: {
+          formatter: function () {
+            return false;
+          }
         }
-      }
-    }]
-  }, {
-    legend: {enabled: true},
-    series: [{
-      name: metric_cap + v_empty(" (%s)", values.unit),
-      data: data,
-      showInLegend: true
-    }, {
-      name: "Cumulative distribution",
-      data: values.cumulative,
-      type: 'spline',
-      visible: false,
-      xAxis: 1
-    }, {
-      name: "Median",
-      data: [[values.from, values.med], [values.to, values.med]],
-      color: 'orange',
-      type: 'spline',
-      visible: false,
-      xAxis: 2
-    }]
-  }));
+      }],
+      yAxis: {title: {text: values.unit || ''}},
+      tooltip: {
+        useHTML: true,
+        shared: true,
+        split: true,
+        outside: true,
+        backgroundColor: 'white',
+        positioner: function (width, height, point) {
+          let point_pos = point.plotX + this.chart.plotLeft - width / 2;
+          let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
+
+          if (point.isHeader) {
+            return {
+              x: Math.max(0, Math.min(point_pos, max_right)),
+              y: this.chart.chartHeight
+            };
+          } else {
+            return {
+              x: Math.max(0, Math.min(point_pos, max_right)),
+              y: 0
+            };
+          }
+        },
+        formatter: base_tooltip_formatter
+      },
+    },
+    {
+      legend: {enabled: true},
+      series: [{
+        name: metric_cap + v_empty(" (%s)", values.unit),
+        data: data,
+        unit: values.unit,
+        showInLegend: true
+      }, {
+        name: "Cumulative distribution",
+        data: values.cumulative,
+        type: 'spline',
+        visible: false,
+        xAxis: 1
+      }, {
+        name: "Median",
+        data: [[values.from, values.med], [values.to, values.med]],
+        unit: values.unit,
+        color: 'orange',
+        type: 'spline',
+        visible: false,
+        xAxis: 2
+      }]
+    }));
 }
 
 function pie(metric_idfy, metric_cap, values) {
@@ -430,16 +473,16 @@ function markMinMax(data, min, max) {
   let maxs = 0;
   for (let index = 0; index < data.length; ++index) {
     let entry = data[index];
-    if (entry[0] === min[0]) {
-      data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'green'}};
-      mins += 1;
-    }
     if (entry[0] === max[0]) {
       data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'red'}};
       maxs += 1;
     }
+    if (entry[0] === min[0]) {
+      data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'green'}};
+      mins += 1;
+    }
 
-    if(mins >= 1 && maxs >= 1)
+    if (mins >= 1 && maxs >= 1)
       break;
   }
   return data;
@@ -449,13 +492,13 @@ function base_tooltip_formatter() {
   return [time(this.x, "<b>%d.%m</b><br><b>%H:%M:%S.%f</b>")].concat(
     this.points.map(function (point) {
       let val = padT(dec(point.y));
-      if(point.series._i === 0) {
-        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + '</b>';
+      if (point.series._i === 0) {
+        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + ' ' + point.series.options.unit + '</b>';
       } else if (point.series._i === 1) {
-        let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile'
-        return '<span style="color:' + point.series.color + '">●</span> ' + percentile + '<b>' + val + '</b>';
+        let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile';
+        return '<span style="color:' + point.series.color + '">●</span> ' + percentile + ': <b>' + val + '</b>';
       } else if (point.series._i === 2) {
-        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + '</b>';
+        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + ' ' + point.series.options.unit + '</b>';
       }
     })
   );

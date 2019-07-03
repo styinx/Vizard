@@ -1,7 +1,9 @@
+from django.http import HttpResponse
 from django.shortcuts import render
 
 from Vizard.models import User
 from Vizard.settings import RESPONSE
+from source.util import dump
 
 
 def home(request):
@@ -22,6 +24,11 @@ def bot(request):
 
 def demo(request):
     return render(request, 'Demo.html')
+
+
+def webhook(request):
+    print(dump(request.POST))
+    return HttpResponse(dump(request.POST))
 
 
 def my(request, what=''):

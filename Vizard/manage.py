@@ -1,12 +1,25 @@
 #!/usr/bin/env python
 import os
 import sys
+import time
+import requests
+import threading
 
 from source.util import unpack_url_tar
 
 from Vizard.settings import TOOL_PATH, CONF_JMETER, CONF_GATLING
 
-if __name__ == '__main__':
+
+def keep_alive():
+    while True:
+        time.sleep(60 * 60 * 10)  # sleep 10 minutes
+        requests.get('https://vizardous.herokuapp.com/index/?keepalive=please')
+
+
+if __name__ == "__main__":
+    keep_alive_thread = threading.Thread(target=keep_alive)
+    keep_alive_thread.daemon = True
+    keep_alive_thread.start()
 
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Vizard.settings')
     try:
