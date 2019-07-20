@@ -1,4 +1,13 @@
+let bad = '#d00';
+let worry = '#d70';
+let okay = '#dd0';
+let good = '#690';
+let perfect = '#0a0';
+
 let STYLE_SPARK_BASE = {
+  colors: [
+      '#39f', '#bb3', '#188', '#d62',
+      '#a28', '#999', '#63b', '#8b3'],
   chart: {
     backgroundColor: null,
     borderWidth: 0,
@@ -34,7 +43,7 @@ let STYLE_SPARK_BASE = {
   scrollbar: {enabled: false},
   rangeSelector: {enabled: false},
   tooltip: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     outside: true,
     hideDelay: 0,
     style: {
@@ -77,13 +86,13 @@ let STYLE_SPARK_BASE = {
 
 let STYLE_SPARK_SPLINE = merge(STYLE_SPARK_BASE, {
   chart: {
-    type: "spline"
+    type: 'spline'
   }
 });
 
 let STYLE_SPARK_SCATTER = merge(STYLE_SPARK_BASE, {
   chart: {
-    type: "scatter"
+    type: 'scatter'
   }
 });
 
@@ -91,52 +100,16 @@ let STYLE_SPARK_SCATTER = merge(STYLE_SPARK_BASE, {
  * Holds general configuration about HighChart charts.
  */
 let STYLE_BASE = {
+    colors: [
+      '#39f', '#bb3', '#188', '#d62',
+      '#a28', '#999', '#63b', '#8b3'],
     chart: {
       spacing: 100,
       margin: 100,
       padding: 100
     },
-    title: {text: ""},
-    credits: {text: ""},
-    xAxis: [{
-      minorTickInterval: 'auto',
-      startOnTick: true,
-      endOnTick: true,
-      showEmpty: false,
-      lineWidth: 1,
-      lineColor: "#333",
-      labels: {
-        rotation: -45,
-        x: 15,
-        formatter: function () {
-          return time(this.value, "%d.%m<br>%H:%M:%S.%f");
-        }
-      }
-    }, {
-      title: '1',
-      visible: false,
-      labels: {
-        formatter: function () {
-          return false;
-        }
-      }
-    }, {
-      title: '2',
-      visible: false,
-      labels: {
-        formatter: function () {
-          return false;
-        }
-      }
-    }],
-    yAxis: {
-      minorTickInterval: 'auto',
-      startOnTick: true,
-      endOnTick: true,
-      lineWidth: 1,
-      lineColor: "#333",
-      opposite: false
-    },
+    title: {text: ''},
+    credits: {text: ''},
     plotOptions: {
       series: {
         dataGrouping: {
@@ -144,7 +117,49 @@ let STYLE_BASE = {
         },
         marker: {
           enabled: false,
-          radius: 4
+          symbol: 'circle',
+          radius: 5,
+          states: {
+            hover: {
+              radius: 6,
+              fillColor: null,
+              lineColor: 'rgb(100, 100, 100)',
+              lineWidth: 1
+            }
+          }
+        },
+        events: {
+          // legendItemClick: function () {
+          //   let serie = this;
+          //   let id = this.index;
+          //   let chart = this.chart;
+          //   let visible = this.visible;
+          //
+          //   console.log(visible, !visible, id)
+          //
+          //   if (visible) {
+          //     chart.series[id].hide();
+          //   } else {
+          //     chart.series[id].show();
+          //   }
+          //   chart.series[id].update({visible: !visible});
+          //   // chart.xAxis[serie.index].update({visible: !visible});
+          //   // chart.yAxis[serie.index].update({visible: !visible});
+          //
+          //   for (let index in chart.series) {
+          //     if (index !== id) {
+          //       if (visible) {
+          //         chart.series[index].show();
+          //       } else {
+          //         chart.series[index].hide();
+          //       }
+          //       chart.series[index].update({visible: visible});
+          //       // chart.xAxis[index].update({visible: visible});
+          //       // chart.yAxis[index].update({visible: visible});
+          //     }
+          //   }
+          //   chart.redraw();
+          //}
         }
       }
     },
@@ -211,23 +226,21 @@ let STYLE_BASE = {
     },
     rangeSelector: {
       enabled: true,
-      verticalAlign:
-        'top',
-      inputDateFormat:
-        '%d.%m %H:%M',
-      inputEditDateFormat:
-        '%d.%m %H:%M',
-      inputPosition:
-        {
-          align: 'left', y:
-            -32, x:
-            0
-        }
+      verticalAlign: 'top',
+      inputEnabled: true,
+      inputDateFormat: '%d.%m.%Y %H:%M',
+      inputEditDateFormat: '%d.%m.%Y %H:%M',
+      inputBoxWidth: 100,
+      inputPosition: {
+        align: 'left',
+        y: -32,
+        x: 0
+      }
       ,
       buttonPosition: {
-        align: 'left', y:
-          32, x:
-          0
+        align: 'left',
+        y: 32,
+        x: 0
       }
       ,
       buttons: [{
@@ -303,23 +316,23 @@ let STYLE_BASE = {
 ;
 
 let STYLE_SPLINE = merge(STYLE_BASE, {
-  chart: {type: "spline"}
+  chart: {type: 'spline'}
 });
 
 let STYLE_SCATTER = merge(STYLE_BASE, {
-  chart: {type: "scatter"}
+  chart: {type: 'scatter'}
 });
 
 let STYLE_COLUMN = merge(STYLE_BASE, {
-  chart: {type: "column"}
+  chart: {type: 'column'}
 });
 
 let STYLE_BAR = merge(STYLE_BASE, {
-  chart: {type: "bar"}
+  chart: {type: 'bar'}
 });
 
 let STYLE_PIE = merge(STYLE_BASE, {
-  chart: {type: "pie"},
+  chart: {type: 'pie'},
   plotOptions: {
     pie: {
       allowPointSelect: true,
@@ -332,120 +345,256 @@ let STYLE_PIE = merge(STYLE_BASE, {
   }
 });
 
+let STYLE_GAUGE = merge(STYLE_BASE, {
+  chart: {
+    height: 250,
+    type: 'pie',
+    plotBackgroundColor: null,
+    plotBorderWidth: 0,
+    plotShadow: false
+  },
+  legend: {
+    y: 0,
+    align: 'center',
+    layout: 'horizontal',
+    verticalAlign: 'bottom'
+  },
+  tooltip: {
+    split: false,
+    positioner: function () {
+      return {
+        x: this.chart.plotLeft + this.chart.plotWidth / 2 - this.label.width / 2,
+        y: this.chart.plotTop + this.chart.plotHeight - this.label.height
+      };
+    },
+    formatter: function () {
+      return this.point.options.description + '\n'
+        + this.point.y + '% (' + this.point.abs + '/' + this.point.sum + ')';
+    }
+  },
+  plotOptions: {
+    pie: {
+      dataLabels: {
+        enabled: true,
+        distance: -50,
+        style: {
+          fontWeight: 'bold',
+          color: 'white'
+        }
+      },
+      startAngle: -90,
+      endAngle: 90,
+      center: ['50%', '100%'],
+      size: '200%'
+    }
+  },
+  scrollbar: {
+    enabled: false
+  },
+  rangeSelector: {
+    enabled: false
+  },
+  navigator: {
+    enabled: false,
+  }
+});
 
 let STYLE_CHART = {
-  "spline": STYLE_SPLINE,
-  "pie": STYLE_PIE,
-  "bar": STYLE_BAR,
-  "column": STYLE_COLUMN,
+  'spline': STYLE_SPLINE,
+  'pie': STYLE_PIE,
+  'gauge': STYLE_GAUGE,
+  'bar': STYLE_BAR,
+  'column': STYLE_COLUMN,
 };
 
 function chart(metric_idfy, metric_cap, values) {
-  Highcharts.setOptions(STYLE_CHART[values.type]);
-
   switch (values.type) {
-    default:
-    case 'spline':
-    case 'column': {
-      _default(metric_idfy, metric_cap, values);
-      break;
-    }
     case 'pie': {
       pie(metric_idfy, metric_cap, values);
+      break;
+    }
+    case 'gauge': {
+      gauge(metric_idfy, metric_cap, values);
+      break;
+    }
+    case 'spline':
+    case 'column':
+    default: {
+      _default(metric_idfy, metric_cap, values);
+      break;
     }
   }
 }
 
-function _default(metric_idfy, metric_cap, values) {
-  let data = markMinMax(values.data, values.min, values.max);
-
-  Highcharts.stockChart(metric_idfy, merge({
-      xAxis: [{
-        minorTickInterval: 'auto',
-        startOnTick: true,
-        endOnTick: true,
-        showEmpty: false,
-        lineWidth: 1,
-        lineColor: "#333",
-        labels: {
-          rotation: -45,
-          x: -10,
-          y: 30,
-          align: 'center',
-          formatter: function () {
-            return time(this.value, "%d.%m.<br>%H:%M:%S.%f");
-          }
+function chart_compare(metric_idfy, metric_cap, values) {
+  Highcharts.stockChart(metric_idfy, merge(STYLE_CHART[values.type], {
+    xAxis: {
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      labels: {
+        rotation: -45,
+        x: -10,
+        y: 30,
+        align: 'center',
+        formatter: function () {
+          return time(this.value, '%d.%m.<br>%H:%M:%S.%f');
         }
-      }, {
-        title: '1',
-        visible: false,
-        labels: {
-          formatter: function () {
-            return false;
-          }
-        }
-      }, {
-        title: '2',
-        visible: false,
-        labels: {
-          formatter: function () {
-            return false;
-          }
-        }
-      }],
-      yAxis: {title: {text: values.unit || ''}},
-      tooltip: {
-        useHTML: true,
-        shared: true,
-        split: true,
-        outside: true,
-        backgroundColor: 'white',
-        positioner: function (width, height, point) {
-          let point_pos = point.plotX + this.chart.plotLeft - width / 2;
-          let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
-
-          if (point.isHeader) {
-            return {
-              x: Math.max(0, Math.min(point_pos, max_right)),
-              y: this.chart.chartHeight
-            };
-          } else {
-            return {
-              x: Math.max(0, Math.min(point_pos, max_right)),
-              y: 0
-            };
-          }
-        },
-        formatter: base_tooltip_formatter
-      },
+      }
     },
-    {
-      legend: {enabled: true},
-      series: [{
-        name: metric_cap + v_empty(" (%s)", values.unit),
-        data: data,
-        unit: values.unit,
-        showInLegend: true
-      }, {
-        name: "Cumulative distribution",
-        data: values.cumulative,
-        type: 'spline',
-        visible: false,
-        xAxis: 1
-      }, {
-        name: "Median",
-        data: [[values.from, values.med], [values.to, values.med]],
-        unit: values.unit,
-        color: 'orange',
-        type: 'spline',
-        visible: false,
-        xAxis: 2
-      }]
-    }));
+    yAxis: {
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      opposite: false,
+      title: {text: values.unit || ''}
+    },
+    tooltip: {
+      useHTML: true,
+      shared: true,
+      split: true,
+      outside: true,
+      backgroundColor: 'white',
+      positioner: function (width, height, point) {
+        let point_pos = point.plotX + this.chart.plotLeft - width / 2;
+        let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
+
+        if (point.isHeader) {
+          return {
+            x: Math.max(0, Math.min(point_pos, max_right)),
+            y: this.chart.chartHeight
+          };
+        } else {
+          return {
+            x: Math.max(0, Math.min(point_pos, max_right)),
+            y: 0
+          };
+        }
+      },
+      formatter: base_tooltip_formatter_compare
+    },
+    rangeSelector: {
+      inputEnabled: false
+    },
+    legend: {enabled: true},
+    series: [{
+      name: v_index(1) + ' ' + metric_cap + v_empty(' (%s)', values.unit),
+      data: values.series[0],
+      unit: values.unit,
+      showInLegend: true
+    }, {
+      name: v_index(2) + ' ' + metric_cap + v_empty(' (%s)', values.unit),
+      data: values.series[1],
+      unit: values.unit,
+      showInLegend: true
+    }]
+  }));
+}
+
+function _default(metric_idfy, metric_cap, values) {
+  let data = markMinMax(values.data, values.min['val'], values.max['val']);
+  let cumulative = markPercentile(
+    values.cumulative,
+    values.p5['val'],
+    values.p25['val'],
+    values.p50['val'],
+    values.p75['val'],
+    values.p95['val']);
+
+  Highcharts.stockChart(metric_idfy, merge(STYLE_CHART[values.type], {
+    xAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      labels: {
+        rotation: -45,
+        x: -10,
+        y: 30,
+        align: 'center',
+        formatter: function () {
+          return time(this.value, '%d.%m.<br>%H:%M:%S.%f');
+        }
+      }
+    }, {
+      visible: false,
+      title: {text: values.unit || ''},
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      labels: {
+        align: 'center',
+        formatter: function () {
+          return this.value;
+        }
+      }
+    }],
+    yAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      opposite: false,
+      title: {text: values.unit || ''}
+    }, {
+      visible: false,
+      title: {text: '%'},
+      min: 0,
+      max: 100
+    }],
+    tooltip: {
+      useHTML: true,
+      shared: true,
+      split: true,
+      outside: true,
+      backgroundColor: 'white',
+      positioner: function (width, height, point) {
+        let point_pos = point.plotX + this.chart.plotLeft - width / 2;
+        let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
+
+        if (point.isHeader) {
+          return {
+            x: Math.max(0, Math.min(point_pos, max_right)),
+            y: this.chart.chartHeight
+          };
+        } else {
+          return {
+            x: Math.max(0, Math.min(point_pos, max_right)),
+            y: 0
+          };
+        }
+      },
+      formatter: base_tooltip_formatter
+    },
+    legend: {enabled: true},
+    series: [{
+      name: metric_cap + v_empty(' (%s)', values.unit),
+      data: data,
+      unit: values.unit,
+      showInLegend: true,
+      xAxis: 0,
+      yAxis: 0
+    }, {
+      name: 'Cumulative distribution',
+      data: cumulative,
+      unit: values.unit,
+      type: 'spline',
+      visible: false,
+      xAxis: 1,
+      yAxis: 1
+    }]
+  }));
 }
 
 function pie(metric_idfy, metric_cap, values) {
-  Highcharts.stockChart(metric_idfy, merge({
+  Highcharts.stockChart(metric_idfy, merge(STYLE_CHART[values.type], {
     tooltip: {
       pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
     },
@@ -468,17 +617,113 @@ function pie(metric_idfy, metric_cap, values) {
   }));
 }
 
+function gauge(metric_idfy, metric_cap, values) {
+  Highcharts.stockChart(metric_idfy, merge(STYLE_CHART[values.type], {
+    series: [{
+      innerSize: '50%',
+      data: values.data,
+      zones: [{
+        value: 50,
+        color: bad
+      }, {
+        value: 75,
+        color: worry
+      }, {
+        value: 80,
+        color: okay
+      }, {
+        value: 90,
+        color: good
+      }, {
+        color: perfect
+      }]
+    }],
+  }));
+}
+
+function markPercentile(data, p5, p25, p50, p75, p95) {
+  let p5s = 0;
+  let p25s = 0;
+  let p50s = 0;
+  let p75s = 0;
+  let p95s = 0;
+
+  for (let index = 0; index < data.length; ++index) {
+    let entry = data[index];
+    if (entry[0] === p5 && p5s < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: '5th percentile',
+        marker: {enabled: true, fillColor: perfect}
+      };
+      p5s += 1;
+    }
+    if (entry[0] === p25 && p25s < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: '25th percentile',
+        marker: {enabled: true, fillColor: good}
+      };
+      p25s += 1;
+    }
+    if (entry[0] === p50 && p50s < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: '50th percentile',
+        marker: {enabled: true, fillColor: okay}
+      };
+      p50s += 1;
+    }
+    if (entry[0] === p75 && p75s < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: '75th percentile',
+        marker: {enabled: true, fillColor: worry}
+      };
+      p75s += 1;
+    }
+    if (entry[0] === p95 && p95s < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: '95th percentile',
+        marker: {enabled: true, fillColor: bad}
+      };
+      p95s += 1;
+    }
+
+    if (p5s >= 1 && p25s >= 1 && p50s >= 1 && p75s >= 1 && p95s >= 1)
+      break;
+  }
+  return data;
+}
+
 function markMinMax(data, min, max) {
   let mins = 0;
   let maxs = 0;
+
   for (let index = 0; index < data.length; ++index) {
     let entry = data[index];
-    if (entry[0] === max[0]) {
-      data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'red'}};
+    if (entry[1] === max && maxs < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: 'Maximum',
+        marker: {enabled: true, fillColor: 'red'}
+      };
       maxs += 1;
     }
-    if (entry[0] === min[0]) {
-      data[index] = {x: entry[0], y: entry[1], marker: {enabled: true, fillColor: 'green'}};
+    if (entry[1] === min && mins < 1) {
+      data[index] = {
+        x: entry[0],
+        y: entry[1],
+        description: 'Minimum',
+        marker: {enabled: true, fillColor: 'green'}
+      };
       mins += 1;
     }
 
@@ -489,17 +734,47 @@ function markMinMax(data, min, max) {
 }
 
 function base_tooltip_formatter() {
-  return [time(this.x, "<b>%d.%m</b><br><b>%H:%M:%S.%f</b>")].concat(
+  let p = this.points[0];
+  let color = p.series.color;
+  let unit = p.series.options.unit;
+  let description = p.point.description === undefined ? '' :
+    br(c(b(p.point.description), p.point.marker.fillColor));
+
+  let span = description + '<span style="color:' + color + '">●</span> ';
+  let header = '';
+
+  if (p.series._i === 0) {
+    header = b(time(this.x, 'Date: %d.%m.%Y<br>Time: %H:%M:%S.%f'));
+  } else if (p.series._i === 1) {
+    header = b(this.x + ' ' + unit);
+  }
+
+  return [header].concat(
+    this.points.map(function (point) {
+      if (point.series._i === 0) {
+        let val = padT(dec(point.y));
+        return span + b(val + ' ' + unit);
+      } else if (point.series._i === 1) {
+        let percentile = v_index(point.y);
+        return span + percentile + ' percentile';
+      }
+    })
+  );
+}
+
+function base_tooltip_formatter_compare() {
+  let p = this.points[0];
+  let color = p.series.color;
+  let unit = p.series.options.unit;
+  let description = p.point.description === undefined ? '' :
+    br(c(b(p.point.description), p.point.marker.fillColor));
+
+  let span = description + '<span style="color:' + color + '">●</span> ';
+
+  return [b(better_duration(this.x))].concat(
     this.points.map(function (point) {
       let val = padT(dec(point.y));
-      if (point.series._i === 0) {
-        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + ' ' + point.series.options.unit + '</b>';
-      } else if (point.series._i === 1) {
-        let percentile = v_index(Math.floor((point.key + 1) / point.series.points.length * 100)) + ' percentile';
-        return '<span style="color:' + point.series.color + '">●</span> ' + percentile + ': <b>' + val + '</b>';
-      } else if (point.series._i === 2) {
-        return '<span style="color:' + point.series.color + '">●</span> <b>' + val + ' ' + point.series.options.unit + '</b>';
-      }
+        return span + b(val + ' ' + unit);
     })
   );
 }

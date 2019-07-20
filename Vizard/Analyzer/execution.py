@@ -1,40 +1,53 @@
-import re
+from source.util import unpack_request_values
 
-from source.util import unpack_request_values, dump
-
-from Vizard.settings import CONF_JMETER, CONF_LOCUST
+from Vizard.settings import CONF_JMETER, CONF_LOCUST, RESPONSE
 from Vizard.models import User, Task
 
 from Analyzer.tools import *
 
 
+d_jmeter = {
+    'domain':    None,
+    'port':      '',
+    'duration':  '10',
+    'load':      '10',
+
+    # jmeter
+    'ramp_up':   '1',
+    'ramp_down': '1',
+}
+
+
+d_locust = {
+    'domain':     None,
+    'port':       '',
+    'duration':   '10',
+    'load':       '10',
+
+    # locust
+    'min_wait':   '1000',
+    'max_wait':   '2000',
+    'hatch_rate': '1'
+}
+
+d_regression = {
+    'start_first': None,
+    'start_second': None
+}
+
+
 # Sets default test values.
 # Fields with the value 'None' are mandatory.
 def unpack_jmeter_values(request):
-    return unpack_request_values(request, {
-        'domain':     None,
-        'port':       '',
-        'duration':   '10',
-        'load':       '10',
-
-        # jmeter
-        'ramp_up':    '1',
-        'ramp_down':  '1',
-    })
+    return unpack_request_values(request, d_jmeter)
 
 
 def unpack_locust_values(request):
-    return unpack_request_values(request, {
-        'domain':     None,
-        'port':       '',
-        'duration':   '10',
-        'load':       '10',
+    return unpack_request_values(request, d_locust)
 
-        # locust
-        'min_wait':   '1000',
-        'max_wait':   '2000',
-        'hatch_rate': '1'
-    })
+
+def unpack_regression_values(request):
+    return unpack_request_values(request, d_regression)
 
 
 def execute_jmeter(request, response, scheduler):
@@ -148,5 +161,35 @@ def execute_locust(request, response, scheduler):
     response['tool'] = lc.name
     response['config'] = dump(conf)
     response['hash'] = task.hash
+
+    return response
+
+
+def execute_regressiontest(request, response, tool, scheduler):
+    values = unpack_regression_values(request)
+
+    if isinstance(values, list):
+        response['missing'] = values
+        return response
+
+    response1 = RESPONSE.copy()
+    response2 = RESPONSE.copy()
+
+    if tool == 'JMeter':
+        response1 = execute_jmeter(request, response1, scheduler)
+        response2 = execute_jmeter(request, response2, scheduler)
+    else:
+        response1 = execute_locust(request, response1, scheduler)
+        response2 = execute_locust(request, response2, scheduler)
+
+    if "missing" in response1:
+        response['missing'] = response1['missing']
+    elif "missing" in response2:
+        response['missing'] = response2['missing']
+    else:
+        response['tool'] = response1['tool']
+        response['config'] = response1['config']
+        response['hash1'] = response1['hash']
+        response['hash2'] = response2['hash']
 
     return response

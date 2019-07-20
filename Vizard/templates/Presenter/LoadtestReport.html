@@ -62,6 +62,7 @@
 
   {% if metrics %}
 
+  <div class="settings-sidebar-background"></div>
   <div class="settings-sidebar bg-white shadow border-dark">
     <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-overlay')"/>
     <a href="/present/report/{{ hash }}/export"><img src="{% static 'img/download.svg' %}"/></a>
@@ -177,52 +178,54 @@
 
     </div>
 
+    <h4 class="link" onclick="toggleVisibility($('#otherMetrics'), 0, true)">Other metrics</h4>
+    <div class="hidden pl-5" id="otherMetrics">
+      {% for metric, values in metrics.items %}
 
-    {% for metric, values in metrics.items %}
+        <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
 
-      <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
+        <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
 
-      <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
+          <div class="v-sec v-big diagram" id="{{ metric|idfy }}"></div>
 
-        <div class="v-sec v-big diagram" id="{{ metric|idfy }}"></div>
+          <div class="v-sec v-big">
 
-        <div class="v-sec v-big">
+            <div class="v-float v-medium">
+              <table class="table">
+                {% autoescape off %}
+                  {{ values.text.table }}
+                {% endautoescape %}
+              </table>
+            </div>
 
-          <div class="v-float v-medium">
-            <table class="table">
+            <span class="v-inline v-small">
               {% autoescape off %}
-                {{ values.text.table }}
+                {{ values.text.explanation }}
               {% endautoescape %}
-            </table>
+            </span>
+
+            <br>
+
+            <span class="v-inline v-small">
+              {% autoescape off %}
+                {{ values.text.description }}
+              {% endautoescape %}
+            </span>
+
           </div>
-
-          <span class="v-inline v-small">
-            {% autoescape off %}
-              {{ values.text.explanation }}
-            {% endautoescape %}
-          </span>
-
-          <br>
-
-          <span class="v-inline v-small">
-            {% autoescape off %}
-              {{ values.text.description }}
-            {% endautoescape %}
-          </span>
 
         </div>
 
-      </div>
-
-    {% endfor %}
+      {% endfor %}
+    </div>
 
   </div>
 
   {% else %}
 
-  <div class="bg-white shadow border-dark report">
+  <div class="bg-white m-5 p-5 text-center shadow border-dark">
 
-    <div class="v-sec v-big">{{ message }}</div>
+    <div class="v-sec v-large">{{ message }}</div>
 
   </div>
 

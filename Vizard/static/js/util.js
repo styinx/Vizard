@@ -86,6 +86,29 @@ function duration(ms, format = "%Yy %mm %dd %Hh %Mm %Ss %fms") {
     .replace("%f", ms % 1000);
 }
 
+function better_duration(ms) {
+  let format = '';
+  if(ms < 1000) {
+    format = '%fms';
+  }
+  else if(ms < 1000 * 60) {
+    format = '%Ss %fms';
+  }
+  else if(ms < 1000 * 60 * 60) {
+    format = '%Mm %Ss';
+  }
+  else if(ms < 1000 * 60 * 60 * 24) {
+    format = '%Hh %Mm';
+  }
+  else if(ms < 1000 * 60 * 60 * 24 * 356) {
+    format = '%dd %Hh';
+  }
+  else {
+    format = '%Yy %dd';
+  }
+  return duration(ms, format);
+}
+
 function range(start, end, step) {
   let step_val = step;
   let step_index = 0;
@@ -123,7 +146,7 @@ function range(start, end, step) {
 
 function merge(first, second) {
   let cpy = Object.assign({}, first);
-  for (var prop in second) {
+  for (let prop in second) {
     if (second.hasOwnProperty(prop)) {
       cpy[prop] = second[prop];
     }

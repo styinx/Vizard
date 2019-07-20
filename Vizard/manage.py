@@ -12,8 +12,9 @@ from Vizard.settings import TOOL_PATH, CONF_JMETER, CONF_GATLING
 
 def keep_alive():
     while True:
-        time.sleep(60 * 60 * 10)  # sleep 10 minutes
-        requests.get('https://vizardous.herokuapp.com/index/?keepalive=please')
+        time.sleep(60 * 5)  # sleep 5 minutes
+        print('Send keep alive thread...', end='')
+        print(requests.get('https://vizardous.herokuapp.com/'))
 
 
 if __name__ == "__main__":

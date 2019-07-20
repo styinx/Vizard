@@ -22,8 +22,12 @@ def bot(request):
     return render(request, 'Bot.html')
 
 
-def demo(request):
-    return render(request, 'Demo.html')
+def demo_report_loadtest(request):
+    return render(request, 'DemoLoadtest.html')
+
+
+def demo_report_regressiontest(request):
+    return render(request, 'DemoRegressiontest.html')
 
 
 def webhook(request):

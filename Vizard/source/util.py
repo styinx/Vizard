@@ -52,6 +52,8 @@ def pack_zip(source, filename):
 def pack_zip_files(files, folder_prefix=''):
     s = io.BytesIO()
 
+    print(files, folder_prefix)
+
     zf = zipfile.ZipFile(s, 'w')
 
     for original, new in files.items():

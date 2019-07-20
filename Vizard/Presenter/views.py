@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 from Vizard.settings import RESPONSE
-from Presenter.report import collect_data, collect_report, collect_report_result
+from Presenter.report import LoadtestReport, CompareReport
 
 
 def index(request):
@@ -10,31 +10,56 @@ def index(request):
 
 
 def data(request, api='', _id=''):
-    response = collect_data(request, RESPONSE.copy(), api, _id)
+    report = LoadtestReport(request, RESPONSE.copy(), api, _id, None)
+    response = report.collect_data()
 
     if api:
         return HttpResponse(response)
 
-    return render(request, 'Presenter/Data.html', response)
+    return render(request, 'Presenter/' + report.data_template, response)
+
+
+def data_compare(request, api='', _id=''):
+    id1, id2 = _id.split('-')
+
+    report = CompareReport(request, RESPONSE.copy(), api, id1, id2, None)
+    response = report.collect_data()
+
+    if api:
+        return HttpResponse(response)
+
+    return render(request, 'Presenter/' + report.data_template, response)
 
 
 def report_id(request, api='', _id='', export=None):
-    response, zipped = collect_report(request, RESPONSE.copy(), _id, export)
+    report = LoadtestReport(request, RESPONSE.copy(), api, _id, export)
+
+    response, zipped = report.collect_report()
 
     if api:
-        return HttpResponse(collect_report_result(request, response, _id))
+        return HttpResponse(report.collect_report_result())
 
     if export == "export":
         response = HttpResponse(zipped[1], content_type='application/force-download')
         response['Content-Disposition'] = 'attachment; filename=' + zipped[0]
         return response
 
-    return render(request, 'Presenter/Report.html', response)
+    return render(request, 'Presenter/' + report.report_template, response)
 
 
-def report_compare(request, api='', compare='', export=None):
-    id1, id2 = compare.split('-')
+def report_compare(request, api='', _id='', export=None):
+    id1, id2 = _id.split('-')
 
+    report = CompareReport(request, RESPONSE.copy(), api, id1, id2, export)
 
-    return HttpResponse('todo')
-    #return render(request, 'Presenter/Compare.html', response)
+    response, zipped = report.collect_report()
+
+    if api:
+        return HttpResponse(report.collect_report_result())
+
+    if export == "export":
+        response = HttpResponse(zipped[1], content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename=' + zipped[0]
+        return response
+
+    return render(request, 'Presenter/' + report.report_template, response)

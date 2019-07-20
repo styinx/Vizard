@@ -150,23 +150,32 @@ REPORT = {
                 'col':        'elapsed',
                 'type':       'spline',
                 'unit':       'ms',
-                'definition': str()
+                'definition': str(
+                    'The elapsed time is the amount of time it takes to send the first request '
+                    'until the last response is received. This metric does not include the time '
+                    'a client is executing code.')
             },
-            # 'request status':           {
-            #     'index': 3,
-            #     'dtype': str,
-            #     'col':   'success',
-            #     'type':  'pie',
-            #     'unit':  '',
-            #     'definition': str()
-            # },
+            'request status':   {
+                'index':      3,
+                'dtype':      bool,
+                'col':        'success',
+                'type':       'gauge',
+                'unit':       '',
+                'definition': str(
+                    'If a request does not reach the server or is refused by it, the request was not '
+                    'successful. An unsuccessful request can contain the reason of the refusal as plain '
+                    'text in the response text. Another reason is a faulty connection to the server.')
+            },
             'received traffic': {
                 'index':      4,
                 'dtype':      int,
                 'col':        'bytes',
                 'type':       'column',
                 'unit':       'bytes per request',
-                'definition': str()
+                'definition': str(
+                    'To perform a request, it is necessary to exchange data between client and '
+                    'server. This data consists of header data and meta information, which is '
+                    'needed by the server. The amount of exchanged information is measured in bytes.')
             },
             'sent traffic':     {
                 'index':      5,
@@ -182,7 +191,15 @@ REPORT = {
                 'col':        'Latency',
                 'type':       'spline',
                 'unit':       'ms',
-                'definition': str()
+                'definition': str(
+                    'Latency is the amount of time a message takes to traverse a system. '
+                    'In a computer network, it is an expression of how much time it takes for '
+                    'a packet of data to get from one designated point to another. '
+                    'It is measured as the time required for a request to be sent to the '
+                    'server and returned to its sender. '
+                    'Latency depends on the speed of the transmission medium  and the delays '
+                    'in the transmission by devices along the way. ' +
+                    'A low latency indicates a high network efficiency.')
             },
             'idle time':        {
                 'index':      9,
@@ -198,16 +215,29 @@ REPORT = {
                 'col':        'Connect',
                 'type':       'spline',
                 'unit':       'ms',
-                'definition': str()
+                'definition': str(
+                    'The connection time is the amount of time it takes to establish a connection '
+                    'between a client and the server. If the connection request between client and '
+                    'server was successful, the client can send further requests. If the connection '
+                    'was not successful, no further requests can be send to the server. The connection '
+                    'time is also part of the latency. ')
             },
-            # 'response time':    {
-            # 'dtype':            int,
-            #     'index': [1, 8, 9, 10],
-            #     'col':   ['elapsed', 'Latency', 'IdleTime', 'Connect'],
-            #     'type':  'spline',
-            #     'unit':  'ms',
-            #     'definition': str()
-            # },
+            'response time':    {
+                'dtype':      int,
+                'index':      [1, 8, 9, 10],
+                'col':        ['elapsed', 'Latency', 'IdleTime', 'Connect'],
+                'type':       'spline',
+                'unit':       'ms',
+                'definition': str(
+                    'Response time is the total amount of time it takes to respond to a request for '
+                    'service. That service can be anything from a memory fetch, to a disk IO, to a '
+                    'complex database query, or loading a full web page. The response time is the sum '
+                    'of the service time and wait time. The service time is the time it takes to do '
+                    'the work you requested. For a given request the service time varies little as '
+                    'the workload increases – to do X amount of work it always takes X amount of '
+                    'time. The wait time is how long the request had to wait in a queue before being '
+                    'serviced and it varies from zero, to a large multiple of the service time.')
+            }
         }
     },
     'Locust': {
@@ -215,21 +245,32 @@ REPORT = {
         'link':    'https://locust.io/',
         'headers': ['timeStamp', 'service', 'type', 'success', 'responseTime', 'bytes'],
         'metrics': {
-            # 'request status':        {
-            #     'index': 2,
-            # 'dtype': str,
-            #     'col': 'success',
-            #     'type':  'pie',
-            #     'unit':  '',
-            #     'definition': str()
-            # },
+            'request status': {
+                'index':      2,
+                'dtype':      bool,
+                'col':        'success',
+                'type':       'gauge',
+                'unit':       '',
+                'definition': str(
+                    'If a request does not reach the server or is refused by it, the request was not '
+                    'successful. An unsuccessful request can contain the reason of the refusal as plain '
+                    'text in the response text. Another reason is a faulty connection to the server.')
+            },
             'response time': {
                 'index':      3,
                 'dtype':      float,
                 'col':        'responseTime',
                 'type':       'spline',
                 'unit':       'ms',
-                'definition': str()
+                'definition': str(
+                    'Response time is the total amount of time it takes to respond to a request for '
+                    'service. That service can be anything from a memory fetch, to a disk IO, to a '
+                    'complex database query, or loading a full web page. The response time is the sum '
+                    'of the service time and wait time. The service time is the time it takes to do '
+                    'the work you requested. For a given request the service time varies little as '
+                    'the workload increases – to do X amount of work it always takes X amount of '
+                    'time. The wait time is how long the request had to wait in a queue before being '
+                    'serviced and it varies from zero, to a large multiple of the service time.')
             },
             'sent traffic':  {
                 'index':      4,
@@ -241,6 +282,11 @@ REPORT = {
             },
         }
     }
+}
+
+VALUES = {
+    'True': 'successful',
+    'False': 'not successful',
 }
 
 # Activate Django-Heroku.

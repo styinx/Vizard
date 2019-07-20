@@ -5,6 +5,11 @@ from django.template import Library
 
 register = Library()
 
+NL = '\n'
+BLK = ' '
+NL_HT = '<br>'
+BLK_HT = '&nbsp;'
+
 
 @register.filter(name='keys')
 def keys(d):
@@ -106,7 +111,7 @@ def better_date(ts, dur):
 
 
 @register.filter(name='duration')
-def duration(ms, t_format='%Yy %dd %Hh %Mm %Ss %fms'):
+def duration(ms, t_format='%Y y %d d %H h %M m %S s %f ms'):
     S = ms / 1000
     M = S / 60
     H = M / 60

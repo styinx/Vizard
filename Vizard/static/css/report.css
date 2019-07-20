@@ -14,6 +14,11 @@ sup, sub
     cursor: pointer;
 }
 
+.navbar
+{
+    display: none;
+}
+
 .diagram
 {
 
@@ -36,6 +41,17 @@ sup, sub
     overflow: visible !important;
 }
 
+.settings-sidebar-background
+{
+    display: none;
+    z-index: 9;
+    position: fixed;
+    top: calc(100% - 10em);
+    height: 10em;
+    width: 100%;
+    background: linear-gradient(rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 1.0));
+}
+
 .settings-sidebar
 {
     z-index: 10;
@@ -45,7 +61,7 @@ sup, sub
     top: 35%;
     margin: 0.5em;
     padding: 0.5em;
-    min-height: 30%;
+    min-height: auto;
 }
 
 .settings-sidebar img
@@ -180,12 +196,10 @@ sup, sub
     flex-wrap: wrap;
     align-items: end;
     vertical-align: top;
-    top: 5em;
-    left: 8em;
-    right: 5em;
-    padding: 5em 5em 5em 5em;
+    padding: 5em 5em 5em 7em;
     min-width: calc(480px + 8em);
-    max-width: calc(100% - 14em);
+    max-width: 100%;
+    min-height: 100%;
 }
 
 .report a, .report a:hover, .report a:active, .report a:visited
@@ -328,7 +342,12 @@ sup, sub
         top: 0;
         left: 0;
         right: 0;
-        padding: 1em;
+        padding: 1em 1em 10em 1em;
+    }
+
+    .settings-sidebar-background
+    {
+        display: block;
     }
 
     .settings-sidebar

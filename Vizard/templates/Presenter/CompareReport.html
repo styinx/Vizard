@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  {% load static %}
+  {% load std %}
+  {% load util %}
+  {% load text %}
+  {% load uc %}
+
+  <title>Report for {{ hash1 }} and {{ hash2 }}</title>
+
+  {% include "util/header.html" %}
+
+  <script type="text/javascript" src="{% static 'js/highstock.js' %}"></script>
+
+  <script type="text/javascript" src="{% static 'js/util.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/charts.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/text.js' %}"></script>
+
+  <link rel="stylesheet" type="text/css" href="{% static 'css/report.css' %}">
+
+  <script>
+
+    {% if metrics %}
+
+      $(document).ready(function () {
+        {# Add event handler for pop-up #}
+        $(document).mouseup(function (e) {
+          var overlay = $(".v-overlay");
+
+          if (overlay.is(e.target)) {
+            overlay.hide();
+          }
+        });
+
+        {# Enable tooltips #}
+        $('[data-toggle="tooltip"]').tooltip();
+
+        {# Create diagrams for all metrics #}
+        {% for metric, values in metrics.items %}
+
+          {% if values.series %}
+            chart_compare("{{ metric|idfy }}", "{{ metric|cap }}", {{ values|safe }});
+
+            {# Add link onclick handler for hidden metrics #}
+            $("#{{ metric|idfy }}Anchor").on('click',
+              function () {
+                $("#{{ metric|idfy }}Collapse").css('display', 'inline-block');
+                return true;
+              });
+          {% endif %}
+
+        {% endfor %}
+      });
+
+    {% endif %}
+  </script>
+
+</head>
+<body>
+
+{% include "util/nav.html" %}
+
+  {% if metrics %}
+
+  <div class="settings-sidebar-background"></div>
+  <div class="settings-sidebar bg-white shadow border-dark">
+    <img src="{% static 'img/query_note.png' %}" onclick="toggleVisibility('.v-overlay')"/>
+    <a href="/present/report/compare/{{ hash1 }}-{{ hash2 }}/export"><img src="{% static 'img/download.svg' %}"/></a>
+    <img src="{% static 'img/settings_transparent.svg' %}"/>
+  </div>
+
+  <div class="v-overlay">
+    <div class="v-popup">
+      <p style="text-align: center">
+        What was the
+        <select class="v-metric v-badge" id="uc-metric">
+          {% for metric, values in metrics.items %}
+            <option class="" value="{{ metric }}">{{ metric }}</option>
+          {% endfor %}
+        </select>
+        of the domain
+        <input type="text" class="v-unit v-badge" id="uc-domain" oninput="validate('url', this);"/>
+        between
+        <input type="text" class="v-time v-badge" id="uc-stop"/>
+        and
+        <input type="text" class="v-time v-badge" id="uc-stop"/>
+        .
+      </p>
+    </div>
+  </div>
+
+  <div class="bg-white shadow border-dark report">
+
+
+    <h2 align="center">Performance report for tasks {{ hash1 }} and {{ hash2 }}</h2>
+
+    <h4>The requested metric the user asked for (TODO)</h4>
+    <div class="v-sec v-big diagram" id="CPU"></div>
+
+    <div class="v-sec v-big">
+
+      <div class="v-float v-medium">
+        <table class="table">
+          <thead class="thead">
+          <tr>
+            <th scope="col"></th>
+            <th scope="col">Min.</th>
+            <th scope="col">Max.</th>
+            <th scope="col">Avg.</th>
+            <th scope="col">Med.</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>Time:</td>
+            <td>17:24:00</td>
+            <td>17:22:00</td>
+            <td>-</td>
+            <td>-</td>
+          </tr>
+          <tr>
+            <td>Value:</td>
+            <td style="color: green">1%</td>
+            <td style="color: red">99%</td>
+            <td>52%</td>
+            <td>45%</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <span class="v-inline">Explanation</span>
+
+      <span class="v-inline">Explanation</span>
+
+    </div>
+
+
+    <h4>Analysis Summary</h4>
+
+    <div class="v-sec v-big">
+
+      <div class="v-float v-small">
+        <table class="table">
+          <tbody>
+          <tr>
+            <td>Analysis Tool:</td>
+            <td><a href="{{ meta.tool_link }}" target="_">{{ meta.tool}}</a></td>
+          </tr>
+          <tr>
+            <td>Duration:</td>
+            <td>{# {{ meta.duration|duration }} #} </td>
+          </tr>
+          <tr>
+            <td>Collected samples:</td>
+            <td>{# {{ meta.samples }} #}</td>
+          </tr>
+          <tr>
+            <td>Metrics:</td>
+            <td>
+
+              {% autoescape off %}
+                {{ metrics|dict_keys|cap|anchorfy:'Collapse;Anchor'|join:', ' }}
+              {% endautoescape %}
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      {% autoescape off %}
+{#        <span class="v-inline v-small">{{ meta.text.experiment }}</span>#}
+      {% endautoescape %}
+      <br>
+      {% autoescape off %}
+{#        <span class="v-inline v-small">{{ meta.text.wiki }}</span>#}
+      {% endautoescape %}
+
+    </div>
+
+    <h4 class="link" onclick="toggleVisibility($('#otherMetrics'), 0, true)">Other metrics</h4>
+    <div class="hidden pl-5" id="otherMetrics">
+      {% for metric, values in metrics.items %}
+
+        {% if values.series %}
+          <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
+
+          <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
+
+            <div class="v-sec v-big diagram" id="{{ metric|idfy }}"></div>
+
+            <div class="v-sec v-big">
+
+              <div class="v-float v-medium">
+                <table class="table">
+                  {% autoescape off %}
+                    {{ values.text.table }}
+                  {% endautoescape %}
+                </table>
+              </div>
+
+              <span class="v-inline v-small">
+                {% autoescape off %}
+                  {{ values.text.explanation }}
+                {% endautoescape %}
+              </span>
+
+              <br>
+
+              <span class="v-inline v-small">
+                {% autoescape off %}
+                  {{ values.text.description }}
+                {% endautoescape %}
+              </span>
+
+            </div>
+
+          </div>
+        {% endif %}
+
+      {% endfor %}
+    </div>
+
+  </div>
+
+  {% else %}
+
+  <div class="bg-white m-5 p-5 text-center shadow border-dark">
+
+    <div class="v-sec v-large">{{ message }}</div>
+
+  </div>
+
+  {% endif %}
+
+</body>
+</html>

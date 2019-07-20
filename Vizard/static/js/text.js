@@ -43,6 +43,22 @@ function v_tag(text, tag) {
   return '<' + tag + '>' + text + '</' + tag + '>';
 }
 
+function v_tagValue(text, tag, values) {
+  return '<' + tag + ' ' + values + '>' + text + '</' + tag + '>';
+}
+
+function c(what, color) {
+  return v_tagValue(what,'span', 'style="color: ' + color + '"')
+}
+
+function center(what) {
+  return v_tagValue(what, 'span', 'style="text-align: center"');
+}
+
+function br(text) {
+  return text + '<br>';
+}
+
 function b(text) {
   return v_tag(text, 'b');
 }
