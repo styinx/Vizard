@@ -46,6 +46,7 @@
             {# Add link onclick handler for hidden metrics #}
             $("#{{ metric|idfy }}Anchor").on('click',
               function () {
+                $("#otherMetrics").css('display', 'inline-block');
                 $("#{{ metric|idfy }}Collapse").css('display', 'inline-block');
                 return true;
               });

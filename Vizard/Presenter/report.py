@@ -172,8 +172,11 @@ class LoadtestReport(Report):
                     }
 
                 else:
-                    data = [[x[0], x[1]] for x in df[index].items()]
-                    cumulative = [[x, round((i + 1) / _samples * 100)] for i, x in enumerate(sorted(df[index].values))]
+                    data = [[x[0], round(x[1], 2)] for x in df[index].items()]
+                    if len(_frequency) > 5:
+                        cumulative = [[round(x, 2), round((i + 1) / _samples * 100)] for i, x in enumerate(sorted(df[index].values))]
+                    else:
+                        cumulative = []
 
                     self.response['metrics'][metric].update({
                         'data':        data,
@@ -191,6 +194,8 @@ class LoadtestReport(Report):
                         'to':          _to,
                         'frequencies': {k: round(_frequency[k], 2) for k in list(_frequency)[:3]}
                     })
+
+                    print(self.response['metrics'][metric])
 
                     self.response['metrics'][metric]['text'] = {
                         'table':       table_spline_text(self.response['metrics'][metric], self.response['meta']),

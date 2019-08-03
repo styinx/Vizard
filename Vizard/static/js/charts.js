@@ -129,37 +129,44 @@ let STYLE_BASE = {
           }
         },
         events: {
-          // legendItemClick: function () {
-          //   let serie = this;
-          //   let id = this.index;
-          //   let chart = this.chart;
-          //   let visible = this.visible;
-          //
-          //   console.log(visible, !visible, id)
-          //
-          //   if (visible) {
-          //     chart.series[id].hide();
-          //   } else {
-          //     chart.series[id].show();
-          //   }
-          //   chart.series[id].update({visible: !visible});
-          //   // chart.xAxis[serie.index].update({visible: !visible});
-          //   // chart.yAxis[serie.index].update({visible: !visible});
-          //
-          //   for (let index in chart.series) {
-          //     if (index !== id) {
-          //       if (visible) {
-          //         chart.series[index].show();
-          //       } else {
-          //         chart.series[index].hide();
-          //       }
-          //       chart.series[index].update({visible: visible});
-          //       // chart.xAxis[index].update({visible: visible});
-          //       // chart.yAxis[index].update({visible: visible});
-          //     }
-          //   }
-          //   chart.redraw();
-          //}
+          legendItemClick: function () {
+            let serie = this;
+            let id = this.index;
+            let chart = this.chart;
+            let visible = this.visible;
+
+            if (visible) {
+              chart.series[id].hide();
+            } else {
+              chart.series[id].show();
+            }
+
+            for (let index in chart.series) {
+              if (index !== id) {
+                if (visible) {
+                  chart.series[index].show();
+                } else {
+                  chart.series[index].hide();
+                }
+              }
+            }
+
+            for (let index in chart.xAxis) {
+              if (chart.xAxis[index].options._type === serie.name) {
+                chart.xAxis[index].update({visible: !visible});
+              } else {
+                chart.xAxis[index].update({visible: visible});
+              }
+            }
+
+            for (let index in chart.yAxis) {
+              if (chart.yAxis[index].options._type === serie.options.name) {
+                chart.yAxis[index].update({visible: !visible});
+              } else {
+                chart.yAxis[index].update({visible: visible});
+              }
+            }
+          }
         }
       }
     },
@@ -434,6 +441,7 @@ function chart_compare(metric_idfy, metric_cap, values) {
       endOnTick: true,
       lineWidth: 1,
       lineColor: '#333',
+      _type: 0,
       labels: {
         rotation: -45,
         x: -10,
@@ -451,7 +459,8 @@ function chart_compare(metric_idfy, metric_cap, values) {
       lineWidth: 1,
       lineColor: '#333',
       opposite: false,
-      title: {text: values.unit || ''}
+      title: {text: values.unit || ''},
+      _type: 0
     },
     tooltip: {
       useHTML: true,
@@ -512,6 +521,7 @@ function _default(metric_idfy, metric_cap, values) {
       endOnTick: true,
       lineWidth: 1,
       lineColor: '#333',
+      _type: metric_cap + v_empty(' (%s)', values.unit),
       labels: {
         rotation: -45,
         x: -10,
@@ -528,6 +538,7 @@ function _default(metric_idfy, metric_cap, values) {
       endOnTick: true,
       lineWidth: 1,
       lineColor: '#333',
+      _type: 'Cumulative distribution',
       labels: {
         align: 'center',
         formatter: function () {
@@ -542,12 +553,14 @@ function _default(metric_idfy, metric_cap, values) {
       lineWidth: 1,
       lineColor: '#333',
       opposite: false,
-      title: {text: values.unit || ''}
+      title: {text: values.unit || ''},
+      _type: metric_cap + v_empty(' (%s)', values.unit),
     }, {
       visible: false,
       title: {text: '%'},
       min: 0,
-      max: 100
+      max: 100,
+      _type: 'Cumulative distribution'
     }],
     tooltip: {
       useHTML: true,

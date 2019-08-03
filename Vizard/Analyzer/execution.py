@@ -5,8 +5,8 @@ from Vizard.models import User, Task
 
 from Analyzer.tools import *
 
-
 d_jmeter = {
+    'metric':    None,
     'domain':    None,
     'port':      '',
     'duration':  '10',
@@ -17,8 +17,8 @@ d_jmeter = {
     'ramp_down': '1',
 }
 
-
 d_locust = {
+    'metric':     None,
     'domain':     None,
     'port':       '',
     'duration':   '10',
@@ -31,8 +31,12 @@ d_locust = {
 }
 
 d_regression = {
-    'start_first': None,
-    'start_second': None
+    'metric':        None,
+    'domain':        None,
+    'domain_first':  None,
+    'domain_second': None,
+    'start_first':   None,
+    'start_second':  None
 }
 
 

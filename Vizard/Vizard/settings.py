@@ -166,6 +166,17 @@ REPORT = {
                     'successful. An unsuccessful request can contain the reason of the refusal as plain '
                     'text in the response text. Another reason is a faulty connection to the server.')
             },
+            # 'system status':    {
+            #     'index':      3,
+            #     'dtype':      bool,
+            #     'col':        'success',
+            #     'type':       'spline',
+            #     'unit':       '',
+            #     'definition': str(
+            #         'If a request does not reach the server or is refused by it, the request was not '
+            #         'successful. An unsuccessful request can contain the reason of the refusal as plain '
+            #         'text in the response text. Another reason is a faulty connection to the server.')
+            # },
             'received traffic': {
                 'index':      4,
                 'dtype':      int,
@@ -256,7 +267,18 @@ REPORT = {
                     'successful. An unsuccessful request can contain the reason of the refusal as plain '
                     'text in the response text. Another reason is a faulty connection to the server.')
             },
-            'response time': {
+            # 'system status':  {
+            #     'index':      2,
+            #     'dtype':      bool,
+            #     'col':        'success',
+            #     'type':       'spline',
+            #     'unit':       '',
+            #     'definition': str(
+            #         'If a request does not reach the server or is refused by it, the request was not '
+            #         'successful. An unsuccessful request can contain the reason of the refusal as plain '
+            #         'text in the response text. Another reason is a faulty connection to the server.')
+            # },
+            'response time':  {
                 'index':      3,
                 'dtype':      float,
                 'col':        'responseTime',
@@ -272,7 +294,7 @@ REPORT = {
                     'time. The wait time is how long the request had to wait in a queue before being '
                     'serviced and it varies from zero, to a large multiple of the service time.')
             },
-            'sent traffic':  {
+            'sent traffic':   {
                 'index':      4,
                 'dtype':      float,
                 'col':        'bytes',
@@ -285,7 +307,7 @@ REPORT = {
 }
 
 VALUES = {
-    'True': 'successful',
+    'True':  'successful',
     'False': 'not successful',
 }
 

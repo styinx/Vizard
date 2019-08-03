@@ -15,12 +15,12 @@
 
   {% include "util/nav.html" %}
 
-  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5">
+  <div class="bg-white shadow border-dark mx-5 my-5 px-5 py-5" style="overflow: auto">
 
-    <table width="100%">
+    <table >
 
       <tr>
-        <th class="header"><u>Description</u></th>
+        <th class="header" style="width: 400px"><u>Description</u></th>
         <th class="header"><u>URL</u></th>
         <th class="header"><u>Note</u></th>
       </tr>
@@ -28,6 +28,14 @@
       <tr>
         <td><b>Perform an analysis:</b></td>
         <td><pre class="inline">/analyze</pre></td>
+        <td></td>
+      </tr>
+
+      <tr><td colspan="100%">&nbsp;</td></tr>
+
+      <tr>
+        <td style="padding-left: 20px"><b>Perform a load test analysis:</b></td>
+        <td><pre class="inline">/analyze/loadtest</pre></td>
         <td></td>
       </tr>
 
@@ -48,14 +56,15 @@
       </tr>
 
       <tr>
-        <td>Parameters:</td>
+        <td style="padding-left: 40px">Parameters:</td>
         <td></td>
         <td></td>
       </tr>
 
       <tr>
-        <td>
+        <td style="padding-left: 40px">
           <ul>
+            <li>Metric</li>
             <li>Domain</li>
             <li>Duration</li>
             <li>Load</li>
@@ -65,20 +74,104 @@
         </td>
         <td>
           <ul>
-            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;domain=www.example.com</pre></li>
-            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;duration=5</pre></li>
-            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;load=10</pre></li>
-            <li><pre class="inline">/analyze/loadtest/&nbsp;Locust&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;min_wait=8</pre></li>
-            <li><pre class="inline">/analyze/loadtest/&nbsp;Locust&nbsp;?&nbsp;domain=www.example.com&nbsp;&&nbsp;max_wait=12</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;metric=latency&nbsp;...</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;...&nbsp;domain=www.example.com</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;...&nbsp;duration=5</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;...&nbsp;load=10</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;...&nbsp;min_wait=8</pre></li>
+            <li><pre class="inline">/analyze/loadtest/&nbsp;<i>&lt;tool&gt;</i>&nbsp;?&nbsp;...&nbsp;max_wait=12</pre></li>
           </ul>
         </td>
         <td>
           <ul>
-            <li class="empty">&nbsp;</li>
+            <li>required</li>
+            <li>required</li>
             <li class="empty">&nbsp;</li>
             <li class="empty">&nbsp;</li>
             <li>Locust only</li>
             <li>Locust only</li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding-left: 40px">Examples:</td>
+        <td></td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td colspan="100%" style="padding-left: 40px">
+          <ul>
+            <li><pre class="inline">/analyze/loadtest/jmeter?metric=response time&domain=www.example.com</pre></li>
+            <li><pre class="inline">/analyze/loadtest/locust?metric=latency&domain=www.me.eu&load=10&duration=3600</pre></li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr><td colspan="100%">&nbsp;</td></tr>
+
+      <tr>
+        <td style="padding-left: 20px"><b>Perform a regression test analysis:</b></td>
+        <td><pre class="inline">/analyze/regressiontest</pre></td>
+        <td></td>
+      </tr>
+
+      <tr><td colspan="100%">&nbsp;</td></tr>
+
+      <tr>
+        <td style="padding-left: 40px">Parameters:</td>
+        <td></td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td style="padding-left: 40px">
+          <ul>
+            <li>Metric</li>
+            <li>Tool</li>
+            <li>Domain</li>
+            <li>Start time 1</li>
+            <li>Start time 2</li>
+            <li>Domain 1</li>
+            <li>Domain 2</li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;metric=response time&nbsp;...</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;tool=jmeter&nbsp;...</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;domain=www.example.com&nbsp;...</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;...&nbsp;start_first=25-07-2019|14:05:30</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;...&nbsp;start_second=25-07-2019|18:05:30</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;...&nbsp;domain_first=www.v1.example.com</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?&nbsp;...&nbsp;domain_second=www.v2.example.com</pre></li>
+          </ul>
+        </td>
+        <td>
+          <ul>
+            <li>required</li>
+            <li class="empty">&nbsp;</li>
+            <li>A domain and two</li>
+            <li class="empty">start times are required<br></li>
+            <li class="empty" style="padding-left: 40px">or<br></li>
+            <li>two domains</li>
+            <li class="empty">are required</li>
+          </ul>
+        </td>
+      </tr>
+
+      <tr>
+        <td style="padding-left: 40px">Examples:</td>
+        <td></td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td colspan="100%" style="padding-left: 40px">
+          <ul>
+            <li><pre class="inline">/analyze/regressiontest?metric=response time&domain_first=www.v1.example.com&&domain_second=www.v2.example.com&tool=jmeter</pre></li>
+            <li><pre class="inline">/analyze/regressiontest?metric=latency&domain=www.example.com&start_first=25-07-2019|14:05:30&25-07-2019|15:00:00&tool=locust</pre></li>
           </ul>
         </td>
       </tr>
@@ -119,6 +212,7 @@
             <li>Task overview</li>
             <li>Show plain data</li>
             <li>Create a report</li>
+            <li>Compare two reports</li>
             <li>Export a report</li>
           </ul>
         </td>
@@ -127,6 +221,7 @@
             <li><pre class="inline">/present/data</pre></li>
             <li><pre class="inline">/present/data/&nbsp;<i>&lt;task_id&gt;</i></pre></li>
             <li><pre class="inline">/present/report/&nbsp;<i>&lt;task_id&gt;</i></pre></li>
+            <li><pre class="inline">/present/compare/&nbsp;<i>&lt;task_id_1&gt;</i>-<i>&lt;task_id_2&gt;</i></pre></li>
             <li><pre class="inline">/present/report/&nbsp;<i>&lt;task_id&gt;&nbsp;/export</i></pre></li>
           </ul>
         </td>
