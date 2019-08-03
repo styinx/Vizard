@@ -195,8 +195,6 @@ class LoadtestReport(Report):
                         'frequencies': {k: round(_frequency[k], 2) for k in list(_frequency)[:3]}
                     })
 
-                    print(self.response['metrics'][metric])
-
                     self.response['metrics'][metric]['text'] = {
                         'table':       table_spline_text(self.response['metrics'][metric], self.response['meta']),
                         'explanation': explanation_text(metrics[metric]['definition']),
