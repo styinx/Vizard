@@ -13,7 +13,7 @@ from Vizard.settings import TOOL_PATH, CONF_JMETER, CONF_GATLING
 
 def keep_alive():
     while True:
-        if 8 < dt.datetime.now().hour < 22:
+        if 8 < dt.datetime.utcnow().hour < 22:
             print('Send keep alive thread...', end='')
             print(requests.get('https://vizardous.herokuapp.com/'))
         time.sleep(60 * 5)  # sleep 5 minutes

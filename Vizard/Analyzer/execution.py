@@ -1,3 +1,5 @@
+import datetime as dt
+
 from source.util import unpack_request_values
 
 from Vizard.settings import CONF_JMETER, CONF_LOCUST, RESPONSE
@@ -33,8 +35,8 @@ d_locust = {
 d_regression = {
     'metric':        None,
     'domain':        None,
-    'domain_first':  None,
-    'domain_second': None,
+    'domain_first':  '',
+    'domain_second': '',
     'start_first':   None,
     'start_second':  None
 }
@@ -55,7 +57,12 @@ def unpack_regression_values(request):
 
 
 def execute_jmeter(request, response, scheduler):
-    task = Task(0)
+    delay = 0
+
+    if 'delay' in request.GET:
+        delay = request.GET['delay']
+
+    task = Task(delay)
     user = User(request)
 
     values = unpack_jmeter_values(request)
@@ -107,7 +114,12 @@ def execute_jmeter(request, response, scheduler):
 
 
 def execute_locust(request, response, scheduler):
-    task = Task(0)
+    delay = 0
+
+    if 'delay' in request.GET:
+        delay = request.GET['delay']
+
+    task = Task(delay)
     user = User(request)
 
     values = unpack_locust_values(request)
@@ -176,20 +188,43 @@ def execute_regressiontest(request, response, tool, scheduler):
         response['missing'] = values
         return response
 
+    request.GET._mutable = True
+
     response1 = RESPONSE.copy()
+    request1 = request
     response2 = RESPONSE.copy()
+    request2 = request
 
-    if tool == 'JMeter':
-        response1 = execute_jmeter(request, response1, scheduler)
-        response2 = execute_jmeter(request, response2, scheduler)
+    request1.GET._mutable = True
+    request2.GET._mutable = True
+
+    request1.GET['metric'] = values['metric']
+    request2.GET['metric'] = values['metric']
+
+    if 'start_first' in values and 'start_second' in values:
+        now = dt.datetime.now()
+        d1 = dt.datetime.strptime(values['start_first'], '%d-%m-%Y|%H:%M:%S')
+        d2 = dt.datetime.strptime(values['start_second'], '%d-%m-%Y|%H:%M:%S')
+
+        if d1 > now and d2 > now:
+            request1.GET['delay'] = (d1 - now).total_seconds()
+            request2.GET['delay'] = (d2 - now).total_seconds()
+        else:
+            response['error'] = 'One or both starting times lie in the past.'
+
+    elif 'domain_first' in values and 'domain_second' in values:
+        request1.GET['domain'] = values['domain_first']
+        request2.GET['domain'] = values['domain_second']
+
+    if tool == 'Locust':
+        response1 = execute_locust(request1, response1, scheduler)
+        response2 = execute_locust(request2, response2, scheduler)
     else:
-        response1 = execute_locust(request, response1, scheduler)
-        response2 = execute_locust(request, response2, scheduler)
+        response1 = execute_jmeter(request1, response1, scheduler)
+        response2 = execute_jmeter(request2, response2, scheduler)
 
-    if "missing" in response1:
-        response['missing'] = response1['missing']
-    elif "missing" in response2:
-        response['missing'] = response2['missing']
+    if "missing" in response1 or 'missing' in response2:
+        response['error'] = 'Something went wrong executing your tests.'
     else:
         response['tool'] = response1['tool']
         response['config'] = response1['config']

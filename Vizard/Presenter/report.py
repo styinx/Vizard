@@ -201,6 +201,11 @@ class LoadtestReport(Report):
                         'description': description_spline_text(self.response['metrics'][metric], self.response['meta'])
                     }
 
+            self.response['meta']['metric'] = {
+                'name': meta['arguments']['metric'],
+                'data': self.response['metrics'][meta['arguments']['metric']]
+            }
+
             if self.export is None:
                 return self.response, None
 
@@ -307,6 +312,11 @@ class CompareReport(Report):
                     start = df.index[0]
                     data = [[x[0] - start, round(x[1], 2)] for x in df[index].items()]
                     self.response['metrics'][metric]['series'].append(data)
+
+            self.response['meta']['metric'] = {
+                'name': meta['arguments']['metric'],
+                'data': self.response['metrics'][meta['arguments']['metric']]
+            }
 
             path = TASK_PATH + '/' + self.id2
             df = unserialize(path + '/result_cached.dat').df

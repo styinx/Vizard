@@ -95,46 +95,38 @@
 
     <h2 align="center">Performance report for task {{ hash }}</h2>
 
-    <h4>The requested metric the user asked for (TODO)</h4>
-    <div class="v-sec v-big diagram" id="CPU"></div>
+    {% if meta.metric %}
 
-    <div class="v-sec v-big">
+    <h4>{{ meta.metric.name|cap }}</h4>
+    <div class="v-sec v-big diagram" id="{{ meta.metric.name|idfy }}"></div>
 
-      <div class="v-float v-medium">
-        <table class="table">
-          <thead class="thead">
-          <tr>
-            <th scope="col"></th>
-            <th scope="col">Min.</th>
-            <th scope="col">Max.</th>
-            <th scope="col">Avg.</th>
-            <th scope="col">Med.</th>
-          </tr>
-          </thead>
-          <tbody>
-          <tr>
-            <td>Time:</td>
-            <td>17:24:00</td>
-            <td>17:22:00</td>
-            <td>-</td>
-            <td>-</td>
-          </tr>
-          <tr>
-            <td>Value:</td>
-            <td style="color: green">1%</td>
-            <td style="color: red">99%</td>
-            <td>52%</td>
-            <td>45%</td>
-          </tr>
-          </tbody>
-        </table>
+      <div class="v-sec v-big">
+
+        <div class="v-float v-medium">
+          <table class="table">
+            {% autoescape off %}
+              {{ meta.metric.data.text.table }}
+            {% endautoescape %}
+          </table>
+        </div>
+
+        <span class="v-inline v-small">
+          {% autoescape off %}
+            {{ meta.metric.data.text.explanation }}
+          {% endautoescape %}
+        </span>
+
+        <br>
+
+        <span class="v-inline v-small">
+          {% autoescape off %}
+            {{ meta.metric.data.text.description }}
+          {% endautoescape %}
+        </span>
+
       </div>
 
-      <span class="v-inline">Explanation</span>
-
-      <span class="v-inline">Explanation</span>
-
-    </div>
+    {% endif %}
 
 
     <h4>Analysis Summary</h4>
@@ -183,6 +175,8 @@
     <div class="hidden pl-5" id="otherMetrics">
       {% for metric, values in metrics.items %}
 
+        {% if metric != meta.metric.name %}
+
         <h4 class="link" onclick="toggleVisibility($('#{{ metric|idfy }}Collapse'), 0, true)">{{ metric|cap }}</h4>
 
         <div class="v-large hidden" id="{{ metric|idfy }}Collapse">
@@ -216,6 +210,8 @@
           </div>
 
         </div>
+
+        {% endif %}
 
       {% endfor %}
     </div>
