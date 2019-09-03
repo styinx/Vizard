@@ -166,17 +166,17 @@ REPORT = {
                     'successful. An unsuccessful request can contain the reason of the refusal as plain '
                     'text in the response text. Another reason is a faulty connection to the server.')
             },
-            # 'system status':    {
-            #     'index':      3,
-            #     'dtype':      bool,
-            #     'col':        'success',
-            #     'type':       'spline',
-            #     'unit':       '',
-            #     'definition': str(
-            #         'If a request does not reach the server or is refused by it, the request was not '
-            #         'successful. An unsuccessful request can contain the reason of the refusal as plain '
-            #         'text in the response text. Another reason is a faulty connection to the server.')
-            # },
+            'server status':    {
+                'index':      3,
+                'dtype':      bool,
+                'col':        'success',
+                'type':       'statusline',
+                'unit':       '',
+                'definition': str(
+                    'If a request does not reach the server or is refused by it, the request was not '
+                    'successful. An unsuccessful request can contain the reason of the refusal as plain '
+                    'text in the response text. Another reason is a faulty connection to the server.')
+            },
             'received traffic': {
                 'index':      4,
                 'dtype':      int,
@@ -188,14 +188,14 @@ REPORT = {
                     'server. This data consists of header data and meta information, which is '
                     'needed by the server. The amount of exchanged information is measured in bytes.')
             },
-            'sent traffic':     {
-                'index':      5,
-                'dtype':      int,
-                'col':        'sentBytes',
-                'type':       'column',
-                'unit':       'bytes per request',
-                'definition': str()
-            },
+            # 'sent traffic':     {
+            #     'index':      5,
+            #     'dtype':      int,
+            #     'col':        'sentBytes',
+            #     'type':       'column',
+            #     'unit':       'bytes per request',
+            #     'definition': str()
+            # },
             'latency':          {
                 'index':      8,
                 'dtype':      int,
@@ -212,14 +212,14 @@ REPORT = {
                     'in the transmission by devices along the way. ' +
                     'A low latency indicates a high network efficiency.')
             },
-            'idle time':        {
-                'index':      9,
-                'dtype':      int,
-                'col':        'IdleTime',
-                'type':       'spline',
-                'unit':       'ms',
-                'definition': str()
-            },
+            # 'idle time':        {
+            #     'index':      9,
+            #     'dtype':      int,
+            #     'col':        'IdleTime',
+            #     'type':       'spline',
+            #     'unit':       'ms',
+            #     'definition': str()
+            # },
             'connection time':  {
                 'index':      10,
                 'dtype':      int,
@@ -267,17 +267,17 @@ REPORT = {
                     'successful. An unsuccessful request can contain the reason of the refusal as plain '
                     'text in the response text. Another reason is a faulty connection to the server.')
             },
-            # 'system status':  {
-            #     'index':      2,
-            #     'dtype':      bool,
-            #     'col':        'success',
-            #     'type':       'spline',
-            #     'unit':       '',
-            #     'definition': str(
-            #         'If a request does not reach the server or is refused by it, the request was not '
-            #         'successful. An unsuccessful request can contain the reason of the refusal as plain '
-            #         'text in the response text. Another reason is a faulty connection to the server.')
-            # },
+            'server status': {
+                'index':      3,
+                'dtype':      bool,
+                'col':        'success',
+                'type':       'statusline',
+                'unit':       '',
+                'definition': str(
+                    'If a request does not reach the server or is refused by it, the request was not '
+                    'successful. An unsuccessful request can contain the reason of the refusal as plain '
+                    'text in the response text. Another reason is a faulty connection to the server.')
+            },
             'response time':  {
                 'index':      3,
                 'dtype':      float,
@@ -307,6 +307,8 @@ REPORT = {
 }
 
 VALUES = {
+    '0':  'Offline',
+    '1':  'Online',
     'True':  'successful',
     'False': 'not successful',
 }

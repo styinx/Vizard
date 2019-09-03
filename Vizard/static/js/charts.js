@@ -6,8 +6,8 @@ let perfect = '#0a0';
 
 let STYLE_SPARK_BASE = {
   colors: [
-      '#39f', '#bb3', '#188', '#d62',
-      '#a28', '#999', '#63b', '#8b3'],
+    '#39f', '#bb3', '#188', '#d62',
+    '#a28', '#999', '#63b', '#8b3'],
   chart: {
     backgroundColor: null,
     borderWidth: 0,
@@ -58,6 +58,7 @@ let STYLE_SPARK_BASE = {
   plotOptions: {
     dataGrouping: {enabled: false},
     series: {
+      turboThreshold: 0,
       dataGrouping: {enabled: false},
       animation: false,
       lineWidth: 1,
@@ -326,6 +327,10 @@ let STYLE_SPLINE = merge(STYLE_BASE, {
   chart: {type: 'spline'}
 });
 
+let STYLE_STATUSLINE = merge(STYLE_BASE, {
+  chart: {type: 'line'}
+});
+
 let STYLE_SCATTER = merge(STYLE_BASE, {
   chart: {type: 'scatter'}
 });
@@ -408,6 +413,7 @@ let STYLE_GAUGE = merge(STYLE_BASE, {
 
 let STYLE_CHART = {
   'spline': STYLE_SPLINE,
+  'statusline': STYLE_STATUSLINE,
   'pie': STYLE_PIE,
   'gauge': STYLE_GAUGE,
   'bar': STYLE_BAR,
@@ -422,6 +428,10 @@ function chart(metric_idfy, metric_cap, values) {
     }
     case 'gauge': {
       gauge(metric_idfy, metric_cap, values);
+      break;
+    }
+    case 'statusline': {
+      statusline(metric_idfy, metric_cap, values);
       break;
     }
     case 'spline':
@@ -654,6 +664,100 @@ function gauge(metric_idfy, metric_cap, values) {
   }));
 }
 
+function statusline(metric_idfy, metric_cap, values) {
+  let data = markStatusChange(values.data);
+
+  Highcharts.stockChart(metric_idfy, merge(STYLE_CHART[values.type], {
+    xAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      _type: metric_cap + v_empty(' (%s)', values.unit),
+      labels: {
+        rotation: -45,
+        x: -10,
+        y: 30,
+        align: 'center',
+        formatter: function () {
+          return time(this.value, '%d.%m.<br>%H:%M:%S.%f');
+        }
+      }
+    }],
+    yAxis: [{
+      minorTickInterval: 'auto',
+      startOnTick: true,
+      endOnTick: true,
+      lineWidth: 1,
+      lineColor: '#333',
+      opposite: false,
+      min: -0.1,
+      max: 1.1,
+      labels: {
+        enabled: true,
+        formatter: function () {
+          switch (this.value) {
+            case 0:
+              return 'Offline';
+            case 1:
+              return 'Online';
+            default:
+              return '';
+          }
+        }
+      },
+      title: {
+        text: values.unit || ''
+      },
+      _type: metric_cap + v_empty(' (%s)', values.unit),
+    }],
+    tooltip: {
+      useHTML: true,
+      shared:
+        true,
+      split:
+        true,
+      outside:
+        true,
+      backgroundColor:
+        'white',
+      positioner:
+
+        function (width, height, point) {
+          let point_pos = point.plotX + this.chart.plotLeft - width / 2;
+          let max_right = this.chart.chartWidth - width / 2 - this.chart.marginRight;
+
+          if (point.isHeader) {
+            return {
+              x: Math.max(0, Math.min(point_pos, max_right)),
+              y: this.chart.chartHeight
+            };
+          } else {
+            return {
+              x: Math.max(0, Math.min(point_pos, max_right)),
+              y: 0
+            };
+          }
+        }
+
+      ,
+      formatter: status_tooltip_formatter
+    }
+    ,
+    legend: {
+      enabled: true
+    }
+    ,
+    series: [{
+      name: metric_cap + v_empty(' (%s)', values.unit),
+      data: data,
+      unit: values.unit
+    }]
+  }))
+  ;
+}
+
 function markPercentile(data, p5, p25, p50, p75, p95) {
   let p5s = 0;
   let p25s = 0;
@@ -746,6 +850,40 @@ function markMinMax(data, min, max) {
   return data;
 }
 
+function markStatusChange(data) {
+  let last = data[0];
+  for (let index = 0; index < data.length; ++index) {
+    let entry = data[index];
+    if (entry['y'] < last['y']) {
+      data[index] = {
+        x: entry['x'],
+        y: entry['y'],
+        description: entry['description'],
+        markerText: 'Incident',
+        marker: {enabled: true, fillColor: 'red'}
+      };
+    } else if (entry['description'] === 'Offline') {
+      data[index] = {
+        x: entry['x'],
+        y: entry['y'],
+        description: entry['description'],
+        markerText: '',
+        marker: {enabled: false, fillColor: 'red'}
+      };
+    } else {
+      data[index] = {
+        x: entry['x'],
+        y: entry['y'],
+        description: entry['description'],
+        markerText: '',
+        marker: {enabled: false, fillColor: 'green'}
+      };
+    }
+    last = entry;
+  }
+  return data;
+}
+
 function base_tooltip_formatter() {
   let p = this.points[0];
   let color = p.series.color;
@@ -787,7 +925,23 @@ function base_tooltip_formatter_compare() {
   return [b(better_duration(this.x))].concat(
     this.points.map(function (point) {
       let val = padT(dec(point.y));
-        return span + b(val + ' ' + unit);
+      return span + b(val + ' ' + unit);
+    })
+  );
+}
+
+function status_tooltip_formatter() {
+  let p = this.points[0];
+
+  let description = p.point.description;
+  let additional = p.point.markerText === (undefined || '') ? '' :
+    br(c(b(p.point.markerText), p.point.marker.fillColor)) + '<br>';
+
+  let header = b(time(this.x, 'Date: %d.%m.%Y<br>Time: %H:%M:%S.%f'));
+
+  return [header].concat(
+    this.points.map(function (point) {
+      return additional + 'Status: ' + c(b(description), p.point.marker.fillColor);
     })
   );
 }

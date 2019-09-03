@@ -197,6 +197,7 @@ sup, sub
     align-items: end;
     vertical-align: top;
     padding: 5em 5em 5em 7em;
+    width: 100%;
     min-width: calc(480px + 8em);
     max-width: 100%;
     min-height: 100%;

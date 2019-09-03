@@ -102,27 +102,33 @@
 
       <div class="v-sec v-big">
 
-        <div class="v-float v-medium">
-          <table class="table">
-            {% autoescape off %}
-              {{ meta.metric.data.text.table }}
-            {% endautoescape %}
-          </table>
-        </div>
+        {% if meta.metric.data.text.table %}
+          <div class="v-float v-medium">
+            <table class="table">
+              {% autoescape off %}
+                {{ meta.metric.data.text.table }}
+              {% endautoescape %}
+            </table>
+          </div>
+        {% endif %}
 
+        {% if meta.metric.data.text.explanation %}
         <span class="v-inline v-small">
           {% autoescape off %}
             {{ meta.metric.data.text.explanation }}
           {% endautoescape %}
         </span>
+        {% endif %}
 
         <br>
 
+        {% if meta.metric.data.text.description %}
         <span class="v-inline v-small">
           {% autoescape off %}
             {{ meta.metric.data.text.description }}
           {% endautoescape %}
         </span>
+        {% endif %}
 
       </div>
 
@@ -153,7 +159,7 @@
             <td>
 
               {% autoescape off %}
-                {{ metrics|dict_keys|cap|anchorfy:'Collapse;Anchor'|join:', ' }}
+                {{ metrics|dict_keys|anchorfy:'Collapse;Anchor'|join:', ' }}
               {% endautoescape %}
             </td>
           </tr>
@@ -185,6 +191,7 @@
 
           <div class="v-sec v-big">
 
+            {% if values.text.table %}
             <div class="v-float v-medium">
               <table class="table">
                 {% autoescape off %}
@@ -192,20 +199,25 @@
                 {% endautoescape %}
               </table>
             </div>
+            {% endif %}
 
+            {% if values.text.explanation %}
             <span class="v-inline v-small">
               {% autoescape off %}
                 {{ values.text.explanation }}
               {% endautoescape %}
             </span>
+            {% endif %}
 
             <br>
 
+            {% if values.text.description %}
             <span class="v-inline v-small">
               {% autoescape off %}
                 {{ values.text.description }}
               {% endautoescape %}
             </span>
+            {% endif %}
 
           </div>
 

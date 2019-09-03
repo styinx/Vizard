@@ -1,5 +1,6 @@
 import os
 import json
+import random
 from time import strftime, gmtime
 
 from django.template.loader import render_to_string
@@ -132,6 +133,9 @@ class LoadtestReport(Report):
                 chart_type = metrics[metric]['type']
                 index = metrics[metric]['col']
 
+                if metrics[metric]['type'] == 'statusline':
+                    df[index] *= 1
+
                 if isinstance(index, list):
                     df['temp'] = df[index].sum(axis=1)
                     index = 'temp'
@@ -166,7 +170,35 @@ class LoadtestReport(Report):
                     })
 
                     self.response['metrics'][metric]['text'] = {
-                        'table':       table_gauge_text(None, None),
+                        'table':       '',
+                        'explanation': explanation_text(metrics[metric]['definition']),
+                        'description': description_gauge_text(None, None)
+                    }
+
+                elif chart_type == 'statusline':
+                    data = [{'description': VALUES[str(x[1])],
+                             'x':           x[0],
+                             'y':           round(x[1], 2)
+                             } for x in df[index].items()]
+
+                    self.response['metrics'][metric].update({
+                        'data':        data,
+                        'min':         {'ts': df[index].idxmin(), 'val': round(_min, 2), 'f': _frequency[_min]},
+                        'max':         {'ts': df[index].idxmax(), 'val': round(_max, 2), 'f': _frequency[_max]},
+                        'mean':        {'val': round(_mean, 2)},
+                        'p5':          {'val': round(_p5, 2), 'f': round(_frequency[_p5], 2)},
+                        'p25':         {'val': round(_p25, 2), 'f': round(_frequency[_p25], 2)},
+                        'p50':         {'val': round(_p50, 2), 'f': round(_frequency[_p50], 2)},
+                        'p75':         {'val': round(_p75, 2), 'f': round(_frequency[_p75], 2)},
+                        'p95':         {'val': round(_p95, 2), 'f': round(_frequency[_p95], 2)},
+                        'total':       round(df[index].sum(), 2),
+                        'from':        _from,
+                        'to':          _to,
+                        'frequencies': {k: round(_frequency[k], 2) for k in list(_frequency)[:3]}
+                    })
+
+                    self.response['metrics'][metric]['text'] = {
+                        'table':       '',
                         'explanation': explanation_text(metrics[metric]['definition']),
                         'description': description_gauge_text(None, None)
                     }
@@ -174,7 +206,8 @@ class LoadtestReport(Report):
                 else:
                     data = [[x[0], round(x[1], 2)] for x in df[index].items()]
                     if len(_frequency) > 5:
-                        cumulative = [[round(x, 2), round((i + 1) / _samples * 100)] for i, x in enumerate(sorted(df[index].values))]
+                        cumulative = [[round(x, 2), round((i + 1) / _samples * 100)] for i, x in
+                                      enumerate(sorted(df[index].values))]
                     else:
                         cumulative = []
 
