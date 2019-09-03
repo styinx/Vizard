@@ -22,6 +22,10 @@ def bot(request):
     return render(request, 'Bot.html')
 
 
+def performance_report(request):
+    return render(request, '48b49d70/Report.html')
+
+
 def demo_report_loadtest(request):
     return render(request, 'DemoLoadtest.html')
 

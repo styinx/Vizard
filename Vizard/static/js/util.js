@@ -52,13 +52,13 @@ function padT(text, width = 5) {
 
 function time(val, format = "%d.%m %H:%M:%S.%f") {
   let d = new Date(val);
-  let D = pad(d.getDate());
-  let M = pad(d.getMonth() + 1);
-  let Y = d.getFullYear();
-  let h = pad(d.getHours());
-  let m = pad(d.getMinutes());
-  let s = pad(d.getSeconds());
-  let ms = Math.round(d.getMilliseconds() / 10);
+  let D = pad(d.getUTCDate());
+  let M = pad(d.getUTCMonth() + 1);
+  let Y = d.getUTCFullYear();
+  let h = pad(d.getUTCHours());
+  let m = pad(d.getUTCMinutes());
+  let s = pad(d.getUTCSeconds());
+  let ms = Math.round(d.getUTCMilliseconds() / 10);
   return format
     .replace("%d", D)
     .replace("%m", M)

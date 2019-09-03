@@ -17,6 +17,9 @@ let STYLE_SPARK_BASE = {
     style: {overflow: 'visible'},
     skipClone: true
   },
+  time: {
+    timezone: 'Europe/Oslo'
+  },
   title: {text: ''},
   credits: {enabled: false},
   xAxis: {
@@ -109,10 +112,14 @@ let STYLE_BASE = {
       margin: 100,
       padding: 100
     },
+    time: {
+      timezone: 'Europe/Oslo'
+    },
     title: {text: ''},
     credits: {text: ''},
     plotOptions: {
       series: {
+        turboThreshold: 0,
         dataGrouping: {
           enabled: false
         },
